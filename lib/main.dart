@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
