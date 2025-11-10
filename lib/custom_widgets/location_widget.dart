@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class UbicacionWidget extends StatelessWidget {
-  const UbicacionWidget({super.key, this.locationText = 'Muerto Morelos'});
+class LocationWidget extends StatelessWidget {
+  const LocationWidget({super.key, this.locationText = 'Muerto Morelos'});
   final String locationText;
   @override
   Widget build(BuildContext context) {

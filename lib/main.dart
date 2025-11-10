@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'ubicacion.dart';
+import 'custom_widgets/favorites_widget.dart';
+import 'custom_widgets/calendar_widget.dart';
+import 'custom_widgets/location_widget.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -73,25 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         ),
-        body: <Widget> [
-          // Tab 1
-                  Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(child: Text('Tab 1', style: theme.textTheme.titleLarge)),
-          ),
-        ),
+                body: <Widget> [
+        // Tab 1
+          FavoritesWidget(),
         // Tab 2
-                Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(child: Text('Tab 2', style: theme.textTheme.titleLarge)),
-          ),
-        ),
+          CalendarWidget(),
         // Tab 3
-        UbicacionWidget()
+          LocationWidget(),
         ][currentPageIndex],
     );
   }
