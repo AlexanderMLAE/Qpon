@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
       ),
       home: MyHomePage(),
     );
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
           child: Text(
             "Qpon",
@@ -46,12 +46,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
       ),
       bottomNavigationBar: NavigationBar(
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        // colors go here
+        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+        indicatorColor: Colors.white,
         selectedIndex: currentPageIndex,
         destinations: const <Widget> [
           NavigationDestination( // Favoritos
@@ -89,14 +91,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         // Tab 3
-                Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(child: Text('Tab 3', style: theme.textTheme.titleLarge)),
-          ),
-        ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      TextButton(onPressed: null, child: Align(alignment: Alignment.topRight,child: Text('Villas del Mal'))),
+                      TextField(decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Buscar una oferta o establecimiento')),
+                      ElevatedButton(onPressed: null, child: Text('Buscar')),
+                      // Map over here when that is done
+                      
 
+                    ],
+                  ),
+                  
+                  )
         ][currentPageIndex],
     );
   }
