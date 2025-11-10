@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'ubicacion.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -91,20 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         // Tab 3
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      TextButton(onPressed: null, child: Align(alignment: Alignment.topRight,child: Text('Villas del Mal'))),
-                      TextField(decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Buscar una oferta o establecimiento')),
-                      ElevatedButton(onPressed: null, child: Text('Buscar')),
-                      // Map over here when that is done
-                      
-
-                    ],
-                  ),
-                  
-                  )
+        UbicacionWidget()
         ][currentPageIndex],
     );
   }
