@@ -77,12 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         ),
                 body: <Widget> [
-        // Tab 1
+         // Tab 1
           FavoritesWidget(),
         // Tab 2
           CalendarWidget(),
         // Tab 3
-          LocationWidget(),
+          LocationWidget(locationText: 'Muerto Morelos',),
         ][currentPageIndex],
     );
   }
