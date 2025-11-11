@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/login_screen.dart';
 import 'custom_widgets/favorites_widget.dart';
 import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key,});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -30,6 +32,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
+
+  void _openLogin() {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => const LoginScreen(title: 'qpon',)),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +50,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
-          child: Text(
-            "Qpon",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black
-        ),),
-        )
-
+          child: TextButton(
+            onPressed: _openLogin,
+            child: Text(
+              'Qpon',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -58,32 +70,35 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         indicatorColor: Colors.white,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget> [
-          NavigationDestination( // Favoritos
+        destinations: const <Widget>[
+          NavigationDestination(
+            // Favoritos
             selectedIcon: Icon(Icons.favorite),
             icon: Icon(Icons.favorite),
-            label: 'Favoritos'
+            label: 'Favoritos',
           ),
-          NavigationDestination( // Calendario
+          NavigationDestination(
+            // Calendario
             selectedIcon: Icon(Icons.calendar_month),
             icon: Icon(Icons.calendar_month),
-            label: 'Calendario'
+            label: 'Calendario',
           ),
-          NavigationDestination( // Ubicación
+          NavigationDestination(
+            // Ubicación
             selectedIcon: Icon(Icons.location_on),
             icon: Icon(Icons.location_on),
-            label: 'Ubicación'
+            label: 'Ubicación',
           ),
         ],
-        ),
-                body: <Widget> [
-         // Tab 1
-          FavoritesWidget(),
+      ),
+      body: <Widget>[
+        // Tab 1
+        FavoritesWidget(),
         // Tab 2
-          CalendarWidget(),
+        CalendarWidget(),
         // Tab 3
-          LocationWidget(locationText: 'Muerto Morelos',),
-        ][currentPageIndex],
+        LocationWidget(locationText: 'Muerto Morelos'),
+      ][currentPageIndex],
     );
   }
 }
