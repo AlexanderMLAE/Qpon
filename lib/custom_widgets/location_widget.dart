@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LocationWidget extends StatelessWidget {
-  const LocationWidget({super.key, this.locationText = 'Placeholder'});
+  const LocationWidget({super.key, this.locationText = 'Placeholder', this.locationRadius = 1});
   final String locationText;
+  final int locationRadius;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,15 +40,20 @@ class LocationWidget extends StatelessWidget {
                               ],
                             ),
                             // Map element placeholder
-                            Image.network(
-                              'https://media.discordapp.net/attachments/949080189349015696/1437807049978417303/image.png?ex=691495a9&is=69134429&hm=a1133b3c42fc25b49547b51b99369f6b6cccd0d52d1fe459ce728aef860cfd2a&=&format=webp&quality=lossless&width=1227&height=815',
-                            ),
+                            Image.network('https://i.imgur.com/5GVWIBO.png'),
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
                                 Text(locationText),
                               ],
                             ),
+                            TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Buscar una ciudad',
+                              ),
+                            ),
+                            Slider(min: 0.0, max: 25.0, value: 12.5, onChanged: null),
                           ],
                         ),
                       ),
@@ -65,11 +71,13 @@ class LocationWidget extends StatelessWidget {
           ),
           ElevatedButton(onPressed: null, child: Text('Buscar')),
           //Map Element Placeholder
-          Image.network(
-            'https://media.discordapp.net/attachments/949080189349015696/1437807049978417303/image.png?ex=691495a9&is=69134429&hm=a1133b3c42fc25b49547b51b99369f6b6cccd0d52d1fe459ce728aef860cfd2a&=&format=webp&quality=lossless&width=1227&height=815',
-          ),
+          Image.network('https://i.imgur.com/5GVWIBO.png'),
         ],
       ),
     );
+  }
+  // end of BUILD
+  void changeRadius(int rad) {
+    //locationRadius = rad;
   }
 }
