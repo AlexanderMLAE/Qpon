@@ -37,11 +37,12 @@ class _LocationWidgetState extends State<LocationWidget> {
         ],
       ),
     );
-  }
+  } // Build
 
   void openBottomSheet() {
     {
       showModalBottomSheet<dynamic>(
+        showDragHandle: true,
         isScrollControlled: true,
         enableDrag: true,
         context: context,
@@ -49,52 +50,57 @@ class _LocationWidgetState extends State<LocationWidget> {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return SingleChildScrollView(
-                child: Wrap(
-                  children: <Widget>[
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        verticalDirection: VerticalDirection.down,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('Elige una Ubicacion'),
-                              ElevatedButton(
-                                child: const Text('Close'),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                            ],
-                          ),
-                          // Map element placeholder
-                          Image.network('https://i.imgur.com/5GVWIBO.png'),
-                          Row(
-                            children: <Widget>[
-                              Icon(Icons.location_on),
-                              Text(widget.locationText),
-                            ],
-                          ),
-                          TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Buscar una ciudad',
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Wrap(
+                    children: <Widget>[
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          verticalDirection: VerticalDirection.down,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Spacer(flex: 2,),
+                                const Text('Elige una Ubicacion'),
+                                Spacer(),
+                                ElevatedButton(
+                                  child: const Text('Close'),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
                             ),
-                          ),
-                          Slider(
-                            min: 0.0,
-                            max: 25.0,
-                            value: locationRadius,
-                            onChanged: (double value) {
-                              setState(() {
-                                locationRadius = value;
-                              });
-                            },
-                          ),
-                        ],
+                            // Map element placeholder
+                            Image.network('https://i.imgur.com/5GVWIBO.png'),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.location_on),
+                                Text(widget.locationText),
+                              ],
+                            ),
+                            TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Buscar una ciudad',
+                              ),
+                            ),
+                            Slider(
+                              min: 0.0,
+                              max: 25.0,
+                              value: locationRadius,
+                              onChanged: (double value) {
+                                setState(() {
+                                  locationRadius = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
