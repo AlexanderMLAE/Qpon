@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
-class LocationWidget extends StatelessWidget {
-  const LocationWidget({super.key, this.locationText = 'Placeholder', this.locationRadius = 1});
+class LocationWidget extends StatefulWidget {
+  const LocationWidget({super.key, required this.locationText});
   final String locationText;
-  final int locationRadius;
+
+  @override
+  State<LocationWidget> createState() => _LocationWidget();
+}
+
+class _LocationWidget extends State<LocationWidget> {
+  double locationRadius = 0.0;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -13,7 +19,7 @@ class LocationWidget extends StatelessWidget {
           TextButton(
             child: Align(
               alignment: Alignment.topRight,
-              child: Text(locationText),
+              child: Text(widget.locationText),
             ),
             onPressed: () {
               showModalBottomSheet<dynamic>(
@@ -44,7 +50,7 @@ class LocationWidget extends StatelessWidget {
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
-                                Text(locationText),
+                                Text(widget.locationText),
                               ],
                             ),
                             TextField(
@@ -53,7 +59,16 @@ class LocationWidget extends StatelessWidget {
                                 labelText: 'Buscar una ciudad',
                               ),
                             ),
-                            Slider(min: 0.0, max: 25.0, value: 12.5, onChanged: null),
+                            Slider( // TODO: Slider not yet updating
+                              min: 0.0,
+                              max: 25.0,
+                              value: 12.5,
+                              onChanged: (double value) {
+                                setState(() {
+                                  locationRadius = value;
+                                });
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -75,9 +90,5 @@ class LocationWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-  // end of BUILD
-  void changeRadius(int rad) {
-    //locationRadius = rad;
   }
 }
