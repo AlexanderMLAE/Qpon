@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class LocationWidget extends StatefulWidget {
   const LocationWidget({super.key, required this.locationText});
@@ -32,8 +33,43 @@ class _LocationWidgetState extends State<LocationWidget> {
             ),
           ),
           ElevatedButton(onPressed: null, child: Text('Buscar')),
-          //Map Element Placeholder
-          Image.network('https://i.imgur.com/5GVWIBO.png'),
+          //Map Element Start
+          OSMFlutter(
+            controller: MapController(
+              initPosition: GeoPoint(
+                latitude: 20.858359,
+                longitude: -86.903677,
+              ),
+            ),
+            osmOption: OSMOption(
+              userTrackingOption: const UserTrackingOption(
+                enableTracking: true,
+                unFollowUser: false,
+              ),
+              zoomOption: const ZoomOption(
+                initZoom: 8,
+                minZoomLevel: 3,
+                maxZoomLevel: 19,
+                stepZoom: 1.0,
+              ),
+              userLocationMarker: UserLocationMaker(
+                personMarker: const MarkerIcon(
+                  icon: Icon(
+                    Icons.location_history_rounded,
+                    color: Colors.red,
+                    size: 48,
+                  ),
+                ),
+                directionArrowMarker: const MarkerIcon(
+                  icon: Icon(Icons.double_arrow, size: 48),
+                ),
+              ),
+              roadConfiguration: const RoadOption(
+                roadColor: Colors.yellowAccent,
+              ),
+            ),
+          ),
+          //Map Element End
         ],
       ),
     );
@@ -63,7 +99,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Spacer(flex: 2,),
+                                Spacer(flex: 2),
                                 const Text('Elige una Ubicacion'),
                                 Spacer(),
                                 ElevatedButton(
@@ -72,8 +108,49 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 ),
                               ],
                             ),
-                            // Map element placeholder
-                            Image.network('https://i.imgur.com/5GVWIBO.png'),
+                            // Map element start
+                            OSMFlutter(
+                              controller: MapController(
+                                initPosition: GeoPoint(
+                                  latitude: 47.4358055,
+                                  longitude: 8.4737324,
+                                ),
+                                areaLimit: const BoundingBox(
+                                  east: 10.4922941,
+                                  north: 47.8084648,
+                                  south: 45.817995,
+                                  west: 5.9559113,
+                                ),
+                              ),
+                              osmOption: OSMOption(
+                                userTrackingOption: const UserTrackingOption(
+                                  enableTracking: true,
+                                  unFollowUser: false,
+                                ),
+                                zoomOption: const ZoomOption(
+                                  initZoom: 8,
+                                  minZoomLevel: 3,
+                                  maxZoomLevel: 19,
+                                  stepZoom: 1.0,
+                                ),
+                                userLocationMarker: UserLocationMaker(
+                                  personMarker: const MarkerIcon(
+                                    icon: Icon(
+                                      Icons.location_history_rounded,
+                                      color: Colors.red,
+                                      size: 48,
+                                    ),
+                                  ),
+                                  directionArrowMarker: const MarkerIcon(
+                                    icon: Icon(Icons.double_arrow, size: 48),
+                                  ),
+                                ),
+                                roadConfiguration: const RoadOption(
+                                  roadColor: Colors.yellowAccent,
+                                ),
+                              ),
+                            ),
+                            // Map element end
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
