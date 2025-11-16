@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'offer_card_widget.dart';
 class StablishmentScreen extends StatelessWidget {
   const StablishmentScreen({super.key});
 
@@ -39,25 +39,31 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
           ),
         ),
       ),
-      body: Column(children: [
-        Container(
-          // Top bar
-          color: Colors.black,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [ 
-              Text(
-                'Establecimiento', 
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
+      body: Column(
+        children: [
+          Container(
+            // Top bar
+            color: Colors.black,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Establecimiento',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ]),
+          OfferCardWidget(
+            productName: 'Producto Placeholder',
+            productPrice: 100.00,
+            ),
+        ],
+      ),
     );
   }
 }
