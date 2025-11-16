@@ -21,7 +21,7 @@ class LocationWidget extends StatefulWidget {
 }
 
 class _LocationWidgetState extends State<LocationWidget> {
-  int locationRadius = 0;
+  int locationRadius = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                               ),
                             ),
                             Slider(
-                              min: 0.0,
+                              min: 1.0,
                               max: 25.0,
                               value: locationRadius.toDouble(),
                               onChanged: (double value) {
@@ -144,6 +144,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 });
                               },
                             ),
+                            Text('1km ----------------------------------------------------------- 25km') // ugly lol
                           ],
                         ),
                       ),
