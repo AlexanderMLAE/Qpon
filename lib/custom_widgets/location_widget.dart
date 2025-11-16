@@ -11,68 +11,91 @@ class LocationWidget extends StatefulWidget {
 }
 
 class _LocationWidgetState extends State<LocationWidget> {
-  double locationRadius = 0.0;
+  int locationRadius = 0;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Column(
-        children: <Widget>[
-          TextButton(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Text(widget.locationText),
-            ),
-            onPressed: () async {
-              openBottomSheet();
-            },
+    return Column(
+      children: <Widget>[
+        Container(
+          // Top bar
+          color: Colors.black,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Spacer(flex: 1),
+              Text(
+                'Ubicación',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  '${widget.locationText} * ${locationRadius}Km', // TODO: doesnt update :(
+                  style: TextStyle(fontSize: 10, color: Colors.white),
+                ),
+                onPressed: () async {
+                  openBottomSheet();
+                },
+              ),
+            ],
           ),
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Buscar una oferta o establecimiento',
-            ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                  labelText: 'Buscar una oferta o establecimiento',
+                ),
+              ),
+              ElevatedButton(onPressed: null, child: Text('Buscar')),
+              //Map Element Start
+              // OSMFlutter(
+              //   controller: MapController(
+              //     initPosition: GeoPoint(
+              //       latitude: 20.858359,
+              //       longitude: -86.903677,
+              //     ),
+              //   ),
+              //   osmOption: OSMOption(
+              //     userTrackingOption: const UserTrackingOption(
+              //       enableTracking: true,
+              //       unFollowUser: false,
+              //     ),
+              //     zoomOption: const ZoomOption(
+              //       initZoom: 8,
+              //       minZoomLevel: 3,
+              //       maxZoomLevel: 19,
+              //       stepZoom: 1.0,
+              //     ),
+              //     userLocationMarker: UserLocationMaker(
+              //       personMarker: const MarkerIcon(
+              //         icon: Icon(
+              //           Icons.location_history_rounded,
+              //           color: Colors.red,
+              //           size: 48,
+              //         ),
+              //       ),
+              //       directionArrowMarker: const MarkerIcon(
+              //         icon: Icon(Icons.double_arrow, size: 48),
+              //       ),
+              //     ),
+              //     roadConfiguration: const RoadOption(
+              //       roadColor: Colors.yellowAccent,
+              //     ),
+              //   ),
+              // ),
+              //Map Element End
+            ],
           ),
-          ElevatedButton(onPressed: null, child: Text('Buscar')),
-          //Map Element Start
-          // OSMFlutter(
-          //   controller: MapController(
-          //     initPosition: GeoPoint(
-          //       latitude: 20.858359,
-          //       longitude: -86.903677,
-          //     ),
-          //   ),
-          //   osmOption: OSMOption(
-          //     userTrackingOption: const UserTrackingOption(
-          //       enableTracking: true,
-          //       unFollowUser: false,
-          //     ),
-          //     zoomOption: const ZoomOption(
-          //       initZoom: 8,
-          //       minZoomLevel: 3,
-          //       maxZoomLevel: 19,
-          //       stepZoom: 1.0,
-          //     ),
-          //     userLocationMarker: UserLocationMaker(
-          //       personMarker: const MarkerIcon(
-          //         icon: Icon(
-          //           Icons.location_history_rounded,
-          //           color: Colors.red,
-          //           size: 48,
-          //         ),
-          //       ),
-          //       directionArrowMarker: const MarkerIcon(
-          //         icon: Icon(Icons.double_arrow, size: 48),
-          //       ),
-          //     ),
-          //     roadConfiguration: const RoadOption(
-          //       roadColor: Colors.yellowAccent,
-          //     ),
-          //   ),
-          // ),
-          //Map Element End
-        ],
-      ),
+        ),
+      ],
     );
   } // Build
 
@@ -104,7 +127,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 const Text('Elige una Ubicacion'),
                                 Spacer(),
                                 ElevatedButton(
-                                  child: const Text('Close'),
+                                  child: const Icon(Icons.close),
                                   onPressed: () => Navigator.pop(context),
                                 ),
                               ],
@@ -167,10 +190,11 @@ class _LocationWidgetState extends State<LocationWidget> {
                             Slider(
                               min: 0.0,
                               max: 25.0,
-                              value: locationRadius,
+                              divisions: 25,
+                              value: locationRadius.toDouble(),
                               onChanged: (double value) {
                                 setState(() {
-                                  locationRadius = value;
+                                  locationRadius = value.toInt();
                                 });
                               },
                             ),
