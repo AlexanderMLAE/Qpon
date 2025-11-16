@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Tab 2
           CalendarWidget(),
         // Tab 3
-          LocationWidget(locationText: 'Muerto Morelos',),
+          LocationScreen(locationText: 'Muerto Morelos',),
         ][currentPageIndex],
     );
   }

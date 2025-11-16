@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+// TODO: consider renaming some classes
+class LocationScreen extends StatelessWidget {
+  const LocationScreen({super.key, required this.locationText});
+  final String locationText;
+
+  @override
+  Widget build(BuildContext context) {
+    return LocationWidget(locationText: locationText);
+  }
+}
 
 class LocationWidget extends StatefulWidget {
   const LocationWidget({super.key, required this.locationText});
@@ -12,8 +22,10 @@ class LocationWidget extends StatefulWidget {
 
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 0;
+
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: <Widget>[
         Container(
@@ -33,11 +45,12 @@ class _LocationWidgetState extends State<LocationWidget> {
               ),
               TextButton(
                 child: Text(
-                  '${widget.locationText} * ${locationRadius}Km', // TODO: doesnt update :(
+                  '${widget.locationText} - ${locationRadius}Km',
                   style: TextStyle(fontSize: 10, color: Colors.white),
                 ),
                 onPressed: () async {
                   openBottomSheet();
+                  
                 },
               ),
             ],
@@ -108,7 +121,7 @@ class _LocationWidgetState extends State<LocationWidget> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+            builder: (BuildContext context, StateSetter setStateModal) {
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
@@ -190,9 +203,11 @@ class _LocationWidgetState extends State<LocationWidget> {
                             Slider(
                               min: 0.0,
                               max: 25.0,
-                              divisions: 25,
                               value: locationRadius.toDouble(),
                               onChanged: (double value) {
+                                setStateModal(() {
+                                  locationRadius = value.toInt();
+                                });
                                 setState(() {
                                   locationRadius = value.toInt();
                                 });
