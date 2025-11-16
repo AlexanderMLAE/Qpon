@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/stablishment_widget.dart';
+
 // TODO: consider renaming some classes
 class LocationScreen extends StatelessWidget {
   const LocationScreen({super.key, required this.locationText});
@@ -64,12 +66,25 @@ class _LocationWidgetState extends State<LocationWidget> {
                 ),
               ),
               ElevatedButton(onPressed: null, child: Text('Buscar')),
-            ],
+              ElevatedButton(
+                onPressed: openStablishment,
+                child: Text('example'),
+              ),
+            ], // children
           ),
         ),
       ],
     );
   } // Build
+
+  void openStablishment() {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => StablishmentScreen()),
+      );
+    });
+  }
 
   void openBottomSheet() {
     {
