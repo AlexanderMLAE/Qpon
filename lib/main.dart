@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'custom_widgets/favorites_widget.dart';
 import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:intl/date_symbol_data_local.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', null);
+  runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
