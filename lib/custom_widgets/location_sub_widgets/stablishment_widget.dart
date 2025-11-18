@@ -69,26 +69,31 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
                 OfferCardWidget(
                   productName: 'Producto Placeholder 1',
                   productPrice: 100.00,
+                  productDetails: 'Detalles específicos de la oferta...',
                 ),
                 Divider(),
                 OfferCardWidget(
                   productName: 'Producto Placeholder 2',
                   productPrice: 100.00,
+                  productDetails: 'Detalles específicos de la oferta...',
                 ),
                 Divider(),
                 OfferCardWidget(
                   productName: 'Producto Placeholder 3',
                   productPrice: 100.00,
+                  productDetails: 'Detalles específicos de la oferta...',
                 ),
                 Divider(),
                 OfferCardWidget(
                   productName: 'Producto Placeholder 4',
                   productPrice: 100.00,
+                  productDetails: 'Detalles específicos de la oferta...',
                 ),
                 Divider(),
                 OfferCardWidget(
                   productName: 'Producto Placeholder 5',
                   productPrice: 100.00,
+                  productDetails: 'Detalles específicos de la oferta...',
                 ),
               ],
             ),
