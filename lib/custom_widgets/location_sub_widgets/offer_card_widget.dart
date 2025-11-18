@@ -6,10 +6,12 @@ class OfferCardWidget extends StatelessWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
+    required this.imageURL,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
+  final String imageURL;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -28,7 +30,7 @@ class OfferCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     child: Image(
                       image: NetworkImage(
-                        'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
+                        imageURL,
                       ),
                       height: 180,
                       fit: BoxFit.cover,
