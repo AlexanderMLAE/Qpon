@@ -1,227 +1,301 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+// --- MODELO DE DATOS ---
+class EventData {
+  String title;
+  String note;
+  EventData({required this.title, required this.note});
+}
+
+// Colores constantes
+const _kRed = Color(0xFFFF4848);
+const _kLightRed = Color(0xFFFF9F9F);
+const _kBgRed = Color(0xFFFFD0D0);
+const _kPurple = Color(0xFF9C27B0);
+
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
-
   @override
   State<CalendarWidget> createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  // CAMBIO 1: Creamos una variable fija para "Hoy"
+  final DateTime _today = DateTime.now(); 
+  
+  DateTime? _tempPressed;
+  final Map<DateTime, EventData> _eventosGuardados = {};
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = _focusedDay;
-  }
+  DateTime _normalizeDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
   @override
   Widget build(BuildContext context) {
-    final DateTime displayDay = _selectedDay ?? _focusedDay;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: 56,
-          width: double.infinity,
-          color: Colors.black,
+          height: 56, width: double.infinity, color: Colors.black,
           alignment: Alignment.center,
-          child: const Text(
-            'Calendario',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
+          child: const Text('Calendario', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
         ),
-
         const SizedBox(height: 8),
-
-        // Bloque con "hoja" del día como cuadrado con esquinas suaves y SIN relleno rojo
-        SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              // pequeñas pestañas superiores (estética)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 18,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Container(
-                    width: 18,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 6),
-
-              // cuadrado con esquinas suaves: sin relleno rojo, con borde rojo
-              Container(
-                width: 76,
-                height: 76,
-                decoration: BoxDecoration(
-                  color: Colors.white, // usa Colors.transparent si prefieres sin fondo
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color.fromARGB(255, 255, 72, 72), // borde rojo
-                    width: 4,
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '${displayDay.day}',
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0), // número en rojo
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // Día completo y mes/año en texto
-              Text(
-                _formatearFecha(displayDay),
-                style: const TextStyle(fontSize: 16, color: Colors.black87),
-              ),
-            ],
-          ),
-        ),
-
+        
+        // CAMBIO 2: Aquí pasamos siempre _today para que sea estático
+        _buildDaySheet(_today),
+        
         const SizedBox(height: 12),
-
-        Center(
-          child: Container(
-            width: 350,
-            height: 450,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                color: const Color.fromARGB(255, 255, 72, 72),
-                width: 8,
-              ),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: TableCalendar(
-                locale: 'es_ES',
-                firstDay: DateTime.utc(2000, 1, 1),
-                lastDay: DateTime.utc(2100, 12, 31),
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                },
-                weekendDays: const [DateTime.sunday],
-                daysOfWeekHeight: 40.0,
-                daysOfWeekStyle: const DaysOfWeekStyle(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 208, 208),
-                  ),
-                  weekdayStyle: TextStyle(color: Colors.black),
-                  weekendStyle: TextStyle(color: Colors.black),
-                ),
-                calendarStyle: const CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 159, 159),
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 72, 72),
-                    shape: BoxShape.circle,
-                  ),
-                  weekendTextStyle: TextStyle(color: Colors.red),
-                ),
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 250, 129, 129),
-                  ),
-                  titleTextFormatter: (date, locale) {
-                    const meses = [
-                      'Enero',
-                      'Febrero',
-                      'Marzo',
-                      'Abril',
-                      'Mayo',
-                      'Junio',
-                      'Julio',
-                      'Agosto',
-                      'Septiembre',
-                      'Octubre',
-                      'Noviembre',
-                      'Diciembre',
-                    ];
-                    return meses[date.month - 1];
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
+        _buildCalendar(),
       ],
     );
   }
 
-  String _formatearFecha(DateTime fecha) {
-    const dias = [
-      'Domingo',
-      'Lunes',
-      'Martes',
-      'Miércoles',
-      'Jueves',
-      'Viernes',
-      'Sábado'
-    ];
-    const meses = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
-    ];
-    final diaNombre = dias[fecha.weekday % 7];
-    final mesNombre = meses[fecha.month - 1];
-    return '$diaNombre, $mesNombre del ${fecha.year}';
+  Widget _buildDaySheet(DateTime d) {
+    // Verifica si HOY tiene algo guardado para cambiar el color
+    final isSaved = _eventosGuardados.containsKey(_normalizeDate(d));
+    final colorTema = isSaved ? _kPurple : _kRed;
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(2, (_) => Container(
+            width: 18, height: 6, margin: const EdgeInsets.symmetric(horizontal: 3),
+            decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(3)),
+          )),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          width: 76, height: 76, alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: colorTema,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+          ),
+          child: Text('${d.day}', style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(height: 10),
+        Text(_formatearFecha(d), style: const TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
+  Widget _buildCalendar() {
+    return Container(
+      width: 350, height: 480,
+      decoration: BoxDecoration(
+        color: Colors.white, border: Border.all(color: _kRed, width: 8),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: TableCalendar(
+          locale: 'es_ES',
+          firstDay: DateTime(2000), lastDay: DateTime(2100),
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (_) => false,
+          onDaySelected: _handleSelect,
+          weekendDays: const [DateTime.sunday],
+          daysOfWeekHeight: 40,
+          daysOfWeekStyle: const DaysOfWeekStyle(decoration: BoxDecoration(color: _kBgRed)),
+          headerStyle: HeaderStyle(
+            titleCentered: true, formatButtonVisible: false,
+            decoration: const BoxDecoration(color: Color(0xFFFA8181)),
+            titleTextFormatter: (d, _) => _meses[d.month - 1],
+          ),
+          calendarStyle: const CalendarStyle(
+            todayDecoration: BoxDecoration(color: _kLightRed, shape: BoxShape.circle),
+            selectedDecoration: BoxDecoration(color: Colors.transparent),
+            weekendTextStyle: TextStyle(color: Colors.red),
+          ),
+          calendarBuilders: CalendarBuilders(
+            defaultBuilder: (_, date, __) {
+              final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+              
+              if (_tempPressed != null && isSameDay(date, _tempPressed)) {
+                return _circleDay(date, _kLightRed, isAnimated: true);
+              }
+              if (isSaved) {
+                return _circleDay(date, _kPurple.withOpacity(0.7)); 
+              }
+              return Center(child: Text('${date.day}'));
+            },
+            todayBuilder: (_, date, __) {
+               final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+               return _circleDay(date, isSaved ? _kPurple : _kLightRed);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _circleDay(DateTime d, Color color, {bool isAnimated = false}) {
+    final decoration = BoxDecoration(color: color, shape: BoxShape.circle,
+      boxShadow: isAnimated ? [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 4))] : null
+    );
+    final child = Text('${d.day}', style: const TextStyle(color: Colors.white));
+
+    return isAnimated
+        ? AnimatedContainer(duration: const Duration(milliseconds: 160), curve: Curves.easeOut, margin: const EdgeInsets.all(6), alignment: Alignment.center, decoration: decoration, child: child)
+        : Container(margin: const EdgeInsets.all(6), alignment: Alignment.center, decoration: decoration, child: child);
+  }
+
+  Future<void> _handleSelect(DateTime sel, DateTime foc) async {
+    setState(() => _tempPressed = sel);
+    await Future.delayed(const Duration(milliseconds: 120));
+
+    if (!mounted) return;
+
+    final normalizedDate = _normalizeDate(sel);
+    final existingEvent = _eventosGuardados[normalizedDate];
+
+    final EventData? resultData = await showDialog<EventData?>(
+      context: context,
+      builder: (context) => _EventDialog(
+        initialTitle: existingEvent?.title,
+        initialNote: existingEvent?.note,
+      ),
+    );
+
+    setState(() {
+      _tempPressed = null;
+      _focusedDay = foc; 
+      // CAMBIO 3: Eliminamos la línea "_selectedDay = sel;" 
+      // para que no afecte a la vista superior.
+      
+      if (resultData != null) {
+         _eventosGuardados[normalizedDate] = resultData;
+      }
+    });
+  }
+
+  static const _meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  static const _dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  String _formatearFecha(DateTime f) => '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';
+}
+
+// ... (El resto del código del _EventDialog se mantiene igual que antes)
+class _EventDialog extends StatefulWidget {
+  final String? initialTitle;
+  final String? initialNote;
+  const _EventDialog({this.initialTitle, this.initialNote});
+  @override
+  State<_EventDialog> createState() => _EventDialogState();
+}
+
+class _EventDialogState extends State<_EventDialog> {
+  late TextEditingController _titleController;
+  late TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.initialTitle ?? '');
+    _noteController = TextEditingController(text: widget.initialNote ?? '');
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topRight,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.edit, color: Colors.black87, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: _titleController,
+                        decoration: const InputDecoration(
+                          hintText: 'Ingresar Titulo',
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                          isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 8),
+                        ),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _noteController,
+                  decoration: const InputDecoration(
+                    hintText: 'Escribe una nota',
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                    isDense: true,
+                  ),
+                  style: const TextStyle(fontSize: 14),
+                  maxLines: 2, minLines: 1,
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(3, (index) => _optionBox(index)),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity, height: 45,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context, EventData(title: _titleController.text, note: _noteController.text)),
+                    style: ElevatedButton.styleFrom(backgroundColor: _kRed, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), elevation: 0),
+                    child: const Text('Guardar', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            top: -15, right: -10,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context, null),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(color: Colors.black, shape: BoxShape.circle),
+                child: const Icon(Icons.close, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _optionBox(int index) {
+    const placeholderImages = ['https://picsum.photos/id/102/100/100', 'https://picsum.photos/id/106/100/100', 'https://picsum.photos/id/108/100/100'];
+    return Container(
+      width: 80, height: 60,
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.shade300), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.network(placeholderImages[index % placeholderImages.length], fit: BoxFit.cover),
+      ),
+    );
   }
 }
