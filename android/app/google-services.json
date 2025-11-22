@@ -12,7 +12,20 @@
           "package_name": "com.example.proyecto_qpon"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "507669394645-3skrdof31pqid9s2jb4tmnftjsqu6nj6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proyecto_qpon",
+            "certificate_hash": "37002e820db5e862c1b234fcb0dcf4a1dd2c5ad2"
+          }
+        },
+        {
+          "client_id": "507669394645-62jk6dsq2g3fs88p41u4rv77ph9v3l9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAMIlqzYc_2ybHvPE9XZFuPORoMeeBzMDY"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507669394645-62jk6dsq2g3fs88p41u4rv77ph9v3l9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
