@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+// ✅ AGREGA ESTA IMPORTACIÓN
+import '../main.dart'; // Para importar MyHomePage
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.title});
@@ -21,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Firebase
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
 
   @override
   void dispose() {
@@ -139,7 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 30),
 
-                // Botón de iniciar sesión (corregido)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       side: const BorderSide(color: Colors.grey),
                     ),
-                    onPressed: _isLoading ? null : _loginWithGoogle, // ✅ Deshabilitar durante carga
+                    onPressed: _isLoading ? null : _loginWithGoogle, //  Deshabilitar durante carga
                     icon: const Text(
                       'G',
                       style: TextStyle(
@@ -242,7 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
 
     try {
       final UserCredential userCredential =
@@ -284,9 +283,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      // Después de que el usuario cierre el diálogo, regresar a la pantalla raíz
+      // ✅ CAMBIO 1: Navegar a MyHomePage en lugar de popUntil
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop(); // Cerrar diálogo
+      }
+
       if (!mounted) return;
-      navigator.popUntil((route) => route.isFirst);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        (route) => false,
+      );
 
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
@@ -332,7 +339,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginWithGoogle() async {
   final messenger = ScaffoldMessenger.of(context);
-  final navigator = Navigator.of(context);
 
   setState(() {
     _isLoading = true;
@@ -386,7 +392,7 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Inicio con Google'),
+        title: const Text('Inicio de sesion con Google'),
         content: const Text('¡Inicio de sesión exitoso!'),
         actions: [
           TextButton(
@@ -397,8 +403,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
+    // ✅ CAMBIO 2: Navegar a MyHomePage en lugar de popUntil
+    if (Navigator.canPop(context)) {
+      Navigator.of(context).pop(); // Cerrar diálogo
+    }
+
     if (!mounted) return;
-    navigator.popUntil((route) => route.isFirst);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MyHomePage()),
+      (route) => false,
+    );
 
   } on FirebaseAuthException catch (e) {
     if (!mounted) return;
@@ -446,6 +461,4 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 // Fin de la clase _LoginScreenState
-
 }
-  
