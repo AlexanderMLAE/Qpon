@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// register screen is referenced by named route; import not needed here to avoid analyzer warning
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.title});
@@ -22,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Firebase
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
   @override
   void dispose() {
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 30),
 
-                // Botón de iniciar sesión
+                // Botón de iniciar sesión (corregido)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -150,30 +150,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            _loginUser();
-                          },
-                    child: _isLoading
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : const Text(
-                            'Iniciar sesión',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                    onPressed: _isLoading ? null : _loginUser,
+                    child: const Text(
+                      'Iniciar sesión',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -187,7 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(width: 5),
                     TextButton(
                       onPressed: () async {
-                        // debug prints help capture the tap in logs
                         debugPrint('Ir a registro');
                         await Navigator.pushNamed(context, '/register');
                         debugPrint('Regreso de registro');
@@ -226,9 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       side: const BorderSide(color: Colors.grey),
                     ),
-                    onPressed: () {
-                      _loginWithGoogle();
-                    },
+                    onPressed: _isLoading ? null : _loginWithGoogle, // ✅ Deshabilitar durante carga
                     icon: const Text(
                       'G',
                       style: TextStyle(
@@ -236,7 +217,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: 16,
                       ),
                     ),
-                    label: const Text('Continuar con Google'),
+                    label: _isLoading 
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Continuar con Google'),
                   ),
                 ),
               ],
@@ -297,9 +284,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-  // Después de que el usuario cierre el diálogo, regresar a la pantalla raíz
-  if (!mounted) return;
-  navigator.popUntil((route) => route.isFirst);
+      // Después de que el usuario cierre el diálogo, regresar a la pantalla raíz
+      if (!mounted) return;
+      navigator.popUntil((route) => route.isFirst);
 
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
@@ -344,68 +331,121 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginWithGoogle() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context);
 
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'profile',
+      ],
+    );
 
     try {
-      // google_sign_in 7.x uses a singleton and new API:
-      // initialize then call authenticate() to perform interactive sign-in
-      try {
-        await GoogleSignIn.instance.initialize();
-      } catch (_) {
-        // initialize may be no-op on some platforms; ignore
-      }
+      await googleSignIn.signOut();
+    } catch (_) {}
 
-      final googleUser = await GoogleSignIn.instance.authenticate();
-      // authenticate() throws on failure, so if we reach here we have a user
-      final googleAuth = googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    if (googleUser == null) {
+      // Usuario canceló
+      return;
+    }
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+    final accessToken = googleAuth.accessToken;
+
+    if (idToken == null) {
+      throw FirebaseAuthException(
+        code: 'invalid-credential',
+        message: 'No se pudo obtener idToken de Google.',
       );
+    }
 
-      await _auth.signInWithCredential(credential);
+    final credential = GoogleAuthProvider.credential(
+      idToken: idToken,
+      accessToken: accessToken,
+    );
 
-      if (!mounted) return;
-
-      // Mostrar diálogo de confirmación para inicio con Google
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Inicio con Google'),
-          content: const Text('¡Inicio con Google correcto!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+    final UserCredential userCredential = await _auth.signInWithCredential(credential);
+    if (userCredential.user == null) {
+      throw FirebaseAuthException(
+        code: 'auth-failed',
+        message: 'No se pudo autenticar con Firebase',
       );
+    }
 
-  if (!mounted) return;
-  navigator.popUntil((route) => route.isFirst);
-    } on FirebaseAuthException catch (e) {
-      if (!mounted) return;
-      messenger.showSnackBar(
-        SnackBar(content: Text('Error (Google): ${e.message}'), backgroundColor: Colors.red),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      messenger.showSnackBar(
-        SnackBar(content: Text('Error inesperado: $e'), backgroundColor: Colors.red),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    if (!mounted) return;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Inicio con Google'),
+        content: const Text('¡Inicio de sesión exitoso!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted) return;
+    navigator.popUntil((route) => route.isFirst);
+
+  } on FirebaseAuthException catch (e) {
+    if (!mounted) return;
+    String errorMessage;
+    switch (e.code) {
+      case 'account-exists-with-different-credential':
+        errorMessage = 'Ya existe una cuenta con este email usando otro método.';
+        break;
+      case 'invalid-credential':
+        errorMessage = 'Credenciales de Google inválidas. Intenta nuevamente.';
+        break;
+      case 'operation-not-allowed':
+        errorMessage = 'El inicio con Google no está habilitado.';
+        break;
+      case 'user-disabled':
+        errorMessage = 'Esta cuenta ha sido deshabilitada.';
+        break;
+      default:
+        errorMessage = 'Error de autenticación: ${e.message}';
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+      ),
+    );
+
+  } catch (e) {
+    if (!mounted) return;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Error inesperado: $e'),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+      ),
+    );
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }
+// Fin de la clase _LoginScreenState
 
+}
+  
