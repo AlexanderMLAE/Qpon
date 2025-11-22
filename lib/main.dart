@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'custom_widgets/favorites_widget.dart';
 import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
+import 'custom_widgets/home_widget.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -58,29 +60,40 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         indicatorColor: Colors.white,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget> [
-          NavigationDestination( // Favoritos
+        destinations: const <Widget>[
+          NavigationDestination(
+            // Home
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            // Favoritos
             selectedIcon: Icon(Icons.favorite),
             icon: Icon(Icons.favorite),
-            label: 'Favoritos'
+            label: 'Favoritos',
           ),
-          NavigationDestination( // Calendario
+          NavigationDestination(
+            // Calendario
             selectedIcon: Icon(Icons.calendar_month),
             icon: Icon(Icons.calendar_month),
-            label: 'Calendario'
+            label: 'Calendario',
           ),
-          NavigationDestination( // Ubicación
+          NavigationDestination(
+            // Ubicación
             selectedIcon: Icon(Icons.location_on),
             icon: Icon(Icons.location_on),
-            label: 'Ubicación'
+            label: 'Ubicación',
           ),
         ],
-        ),
-                body: <Widget> [
-         // Tab 1
-          FavoritesWidget(),
+      ),
+      body: <Widget>[
+        // Tab 0 - Home
+        const HomeWidget(),
+        // Tab 1
+        FavoritesWidget(),
         // Tab 2
-          CalendarWidget(),
+        CalendarWidget(),
         // Tab 3
           LocationScreen(locationText: 'Muerto Morelos',),
         ][currentPageIndex],

@@ -27,7 +27,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         _cargando = false;
       });
     } catch (e) {
-      print('Error: $e');
       setState(() {
         _cargando = false;
       });
