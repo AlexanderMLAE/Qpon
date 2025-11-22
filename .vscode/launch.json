@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Qpon (Dart Web)",
+            "program": "web",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
