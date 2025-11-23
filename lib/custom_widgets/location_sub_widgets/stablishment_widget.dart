@@ -16,7 +16,7 @@ class StablishmentScreen extends StatelessWidget {
     );
   }
 }
-
+// Everything above this may be unnecessary
 class StablishmentWidget extends StatefulWidget {
   const StablishmentWidget({super.key, required this.stablishmentName});
   final String stablishmentName;
@@ -65,41 +65,16 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(8),
-              children: <Widget>[ // These should be generated iteratively from data in DB, but this will do as a visual placeholder
-                OfferCardWidget(
-                  productName: 'Producto Placeholder 1',
-                  productPrice: 100.00,
-                  productDetails: 'Detalles específicos de la oferta...',
-                  imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-                ),
-                Divider(),
-                OfferCardWidget(
-                  productName: 'Producto Placeholder 2',
-                  productPrice: 100.00,
-                  productDetails: 'Detalles específicos de la oferta...',
-                  imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-                ),
-                Divider(),
-                OfferCardWidget(
-                  productName: 'Producto Placeholder 3',
-                  productPrice: 100.00,
-                  productDetails: 'Detalles específicos de la oferta...',
-                  imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-                ),
-                Divider(),
-                OfferCardWidget(
-                  productName: 'Producto Placeholder 4',
-                  productPrice: 100.00,
-                  productDetails: 'Detalles específicos de la oferta...',
-                  imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-                ),
-                Divider(),
-                OfferCardWidget(
-                  productName: 'Producto Placeholder 5',
-                  productPrice: 100.00,
-                  productDetails: 'Detalles específicos de la oferta...',
-                  imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-                ),
+              children: [
+                for (var i = 0; i < 5; i++) ...[ // 5 for now, we'll see later when added to DB
+                  OfferCardWidget(
+                    productName: 'Product $i',
+                    productPrice: i.toDouble(),
+                    productDetails: 'Detalles $i',
+                    imageURL: 'https://res.cloudinary.com/amecar/image/fetch/w_849/f_auto/https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
+                  ),
+                  if (i < 4) const Divider(),
+                ],
               ],
             ),
           ), // Top bar end

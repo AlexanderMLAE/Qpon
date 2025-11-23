@@ -1,11 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/firebase_options.dart';
 import 'custom_widgets/favorites_widget.dart';
 import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
-void main() {
-  runApp(const MyApp());
-}
+import 'package:intl/date_symbol_data_local.dart';
+import 'custom_widgets/login_screen.dart';
+import 'custom_widgets/register_screen.dart' as reg;
+import 'custom_widgets/home_widget.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', null);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
+
+  runApp(MyApp());
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -16,13 +28,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
       ),
+      routes: {
+        '/register': (context) => const reg.RegisterScreen(),
+      },
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key,});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -30,6 +45,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
+
+  void _openLogin() {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => const LoginScreen(title: 'qpon',)),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
-          child: Text(
-            "Qpon",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black
-        ),),
-        )
-
+          child: TextButton(
+            onPressed: _openLogin,
+            child: Text(
+              'Qpon',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -58,29 +83,40 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         indicatorColor: Colors.white,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget> [
-          NavigationDestination( // Favoritos
+        destinations: const <Widget>[
+          NavigationDestination(
+            // Home
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            // Favoritos
             selectedIcon: Icon(Icons.favorite),
             icon: Icon(Icons.favorite),
-            label: 'Favoritos'
+            label: 'Favoritos',
           ),
-          NavigationDestination( // Calendario
+          NavigationDestination(
+            // Calendario
             selectedIcon: Icon(Icons.calendar_month),
             icon: Icon(Icons.calendar_month),
-            label: 'Calendario'
+            label: 'Calendario',
           ),
-          NavigationDestination( // Ubicación
+          NavigationDestination(
+            // Ubicación
             selectedIcon: Icon(Icons.location_on),
             icon: Icon(Icons.location_on),
-            label: 'Ubicación'
+            label: 'Ubicación',
           ),
         ],
-        ),
-                body: <Widget> [
-         // Tab 1
-          FavoritesWidget(),
+      ),
+      body: <Widget>[
+        // Tab 0 - Home
+        const HomeWidget(),
+        // Tab 1
+        FavoritesWidget(),
         // Tab 2
-          CalendarWidget(),
+        CalendarWidget(),
         // Tab 3
           LocationScreen(locationText: 'Muerto Morelos',),
         ][currentPageIndex],

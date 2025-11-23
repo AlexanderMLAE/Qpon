@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/map_widget.dart';
 import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/stablishment_widget.dart';
 
-// TODO: consider renaming some classes
+// Consider renaming some classes
 class LocationScreen extends StatelessWidget {
   const LocationScreen({super.key, required this.locationText});
   final String locationText;
@@ -22,66 +23,83 @@ class LocationWidget extends StatefulWidget {
 
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
+  MapWidget _mapWidget = MapWidget(); 
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          // Top bar
-          color: Colors.black,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Spacer(flex: 1),
-              Text(
-                'Ubicación',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Container(
+            // Top bar
+            color: Colors.black,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Spacer(flex: 3),
+                Text(
+                  'Ubicación',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              TextButton(
-                child: Text(
-                  '${widget.locationText} - ${locationRadius}Km',
-                  style: TextStyle(fontSize: 10, color: Colors.white),
+                SizedBox(
+                  height: 30,
+                  child: TextButton(
+                    style: ButtonStyle(alignment: Alignment.center),
+                    child: Text(
+                      '${widget.locationText} - ${locationRadius}Km',
+                      style: TextStyle(fontSize: 10, color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      openBottomSheet();
+                    },
+                  ),
                 ),
-                onPressed: () async {
-                  openBottomSheet();
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
-                  labelText: 'Buscar una oferta o establecimiento',
-                ),
+          // Body
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                      labelText: 'Buscar oferta o establecimiento',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: openStablishment,
+                    child: Text('Buscar'),
+                  ),
+                  // Map
+                  Expanded(child: _mapWidget),
+                ],
               ),
-              ElevatedButton(onPressed: null, child: Text('Buscar')),
-              ElevatedButton(
-                onPressed: openStablishment,
-                child: Text('example'),
-              ),
-            ], // children
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   } // Build
+
+  void updateMap() {
+    setState(() {
+      _mapWidget = MapWidget();
+    });
+  }
 
   void openStablishment() {
     setState(() {
       Navigator.push(
         context,
-        MaterialPageRoute<void>(builder: (context) => StablishmentScreen()),
+        MaterialPageRoute<void>(builder: (context) => StablishmentWidget(stablishmentName: 'Placeholder',)),
       );
     });
   }
@@ -89,16 +107,20 @@ class _LocationWidgetState extends State<LocationWidget> {
   void openBottomSheet() {
     {
       showModalBottomSheet<dynamic>(
-        showDragHandle: true,
         isScrollControlled: true,
         enableDrag: true,
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setStateModal) {
+            builder: (BuildContext context, StateSetter setStateOnSheet) {
               return SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.only(
+                    left: 8.0,
+                    right: 8.0,
+                    top: 8.0,
+                    bottom: 50.0,
+                  ),
                   child: Wrap(
                     children: <Widget>[
                       Center(
@@ -111,7 +133,10 @@ class _LocationWidgetState extends State<LocationWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Spacer(flex: 2),
-                                const Text('Elige una Ubicacion'),
+                                const Text(
+                                  'Elige una Ubicacion',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Spacer(),
                                 ElevatedButton(
                                   child: const Icon(Icons.close),
@@ -119,6 +144,8 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 ),
                               ],
                             ),
+                            //Map
+                            SizedBox(height: 200, child: _mapWidget),
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
@@ -136,7 +163,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                               max: 25.0,
                               value: locationRadius.toDouble(),
                               onChanged: (double value) {
-                                setStateModal(() {
+                                setStateOnSheet(() {
                                   locationRadius = value.toInt();
                                 });
                                 setState(() {
@@ -144,7 +171,9 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 });
                               },
                             ),
-                            Text('1km ----------------------------------------------------------- 25km') // ugly lol
+                            Text(
+                              '1km  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  25km',
+                            ), // ugly lol
                           ],
                         ),
                       ),
