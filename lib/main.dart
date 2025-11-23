@@ -4,17 +4,19 @@ import 'package:proyecto_qpon/firebase_options.dart';
 import 'custom_widgets/favorites_widget.dart';
 import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'custom_widgets/login_screen.dart';
 import 'custom_widgets/register_screen.dart' as reg;
 import 'custom_widgets/home_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES', null);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
