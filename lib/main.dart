@@ -6,7 +6,7 @@ import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
 import 'custom_widgets/login_screen.dart';
 import 'custom_widgets/register_screen.dart' as reg;
-
+import 'custom_widgets/home_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
+            // Home
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
             // Favoritos
             selectedIcon: Icon(Icons.favorite),
             icon: Icon(Icons.favorite),
@@ -103,13 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: <Widget>[
+        // Tab 0 - Home
+        const HomeWidget(),
         // Tab 1
         FavoritesWidget(),
         // Tab 2
         CalendarWidget(),
         // Tab 3
-        LocationWidget(locationText: 'Muerto Morelos'),
-      ][currentPageIndex],
+          LocationScreen(locationText: 'Muerto Morelos',),
+        ][currentPageIndex],
     );
   }
 }

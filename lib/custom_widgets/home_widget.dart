@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'location_sub_widgets/offer_card_widget.dart';
 import 'location_sub_widgets/database_service.dart';
 
-class FavoritesWidget extends StatefulWidget {
-  const FavoritesWidget({super.key});
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({super.key});
 
   @override
-  State<FavoritesWidget> createState() => _FavoritesWidgetState();
+  State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-class _FavoritesWidgetState extends State<FavoritesWidget> {
+class _HomeWidgetState extends State<HomeWidget> {
   List<Map<String, dynamic>> _ofertas = [];
   bool _cargando = true;
 
@@ -36,47 +36,9 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        centerTitle: true,
-        title: const Text(
-          'Favoritos',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        ),
-      ),
       body: _cargando
           ? const Center(child: CircularProgressIndicator())
-          : _ofertas.isEmpty
-              ? _buildEmptyState()
               : _buildListaOfertas(),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Container(
-      alignment: Alignment.topCenter,
-      child: const Padding(
-        padding: EdgeInsets.only(top: 20),
-        child: Column(
-          children: [
-            Text(
-              'En este Apartado puedes agregar tus Ofertas Favoritas',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 40),
-            Icon(Icons.favorite_border, size: 60, color: Colors.grey),
-            SizedBox(height: 20),
-            Text(
-              'No tienes ofertas favoritas aún',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -86,7 +48,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
-            'Tus Ofertas Favoritas',
+            'Las Mejores Ofertas Cerca de Ti',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
