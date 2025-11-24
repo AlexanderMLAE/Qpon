@@ -23,11 +23,12 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _focusedDay = DateTime.now();
-  // CAMBIO 1: Creamos una variable fija para "Hoy"
   final DateTime _today = DateTime.now(); 
   
   DateTime? _tempPressed;
-  final Map<DateTime, EventData> _eventosGuardados = {};
+
+  // CAMBIO 1: 'static' para que los datos sobrevivan al cambiar de pantalla
+  static final Map<DateTime, EventData> _eventosGuardados = {};
 
   DateTime _normalizeDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
@@ -43,7 +44,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         ),
         const SizedBox(height: 8),
         
-        // CAMBIO 2: Aquí pasamos siempre _today para que sea estático
         _buildDaySheet(_today),
         
         const SizedBox(height: 12),
@@ -163,8 +163,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     setState(() {
       _tempPressed = null;
       _focusedDay = foc; 
-      // CAMBIO 3: Eliminamos la línea "_selectedDay = sel;" 
-      // para que no afecte a la vista superior.
       
       if (resultData != null) {
          _eventosGuardados[normalizedDate] = resultData;
@@ -177,7 +175,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   String _formatearFecha(DateTime f) => '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';
 }
 
-// ... (El resto del código del _EventDialog se mantiene igual que antes)
 class _EventDialog extends StatefulWidget {
   final String? initialTitle;
   final String? initialNote;
@@ -253,11 +250,9 @@ class _EventDialogState extends State<_EventDialog> {
                   style: const TextStyle(fontSize: 14),
                   maxLines: 2, minLines: 1,
                 ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(3, (index) => _optionBox(index)),
-                ),
+                
+                // CAMBIO 2: Se eliminó la fila de imágenes aquí
+
                 const SizedBox(height: 30),
                 SizedBox(
                   width: double.infinity, height: 45,
@@ -282,19 +277,6 @@ class _EventDialogState extends State<_EventDialog> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _optionBox(int index) {
-    const placeholderImages = ['https://picsum.photos/id/102/100/100', 'https://picsum.photos/id/106/100/100', 'https://picsum.photos/id/108/100/100'];
-    return Container(
-      width: 80, height: 60,
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.shade300), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(placeholderImages[index % placeholderImages.length], fit: BoxFit.cover),
       ),
     );
   }
