@@ -1,28 +1,25 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-//y mire a dart a los ojos mientras lloraba  y le dije mi amor que haces por que me haces esto yo solo queria que copilaras
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({super.key});
-  //pero lo que no sabia es que visual tenia otros planes para mi
+
 
   @override
-  Widget build(BuildContext context) {//isabel me dijo que confiara en dart y yo le crei
+  Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Detalles Oferta',
       home: DetallesOfertaWidget(),
       debugShowCheckedModeBanner: false,
     );
-    // ese dia aprendi algo muy importante no puedes confiar en ndie ni en tus heores
-    // you madde me happy python eso me dijo dart mientras me veia con las lagrimas callendo fijamente en mis ojos
+   
   }
 }
 
 class DetallesOfertaWidget extends StatefulWidget {
   const DetallesOfertaWidget({super.key});
-  //dart me hiciste mucho daño pero te perdono porque se que en el fondo eres un buen lenguaje
-  //te odio memso si me haces sufrir tanto
+ 
 
   @override
   State<DetallesOfertaWidget> createState() => _DetallesOfertaWidgetState();
@@ -30,19 +27,18 @@ class DetallesOfertaWidget extends StatefulWidget {
 
 class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
   // Imagen en base64 (Big Mac / burger). Si la base64 falla, se usa el asset 'assets/images/oferta_burger.jpg'.
-  // Fernando estuvo aquí.
   static const String _burgerBase64 =
-      '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...'; // ambuerguisita yomi yomi yomi... q riko alchile
+      '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...'; 
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    // Ajusta headers para cubrir bordes del dispositivo (más chicos) recalco es tamaño promedio
+    // Ajusta headers para cubrir bordes del dispositivo 
     final double topHeaderHeight = MediaQuery.of(context).padding.top + 48;
     final double bottomHeaderHeight = MediaQuery.of(context).padding.bottom + 48;
     
-    // Intentar decodificar base64; si falla, quedará null y se usará asset por que lo vi en un tutorial indio y ese wey yo le creo
+    // Intentar decodificar base64; si falla, quedará null y se usará asset 
 
     Uint8List? burgerBytes;
     String cleaned = _burgerBase64.trim();
@@ -56,7 +52,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       burgerBytes = null;
     }
 
-    // Widget de imagen con fallback (asset -> placeholder)zzzzzzzzzzzzzzzzzzzzzzzzz
+    // Widget de imagen con fallback (asset -> placeholder)
     Widget imageWidget;
     if (burgerBytes != null && burgerBytes.isNotEmpty) {
       imageWidget = Image.memory(
@@ -104,7 +100,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
             right: 0,
             height: topHeaderHeight,
             child: Container(
-              color: Colors.red,
+              color: Color.fromARGB(255, 252, 18, 47),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Align(
@@ -113,7 +109,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     'Oferta',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 18, // más pequeño big dick
+                      fontSize: 18, 
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.4,
                     ),
@@ -123,16 +119,16 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
             ),
           ),
 
-          // Header rojo inferior (tamaño más chico, igual que el superior) alchile no se por que me quedo bien
+          // Header rojo inferior (tamaño más chico, igual que el superior) 
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             height: bottomHeaderHeight,
-            child: Container(color: Colors.red),
+            child: Container(color: Color.fromARGB(255, 252, 18, 47)),
           ),
 
-          // Contenido entre headers (scrollable) lo copie de un tutorial indio
+          // Contenido entre headers (scrollable)
           Positioned(
             top: topHeaderHeight * 0.6,
             bottom: bottomHeaderHeight,
@@ -143,7 +139,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Imagen Big Mac (desde base64 o asset) - reducida para no tocar el header me da miedo 
+                  // Imagen Big Mac (desde base64 o asset) - reducida para no tocar el header
                   Container(
                     height: 140, // reducido (antes 220) para que no llegue al header
                     margin: const EdgeInsets.only(top: 8, bottom: 22),
