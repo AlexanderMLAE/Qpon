@@ -130,7 +130,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Buscar una oferta o establecimiento',
+            hintText: 'Buscar oferta o establecimiento',
             prefixIcon: const Icon(Icons.search, color: Colors.red),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

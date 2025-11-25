@@ -23,7 +23,8 @@ class LocationWidget extends StatefulWidget {
 
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
-  MapWidget _mapWidget = MapWidget(); 
+  MapWidget _mapWidget = MapWidget();
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,11 @@ class _LocationWidgetState extends State<LocationWidget> {
                     style: ButtonStyle(alignment: Alignment.center),
                     child: Text(
                       '${widget.locationText} - ${locationRadius}Km',
-                      style: TextStyle(fontSize: 11, color: Colors.black, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     onPressed: () async {
                       openBottomSheet();
@@ -70,11 +75,34 @@ class _LocationWidgetState extends State<LocationWidget> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
-                      labelText: 'Buscar oferta o establecimiento',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red),
+                    ),
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: 'Buscar oferta o establecimiento',
+                        prefixIcon: const Icon(Icons.search, color: Colors.red),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        suffixIcon: _controller.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  _controller.clear();
+                                },
+                              )
+                            : null,
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -102,7 +130,10 @@ class _LocationWidgetState extends State<LocationWidget> {
     setState(() {
       Navigator.push(
         context,
-        MaterialPageRoute<void>(builder: (context) => StablishmentWidget(stablishmentName: 'Placeholder',)),
+        MaterialPageRoute<void>(
+          builder: (context) =>
+              StablishmentWidget(stablishmentName: 'Plaza las Americas'),
+        ),
       );
     });
   }
