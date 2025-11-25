@@ -34,6 +34,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
         MediaQuery.of(context).padding.bottom + 48;
     final double smallHeaderHeight = topHeaderHeight / 2;
 
+    // ignore: unused_local_variable
     Uint8List? burgerBytes;
     String cleaned = _burgerBase64.trim();
     if (cleaned.startsWith('data:image')) {
