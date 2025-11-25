@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -13,32 +12,25 @@ class DetallesOferta extends StatelessWidget {
       home: DetallesOfertaWidget(),
       debugShowCheckedModeBanner: false,
     );
-   
   }
 }
 
 class DetallesOfertaWidget extends StatefulWidget {
   const DetallesOfertaWidget({super.key});
- 
 
   @override
   State<DetallesOfertaWidget> createState() => _DetallesOfertaWidgetState();
 }
 
 class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
-  // Imagen en base64 (Big Mac / burger). Si la base64 falla, se usa el asset 'assets/images/oferta_burger.jpg'.
-  static const String _burgerBase64 =
-      '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...'; 
+  static const String _burgerBase64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...';
+  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    // Ajusta headers para cubrir bordes del dispositivo 
     final double topHeaderHeight = MediaQuery.of(context).padding.top + 48;
     final double bottomHeaderHeight = MediaQuery.of(context).padding.bottom + 48;
-    
-    // Intentar decodificar base64; si falla, quedará null y se usará asset 
+    final double smallHeaderHeight = topHeaderHeight / 2;
 
     Uint8List? burgerBytes;
     String cleaned = _burgerBase64.trim();
@@ -52,7 +44,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       burgerBytes = null;
     }
 
-    // Widget de imagen con fallback (asset -> placeholder)
     Widget imageWidget;
     if (burgerBytes != null && burgerBytes.isNotEmpty) {
       imageWidget = Image.memory(
@@ -69,13 +60,11 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
         height: 220,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          // si el asset falla, carga la imagen remota proporcionada ousi oajala una hamburguesa asi de rika 
           return Image.network(
-            'https://media.gq.com.mx/photos/649391b89ec62ce6c5b091a5/16:9/w_2560%2Cc_limit/mejores-hamburguesas.jpg',
+            'https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
             width: double.infinity,
             height: 220,
             fit: BoxFit.cover,
-            // si la red también falla, muestra el placeholder existente realmente no creo que falle
             errorBuilder: (context, error, stackTrace) => Container(
               color: Colors.grey.shade200,
               alignment: Alignment.center,
@@ -90,26 +79,25 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // fondo blanco arriba los patriots
           const Positioned.fill(child: ColoredBox(color: Colors.white)),
 
-          // Header rojo superior (tamaño más chico) promedio tamaño promedio quise decir
+          // Header superior rojo con "Qpon"
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             height: topHeaderHeight,
             child: Container(
-              color: Color.fromARGB(255, 252, 18, 47),
+              color: const Color.fromARGB(255, 252, 18, 47),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Align(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.center,
                   child: Text(
-                    'Oferta',
+                    'Qpon',
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18, 
+                      color: Colors.black,
+                      fontSize: 28,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.4,
                     ),
@@ -119,18 +107,30 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
             ),
           ),
 
-          // Header rojo inferior (tamaño más chico, igual que el superior) 
+          // Header pequeño NEGRO "Oferta"
           Positioned(
-            bottom: 0,
+            top: topHeaderHeight,
             left: 0,
             right: 0,
-            height: bottomHeaderHeight,
-            child: Container(color: Color.fromARGB(255, 252, 18, 47)),
+            height: smallHeaderHeight,
+            child: Container(
+              color: Colors.black,
+              child: Center(
+                child: Text(
+                  'Oferta',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
           ),
 
-          // Contenido entre headers (scrollable)
+          // Contenido scrollable
           Positioned(
-            top: topHeaderHeight * 0.6,
+            top: topHeaderHeight + smallHeaderHeight,
             bottom: bottomHeaderHeight,
             left: 0,
             right: 0,
@@ -139,13 +139,11 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Imagen Big Mac (desde base64 o asset) - reducida para no tocar el header
                   Container(
-                    height: 140, // reducido (antes 220) para que no llegue al header
-                    margin: const EdgeInsets.only(top: 8, bottom: 22),
+                    height: 220,
+                    margin: const EdgeInsets.only(bottom: 22),
                     child: Material(
                       elevation: 6,
-                      shadowColor: Colors.black.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(18),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(18),
@@ -153,140 +151,116 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Título principal (más abajo, centrado)
-                  Center(
-                    child: Text(
-                      'DETALLES DE LA BIG MAC',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                      textAlign: TextAlign.center,
+                  Text(
+                    'Oferta Especial',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  const SizedBox(height: 18),
-
-                  // Precio en pesos mexicanos (ejemplo)
-                  Row(
-                    children: [
-                      Text(
-                        '\$99.00 MXN', // precio de oferta en MXN
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        '\$179.00 MXN', // precio original
-                        style: TextStyle(
-                          color: Colors.black54,
-                          decoration: TextDecoration.lineThrough,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          '44% DTO',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
-                        ),
-                      ),
-                    ],
-                  ),
-
                   const SizedBox(height: 16),
-
-                  // Descripción detallada Big Mac
-                  const Text('Descripción', style: TextStyle(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Big Mac clásica: dos jugosas piezas de carne 100% res, queso americano, lechuga fresca,'
-                    ' cebolla rebanada, pepinillos y nuestra salsa especial Big Mac en un pan de sésamo.'
-                    ' Oferta válida con papas medianas y bebida por tiempo limitado.',
-                    style: TextStyle(color: Colors.black87),
+                  Text(
+                    '\$79.99',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 252, 18, 47),
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Ingredientes / características
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('• 2x carne 100% res', style: TextStyle(color: Colors.black87)),
-                      SizedBox(height: 4),
-                      Text('• Queso americano', style: TextStyle(color: Colors.black87)),
-                      SizedBox(height: 4),
-                      Text('• Salsa Big Mac secreta', style: TextStyle(color: Colors.black87)),
-                      SizedBox(height: 4),
-                      Text('• Incluye papas medianas + bebida (según condiciones)', style: TextStyle(color: Colors.black87)),
-                    ],
-                  ),
-
                   const SizedBox(height: 16),
-
-                  // Lugar y ubicación (aleatorio)
-                  Row(
-                    children: const [
-                      Icon(Icons.location_on_outlined, size: 18, color: Colors.black54),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'McDonalds - Plaza Centro, Av. Reforma 123, Ciudad de México',
-                          style: TextStyle(color: Colors.black87),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    'Disfruta de nuestras mejores ofertas y promociones exclusivas. Aplica solo en sucursales participantes.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 14,
+                    ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Fecha de expiración de la oferta
-                  Row(
-                    children: const [
-                      Icon(Icons.calendar_today_outlined, size: 18, color: Colors.black54),
-                      SizedBox(width: 8),
-                      Text('Válido hasta: 30/11/2025', style: TextStyle(color: Colors.black87)),
-                    ],
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  // Condiciones
-                  const Text(
-                    'Condiciones: Oferta válida solo en locales participantes. No acumulable con otras promociones. Sujeto a disponibilidad y horarios del establecimiento.',
-                    style: TextStyle(color: Colors.black54, fontSize: 12),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Botón de acción
+                  const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      // Acción placeholder — Fernando estuvo aquí también :)
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      backgroundColor: Color.fromARGB(255, 252, 18, 47),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Guardar Oferta en el Calendario'),
+                    child: const Text(
+                      'Reclamar Oferta',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Términos y condiciones:',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '• Válido hasta el 31 de diciembre\n• No acumulable con otras ofertas\n• Presenta el código en la tienda',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+        indicatorColor: Colors.white,
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.favorite),
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.calendar_month),
+            icon: Icon(Icons.calendar_month),
+            label: 'Calendario',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.location_on),
+            icon: Icon(Icons.location_on),
+            label: 'Ubicación',
           ),
         ],
       ),
