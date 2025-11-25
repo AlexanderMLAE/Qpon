@@ -8,15 +8,17 @@ class OfferCardWidget extends StatelessWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
+    this.localName,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
+  final String? localName;
 
   @override
   Widget build(BuildContext context) {
-    return OfferCard(productName: productName, productPrice: productPrice, productDetails: productDetails, imageURL: imageURL);
+    return OfferCard(productName: productName, productPrice: productPrice, productDetails: productDetails, imageURL: imageURL, localName: localName);
   }
 
 }
@@ -29,12 +31,15 @@ class OfferCard extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL,
+    required this.imageURL, 
+    required this.localName,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
+  final String? localName;
+  
 
   @override
   State<StatefulWidget> createState() => _OfferCardState();
