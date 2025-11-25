@@ -28,30 +28,33 @@ class _LocationWidgetState extends State<LocationWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: const Text(
+          'Ubicacion',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Container(
             // Top bar
-            color: Colors.black,
+            color: Colors.white,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Spacer(flex: 3),
-                Text(
-                  'Ubicación',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
                 SizedBox(
                   height: 30,
                   child: TextButton(
                     style: ButtonStyle(alignment: Alignment.center),
                     child: Text(
                       '${widget.locationText} - ${locationRadius}Km',
-                      style: TextStyle(fontSize: 10, color: Colors.white),
+                      style: TextStyle(fontSize: 11, color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                     onPressed: () async {
                       openBottomSheet();
