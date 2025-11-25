@@ -23,13 +23,15 @@ class DetallesOfertaWidget extends StatefulWidget {
 }
 
 class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
-  static const String _burgerBase64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...';
+  static const String _burgerBase64 =
+      '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...';
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final double topHeaderHeight = MediaQuery.of(context).padding.top + 48;
-    final double bottomHeaderHeight = MediaQuery.of(context).padding.bottom + 48;
+    final double bottomHeaderHeight =
+        MediaQuery.of(context).padding.bottom + 48;
     final double smallHeaderHeight = topHeaderHeight / 2;
 
     Uint8List? burgerBytes;
@@ -44,43 +46,11 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       burgerBytes = null;
     }
 
-    Widget imageWidget;
-    if (burgerBytes != null && burgerBytes.isNotEmpty) {
-      imageWidget = Image.memory(
-        burgerBytes,
-        width: double.infinity,
-        height: 220,
-        fit: BoxFit.cover,
-        gaplessPlayback: true,
-      );
-    } else {
-      imageWidget = Image.asset(
-        'assets/images/oferta_burger.jpg',
-        width: double.infinity,
-        height: 220,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Image.network(
-            'https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-            width: double.infinity,
-            height: 220,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.grey.shade200,
-              alignment: Alignment.center,
-              child: const Text('Imagen no encontrada', style: TextStyle(color: Colors.black54)),
-            ),
-          );
-        },
-      );
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           const Positioned.fill(child: ColoredBox(color: Colors.white)),
-
           // Header superior rojo con "Qpon"
           Positioned(
             top: 0,
@@ -106,7 +76,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
               ),
             ),
           ),
-
           // Header pequeño NEGRO "Oferta"
           Positioned(
             top: topHeaderHeight,
@@ -147,7 +116,21 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       borderRadius: BorderRadius.circular(18),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(18),
-                        child: imageWidget,
+                        child: Image.network(
+                          'https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
+                          width: double.infinity,
+                          height: 180,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: Colors.grey.shade200,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Imagen no encontrada',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ),
+                        ),
                       ),
                     ),
                   ),
@@ -174,10 +157,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                   Text(
                     'Disfruta de nuestras mejores ofertas y promociones exclusivas. Aplica solo en sucursales participantes.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey[700], fontSize: 14),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -187,7 +167,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     child: const Text(
-                      'Reclamar Oferta',
+                      'Guardar Oferta',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -228,39 +208,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
-        indicatorColor: Colors.white,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.favorite),
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.calendar_month),
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendario',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.location_on),
-            icon: Icon(Icons.location_on),
-            label: 'Ubicación',
           ),
         ],
       ),

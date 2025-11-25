@@ -40,86 +40,88 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
     final lastDayOfNextMonth = DateTime(now.year, now.month + 2, 0);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 56, width: double.infinity, color: Colors.black,
-          alignment: Alignment.center,
-          child: const Text('Calendario', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-        ),
-        const SizedBox(height: 8),
-        
-        _buildDaySheet(_today),
-        
-        const SizedBox(height: 12),
-        
-        Container(
-          width: 350, height: 480,
-          decoration: BoxDecoration(
-            color: Colors.white, border: Border.all(color: _kRed, width: 8),
-            borderRadius: BorderRadius.circular(24),
+    return ListView(
+      children: [Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 56, width: double.infinity, color: Colors.black,
+            alignment: Alignment.center,
+            child: const Text('Calendario', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: TableCalendar(
-              locale: 'es_ES',
-              
-              // --- CONFIGURACIÓN DE RANGO Y BLOQUEO ---
-              firstDay: firstDayOfCurrentMonth, 
-              lastDay: lastDayOfNextMonth,
-              focusedDay: _focusedDay,
-              
-              // Deshabilitar días pasados
-              enabledDayPredicate: (day) {
-                final dayToTest = DateTime(day.year, day.month, day.day);
-                final todayDate = DateTime(now.year, now.month, now.day);
-                return !dayToTest.isBefore(todayDate);
-              },
-
-              selectedDayPredicate: (_) => false,
-              onDaySelected: _handleSelect,
-              weekendDays: const [DateTime.sunday],
-              daysOfWeekHeight: 40,
-              daysOfWeekStyle: const DaysOfWeekStyle(decoration: BoxDecoration(color: _kBgRed)),
-              
-              headerStyle: HeaderStyle(
-                titleCentered: true, formatButtonVisible: false,
-                decoration: const BoxDecoration(color: Color(0xFFFA8181)),
-                titleTextFormatter: (d, _) => _meses[d.month - 1],
-              ),
-              
-              calendarStyle: const CalendarStyle(
-                // ESTO OCULTA LOS DÍAS DE OTROS MESES (La cuadrícula se ve limpia)
-                outsideDaysVisible: false, 
+          const SizedBox(height: 8),
+          
+          _buildDaySheet(_today),
+          
+          const SizedBox(height: 12),
+          
+          Container(
+            width: 350, height: 480,
+            decoration: BoxDecoration(
+              color: Colors.white, border: Border.all(color: _kRed, width: 8),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: TableCalendar(
+                locale: 'es_ES',
                 
-                todayDecoration: BoxDecoration(color: _kLightRed, shape: BoxShape.circle),
-                selectedDecoration: BoxDecoration(color: Colors.transparent),
-                weekendTextStyle: TextStyle(color: Colors.red),
-                disabledTextStyle: TextStyle(color: Colors.grey), 
-              ),
-
-              calendarBuilders: CalendarBuilders(
-                defaultBuilder: (_, date, __) {
-                  final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+                // --- CONFIGURACIÓN DE RANGO Y BLOQUEO ---
+                firstDay: firstDayOfCurrentMonth, 
+                lastDay: lastDayOfNextMonth,
+                focusedDay: _focusedDay,
+                
+                // Deshabilitar días pasados
+                enabledDayPredicate: (day) {
+                  final dayToTest = DateTime(day.year, day.month, day.day);
+                  final todayDate = DateTime(now.year, now.month, now.day);
+                  return !dayToTest.isBefore(todayDate);
+                },
+      
+                selectedDayPredicate: (_) => false,
+                onDaySelected: _handleSelect,
+                weekendDays: const [DateTime.sunday],
+                daysOfWeekHeight: 40,
+                daysOfWeekStyle: const DaysOfWeekStyle(decoration: BoxDecoration(color: _kBgRed)),
+                
+                headerStyle: HeaderStyle(
+                  titleCentered: true, formatButtonVisible: false,
+                  decoration: const BoxDecoration(color: Color(0xFFFA8181)),
+                  titleTextFormatter: (d, _) => _meses[d.month - 1],
+                ),
+                
+                calendarStyle: const CalendarStyle(
+                  // ESTO OCULTA LOS DÍAS DE OTROS MESES (La cuadrícula se ve limpia)
+                  outsideDaysVisible: false, 
                   
-                  if (_tempPressed != null && isSameDay(date, _tempPressed)) {
-                    return _circleDay(date, _kLightRed, isAnimated: true);
-                  }
-                  if (isSaved) {
-                    return _circleDay(date, _kPurple.withOpacity(0.7)); 
-                  }
-                  return Center(child: Text('${date.day}'));
-                },
-                todayBuilder: (_, date, __) {
-                   final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
-                   return _circleDay(date, isSaved ? _kPurple : _kLightRed);
-                },
+                  todayDecoration: BoxDecoration(color: _kLightRed, shape: BoxShape.circle),
+                  selectedDecoration: BoxDecoration(color: Colors.transparent),
+                  weekendTextStyle: TextStyle(color: Colors.red),
+                  disabledTextStyle: TextStyle(color: Colors.grey), 
+                ),
+      
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (_, date, __) {
+                    final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+                    
+                    if (_tempPressed != null && isSameDay(date, _tempPressed)) {
+                      return _circleDay(date, _kLightRed, isAnimated: true);
+                    }
+                    if (isSaved) {
+                      return _circleDay(date, _kPurple.withOpacity(0.7)); 
+                    }
+                    return Center(child: Text('${date.day}'));
+                  },
+                  todayBuilder: (_, date, __) {
+                     final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+                     return _circleDay(date, isSaved ? _kPurple : _kLightRed);
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),]
     );
   }
 
@@ -288,7 +290,7 @@ class _EventDialogState extends State<_EventDialog> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: const DecorationImage(
-                        image: NetworkImage('https://media.gq.com.mx/photos/649391b89ec62ce6c5b091a5/16:9/w_2560%2Cc_limit/mejores-hamburguesas.jpg'), 
+                        image: NetworkImage('https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg'), 
                         fit: BoxFit.cover,
                       ),
                       boxShadow: [
