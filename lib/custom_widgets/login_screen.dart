@@ -241,29 +241,31 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    final messenger = ScaffoldMessenger.of(context);
+    // No capturamos `ScaffoldMessenger.of(context)` antes de awaits
+    // para evitar usar BuildContext a través de gaps async.
 
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // VERIFICAR SI EL EMAIL ESTÁ CONFIRMADO
-      if (!userCredential.user!.emailVerified) {
-        await _auth.signOut(); // Cerrar sesión si no está verificado
+      // // VERIFICAR SI EL EMAIL ESTÁ CONFIRMADO
+      // if (!userCredential.user!.emailVerified) {
+      //   await _auth.signOut(); // Cerrar sesión si no está verificado
 
-        if (!mounted) return;
+      //   if (!mounted) return;
 
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Por favor verifica tu email antes de iniciar sesión.'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-        return;
-      }
+      //   if (mounted) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(
+      //         content: Text('Por favor verifica tu email antes de iniciar sesión.'),
+      //         backgroundColor: Colors.orange,
+      //       ),
+      //     );
+      //   }
+      //   return;
+      // }
 
       if (!mounted) return;
 
@@ -283,12 +285,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      // ✅ CAMBIO 1: Navegar a MyHomePage en lugar de popUntil
-      if (Navigator.canPop(context)) {
-        Navigator.of(context).pop(); // Cerrar diálogo
-      }
-
+      // Después de await, validar mounted antes de usar context
       if (!mounted) return;
+
+      // ✅ CAMBIO 1: Navegar a MyHomePage reemplazando la pila
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const MyHomePage()),
@@ -313,21 +313,25 @@ class _LoginScreenState extends State<LoginScreen> {
           errorMessage = 'Error: ${e.message}';
       }
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text('Error inesperado: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error inesperado: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -338,8 +342,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginWithGoogle() async {
-  final messenger = ScaffoldMessenger.of(context);
-
   setState(() {
     _isLoading = true;
   });
@@ -387,7 +389,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (!mounted) return;
-
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -403,12 +404,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    // ✅ CAMBIO 2: Navegar a MyHomePage en lugar de popUntil
-    if (Navigator.canPop(context)) {
-      Navigator.of(context).pop(); // Cerrar diálogo
-    }
-
+    // Después de await, validar mounted antes de usar context
     if (!mounted) return;
+
+    // ✅ CAMBIO 2: Navegar a MyHomePage reemplazando la pila
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const MyHomePage()),
@@ -435,23 +434,27 @@ class _LoginScreenState extends State<LoginScreen> {
         errorMessage = 'Error de autenticación: ${e.message}';
     }
 
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
 
   } catch (e) {
     if (!mounted) return;
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text('Error inesperado: $e'),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error inesperado: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
   } finally {
     if (mounted) {
       setState(() {
