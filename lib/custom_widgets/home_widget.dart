@@ -50,10 +50,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() {
       _ofertasFiltradas = _ofertas.where((oferta) {
         final nombreMatch = oferta['productName']?.toString().toLowerCase().contains(query) ?? false;
-        final lugarMatch = oferta['lugarNombre']?.toString().toLowerCase().contains(query) ?? false;
+        final localMatch = oferta['localName']?.toString().toLowerCase().contains(query) ?? false;
         final detallesMatch = oferta['productDetails']?.toString().toLowerCase().contains(query) ?? false;
         
-        return nombreMatch || lugarMatch || detallesMatch;
+        return nombreMatch || localMatch || detallesMatch;
       }).toList();
 
       if (_filtroPrecio != 'Todos') {
@@ -198,7 +198,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     productPrice: (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
                     productDetails: oferta['productDetails'] ?? 'Detalles de la oferta',
                     imageURL: oferta['imageURL'] ?? '',
-                    lugarNombre: oferta['lugarNombre'] ?? '',
+                    localName: oferta['localName'] ?? '',
                   ),
                 );
               },
