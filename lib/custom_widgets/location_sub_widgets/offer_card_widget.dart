@@ -91,7 +91,7 @@ class _OfferCardState extends State<OfferCard> {
             ElevatedButton(
               onPressed: openDetails,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: Text("Detalles"),
+              child: Text("Detalles", style: TextStyle(color: Colors.white),),
             ),
             const SizedBox(height: 8),
             Text(
