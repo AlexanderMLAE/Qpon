@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+// ✅ AGREGA ESTA IMPORTACIÓN
+import '../main.dart'; // Para importar MyHomePage
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.title});
@@ -21,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Firebase
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
 
   @override
   void dispose() {
@@ -139,7 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 30),
 
-                // Botón de iniciar sesión (corregido)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       side: const BorderSide(color: Colors.grey),
                     ),
-                    onPressed: _isLoading ? null : _loginWithGoogle, // ✅ Deshabilitar durante carga
+                    onPressed: _isLoading ? null : _loginWithGoogle, //  Deshabilitar durante carga
                     icon: const Text(
                       'G',
                       style: TextStyle(
@@ -241,30 +241,31 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
+    // No capturamos `ScaffoldMessenger.of(context)` antes de awaits
+    // para evitar usar BuildContext a través de gaps async.
 
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // VERIFICAR SI EL EMAIL ESTÁ CONFIRMADO
-      if (!userCredential.user!.emailVerified) {
-        await _auth.signOut(); // Cerrar sesión si no está verificado
+      // // VERIFICAR SI EL EMAIL ESTÁ CONFIRMADO
+      // if (!userCredential.user!.emailVerified) {
+      //   await _auth.signOut(); // Cerrar sesión si no está verificado
 
-        if (!mounted) return;
+      //   if (!mounted) return;
 
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Por favor verifica tu email antes de iniciar sesión.'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-        return;
-      }
+      //   if (mounted) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(
+      //         content: Text('Por favor verifica tu email antes de iniciar sesión.'),
+      //         backgroundColor: Colors.orange,
+      //       ),
+      //     );
+      //   }
+      //   return;
+      // }
 
       if (!mounted) return;
 
@@ -284,9 +285,15 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      // Después de que el usuario cierre el diálogo, regresar a la pantalla raíz
+      // Después de await, validar mounted antes de usar context
       if (!mounted) return;
-      navigator.popUntil((route) => route.isFirst);
+
+      // ✅ CAMBIO 1: Navegar a MyHomePage reemplazando la pila
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        (route) => false,
+      );
 
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
@@ -306,21 +313,25 @@ class _LoginScreenState extends State<LoginScreen> {
           errorMessage = 'Error: ${e.message}';
       }
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text('Error inesperado: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error inesperado: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -331,9 +342,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginWithGoogle() async {
-  final messenger = ScaffoldMessenger.of(context);
-  final navigator = Navigator.of(context);
-
   setState(() {
     _isLoading = true;
   });
@@ -381,12 +389,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (!mounted) return;
-
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Inicio con Google'),
+        title: const Text('Inicio de sesion con Google'),
         content: const Text('¡Inicio de sesión exitoso!'),
         actions: [
           TextButton(
@@ -397,8 +404,15 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
+    // Después de await, validar mounted antes de usar context
     if (!mounted) return;
-    navigator.popUntil((route) => route.isFirst);
+
+    // ✅ CAMBIO 2: Navegar a MyHomePage reemplazando la pila
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MyHomePage()),
+      (route) => false,
+    );
 
   } on FirebaseAuthException catch (e) {
     if (!mounted) return;
@@ -420,23 +434,27 @@ class _LoginScreenState extends State<LoginScreen> {
         errorMessage = 'Error de autenticación: ${e.message}';
     }
 
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
 
   } catch (e) {
     if (!mounted) return;
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text('Error inesperado: $e'),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error inesperado: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
   } finally {
     if (mounted) {
       setState(() {
@@ -446,6 +464,4 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 // Fin de la clase _LoginScreenState
-
 }
-  

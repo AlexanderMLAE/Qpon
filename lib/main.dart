@@ -9,7 +9,8 @@ import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
 import 'custom_widgets/login_screen.dart';
 import 'custom_widgets/register_screen.dart' as reg;
-import 'custom_widgets/home_widget.dart';
+import 'custom_widgets/home_widget.dart';import 'custom_widgets/profile_panel.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,6 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePanel()),
+              );
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
