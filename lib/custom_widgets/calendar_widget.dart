@@ -101,18 +101,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
       
                 calendarBuilders: CalendarBuilders(
-                  defaultBuilder: (_, date, __) {
+                  defaultBuilder: (_, date, _) {
                     final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
                     
                     if (_tempPressed != null && isSameDay(date, _tempPressed)) {
                       return _circleDay(date, _kLightRed, isAnimated: true);
                     }
                     if (isSaved) {
-                      return _circleDay(date, _kPurple.withOpacity(0.7)); 
+                      return _circleDay(date, _kPurple.withValues(alpha :0.5)); 
                     }
                     return Center(child: Text('${date.day}'));
                   },
-                  todayBuilder: (_, date, __) {
+                  todayBuilder: (_, date, _) {
                      final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
                      return _circleDay(date, isSaved ? _kPurple : _kLightRed);
                   },
@@ -156,7 +156,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   Widget _circleDay(DateTime d, Color color, {bool isAnimated = false}) {
     final decoration = BoxDecoration(color: color, shape: BoxShape.circle,
-      boxShadow: isAnimated ? [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 4))] : null
+      boxShadow: isAnimated ? [BoxShadow(color: Colors.black.withValues(alpha :0.15), blurRadius: 8, offset: const Offset(0, 4))] : null
     );
     final child = Text('${d.day}', style: const TextStyle(color: Colors.white));
 
@@ -294,7 +294,7 @@ class _EventDialogState extends State<_EventDialog> {
                         fit: BoxFit.cover,
                       ),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 3))
+                        BoxShadow(color: Colors.black.withValues(alpha :0.1), blurRadius: 5, offset: const Offset(0, 3))
                       ]
                     ),
                     alignment: Alignment.center,

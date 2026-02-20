@@ -73,7 +73,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 48, color: Colors.white),
+                          errorBuilder: (_, _, _) => const Icon(Icons.person, size: 48, color: Colors.white),
                         ),
                       )
                     : const Icon(Icons.person, size: 48, color: Colors.white),

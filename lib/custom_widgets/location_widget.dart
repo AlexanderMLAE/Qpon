@@ -24,7 +24,7 @@ class LocationWidget extends StatefulWidget {
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
   MapWidget _mapWidget = MapWidget();
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
