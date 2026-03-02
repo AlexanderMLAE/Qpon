@@ -25,6 +25,7 @@ dependencies:
   cloud_firestore: ^6.1.1
   firebase_storage: ^13.0.5
   image_picker: ^1.0.8
+  mapbox_maps_flutter: ^2.19.1
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 // Imports de tus archivos
 import 'package:proyecto_qpon/firebase_options.dart';
@@ -10,20 +11,22 @@ import 'custom_widgets/calendar_widget.dart';
 import 'custom_widgets/location_widget.dart';
 import 'custom_widgets/login_screen.dart';
 import 'custom_widgets/register_screen.dart' as reg;
-import 'custom_widgets/home_widget.dart';import 'custom_widgets/profile_panel.dart';
-
+import 'custom_widgets/home_widget.dart';
+import 'custom_widgets/profile_panel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Inicializamos formato de fechas para el calendario en español
   await initializeDateFormatting('es_ES', null);
-  
-  // Inicializamos Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
+  // Inicializamos Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  // ignore: constant_identifier_names
+  const String ACCESS_TOKEN = String.fromEnvironment("ACCESS_TOKEN");
+  MapboxOptions.setAccessToken(ACCESS_TOKEN);
   runApp(const MyApp());
 }
 
@@ -40,9 +43,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Rutas de navegación
-      routes: {
-        '/register': (context) => const reg.RegisterScreen(),
-      },
+      routes: {'/register': (context) => const reg.RegisterScreen()},
       home: const MyHomePage(),
     );
   }
@@ -61,7 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void _openLogin() {
     Navigator.push(
       context,
-      MaterialPageRoute<void>(builder: (context) => const LoginScreen(title: 'qpon')),
+      MaterialPageRoute<void>(
+        builder: (context) => const LoginScreen(title: 'qpon'),
+      ),
     );
   }
 
@@ -77,9 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
               'Qpon',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.black, 
-                fontSize: 22, 
-                fontWeight: FontWeight.bold
+                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -133,10 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: IndexedStack(
         index: currentPageIndex,
         children: const [
-           HomeWidget(),
-           FavoritesWidget(),
-           CalendarWidget(),
-           LocationScreen(locationText: 'Puerto Morelos'),
+          HomeWidget(),
+          FavoritesWidget(),
+          CalendarWidget(),
+          LocationScreen(locationText: 'Puerto Morelos'),
         ],
       ),
     );

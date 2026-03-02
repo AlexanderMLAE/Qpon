@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/map_widget.dart';
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/custom_map_widget.dart';
 import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/stablishment_widget.dart';
 
 // Consider renaming some classes
@@ -23,7 +23,7 @@ class LocationWidget extends StatefulWidget {
 
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
-  MapWidget _mapWidget = MapWidget();
+  CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -122,7 +122,7 @@ class _LocationWidgetState extends State<LocationWidget> {
 
   void updateMap() {
     setState(() {
-      _mapWidget = MapWidget();
+      _mapWidget = CustomMapWidget();
     });
   }
 
