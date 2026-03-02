@@ -43,8 +43,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Rutas de navegación
-      routes: {'/register': (context) => const reg.RegisterScreen()},
-      home: const MyHomePage(),
+      routes: {
+        '/register': (context) => const reg.RegisterScreen(),
+      },
+      home: const LoginScreen(title: "Qpon",),
     );
   }
 }
