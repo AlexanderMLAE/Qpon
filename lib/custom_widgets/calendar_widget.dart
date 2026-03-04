@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'detalles_oferta.dart'; // <--- Asegúrate de que este archivo exista y la ruta sea correcta
 
 // --- MODELO DE DATOS ---
 class EventData {
@@ -23,37 +24,108 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _focusedDay = DateTime.now();
-  // CAMBIO 1: Creamos una variable fija para "Hoy"
-  final DateTime _today = DateTime.now(); 
+  final DateTime _today = DateTime.now();
   
   DateTime? _tempPressed;
-  final Map<DateTime, EventData> _eventosGuardados = {};
+
+  // Variable estática para que los eventos no se borren al cambiar de pantalla
+  static final Map<DateTime, EventData> _eventosGuardados = {};
 
   DateTime _normalizeDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 56, width: double.infinity, color: Colors.black,
-          alignment: Alignment.center,
-          child: const Text('Calendario', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-        ),
-        const SizedBox(height: 8),
-        
-        // CAMBIO 2: Aquí pasamos siempre _today para que sea estático
-        _buildDaySheet(_today),
-        
-        const SizedBox(height: 12),
-        _buildCalendar(),
-      ],
+    // Cálculos para limitar el rango de fechas (Este mes y el siguiente)
+    final now = DateTime.now();
+    final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    final lastDayOfNextMonth = DateTime(now.year, now.month + 2, 0);
+
+    return ListView(
+      children: [Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 56, width: double.infinity, color: Colors.black,
+            alignment: Alignment.center,
+            child: const Text('Calendario', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(height: 8),
+          
+          _buildDaySheet(_today),
+          
+          const SizedBox(height: 12),
+          
+          Container(
+            width: 350, height: 480,
+            decoration: BoxDecoration(
+              color: Colors.white, border: Border.all(color: _kRed, width: 8),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: TableCalendar(
+                locale: 'es_ES',
+                
+                // --- CONFIGURACIÓN DE RANGO Y BLOQUEO ---
+                firstDay: firstDayOfCurrentMonth, 
+                lastDay: lastDayOfNextMonth,
+                focusedDay: _focusedDay,
+                
+                // Deshabilitar días pasados
+                enabledDayPredicate: (day) {
+                  final dayToTest = DateTime(day.year, day.month, day.day);
+                  final todayDate = DateTime(now.year, now.month, now.day);
+                  return !dayToTest.isBefore(todayDate);
+                },
+      
+                selectedDayPredicate: (_) => false,
+                onDaySelected: _handleSelect,
+                weekendDays: const [DateTime.sunday],
+                daysOfWeekHeight: 40,
+                daysOfWeekStyle: const DaysOfWeekStyle(decoration: BoxDecoration(color: _kBgRed)),
+                
+                headerStyle: HeaderStyle(
+                  titleCentered: true, formatButtonVisible: false,
+                  decoration: const BoxDecoration(color: Color(0xFFFA8181)),
+                  titleTextFormatter: (d, _) => _meses[d.month - 1],
+                ),
+                
+                calendarStyle: const CalendarStyle(
+                  // ESTO OCULTA LOS DÍAS DE OTROS MESES (La cuadrícula se ve limpia)
+                  outsideDaysVisible: false, 
+                  
+                  todayDecoration: BoxDecoration(color: _kLightRed, shape: BoxShape.circle),
+                  selectedDecoration: BoxDecoration(color: Colors.transparent),
+                  weekendTextStyle: TextStyle(color: Colors.red),
+                  disabledTextStyle: TextStyle(color: Colors.grey), 
+                ),
+      
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (_, date, _) {
+                    final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+                    
+                    if (_tempPressed != null && isSameDay(date, _tempPressed)) {
+                      return _circleDay(date, _kLightRed, isAnimated: true);
+                    }
+                    if (isSaved) {
+                      return _circleDay(date, _kPurple.withValues(alpha :0.5)); 
+                    }
+                    return Center(child: Text('${date.day}'));
+                  },
+                  todayBuilder: (_, date, _) {
+                     final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
+                     return _circleDay(date, isSaved ? _kPurple : _kLightRed);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),]
     );
   }
 
   Widget _buildDaySheet(DateTime d) {
-    // Verifica si HOY tiene algo guardado para cambiar el color
     final isSaved = _eventosGuardados.containsKey(_normalizeDate(d));
     final colorTema = isSaved ? _kPurple : _kRed;
 
@@ -82,59 +154,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  Widget _buildCalendar() {
-    return Container(
-      width: 350, height: 480,
-      decoration: BoxDecoration(
-        color: Colors.white, border: Border.all(color: _kRed, width: 8),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: TableCalendar(
-          locale: 'es_ES',
-          firstDay: DateTime(2000), lastDay: DateTime(2100),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (_) => false,
-          onDaySelected: _handleSelect,
-          weekendDays: const [DateTime.sunday],
-          daysOfWeekHeight: 40,
-          daysOfWeekStyle: const DaysOfWeekStyle(decoration: BoxDecoration(color: _kBgRed)),
-          headerStyle: HeaderStyle(
-            titleCentered: true, formatButtonVisible: false,
-            decoration: const BoxDecoration(color: Color(0xFFFA8181)),
-            titleTextFormatter: (d, _) => _meses[d.month - 1],
-          ),
-          calendarStyle: const CalendarStyle(
-            todayDecoration: BoxDecoration(color: _kLightRed, shape: BoxShape.circle),
-            selectedDecoration: BoxDecoration(color: Colors.transparent),
-            weekendTextStyle: TextStyle(color: Colors.red),
-          ),
-          calendarBuilders: CalendarBuilders(
-            defaultBuilder: (_, date, __) {
-              final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
-              
-              if (_tempPressed != null && isSameDay(date, _tempPressed)) {
-                return _circleDay(date, _kLightRed, isAnimated: true);
-              }
-              if (isSaved) {
-                return _circleDay(date, _kPurple.withOpacity(0.7)); 
-              }
-              return Center(child: Text('${date.day}'));
-            },
-            todayBuilder: (_, date, __) {
-               final isSaved = _eventosGuardados.containsKey(_normalizeDate(date));
-               return _circleDay(date, isSaved ? _kPurple : _kLightRed);
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _circleDay(DateTime d, Color color, {bool isAnimated = false}) {
     final decoration = BoxDecoration(color: color, shape: BoxShape.circle,
-      boxShadow: isAnimated ? [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 4))] : null
+      boxShadow: isAnimated ? [BoxShadow(color: Colors.black.withValues(alpha :0.15), blurRadius: 8, offset: const Offset(0, 4))] : null
     );
     final child = Text('${d.day}', style: const TextStyle(color: Colors.white));
 
@@ -163,8 +185,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     setState(() {
       _tempPressed = null;
       _focusedDay = foc; 
-      // CAMBIO 3: Eliminamos la línea "_selectedDay = sel;" 
-      // para que no afecte a la vista superior.
       
       if (resultData != null) {
          _eventosGuardados[normalizedDate] = resultData;
@@ -177,7 +197,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   String _formatearFecha(DateTime f) => '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';
 }
 
-// ... (El resto del código del _EventDialog se mantiene igual que antes)
 class _EventDialog extends StatefulWidget {
   final String? initialTitle;
   final String? initialNote;
@@ -253,11 +272,36 @@ class _EventDialogState extends State<_EventDialog> {
                   style: const TextStyle(fontSize: 14),
                   maxLines: 2, minLines: 1,
                 ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(3, (index) => _optionBox(index)),
+                
+                // --- IMAGEN CON NAVEGACIÓN ---
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    // Cerrar diálogo e ir a Detalles
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DetallesOferta()),
+                    );
+                  },
+                  child: Container(
+                    height: 100,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg'), 
+                        fit: BoxFit.cover,
+                      ),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha :0.1), blurRadius: 5, offset: const Offset(0, 3))
+                      ]
+                    ),
+                    alignment: Alignment.center,
+                  ),
                 ),
+                // -----------------------------
+
                 const SizedBox(height: 30),
                 SizedBox(
                   width: double.infinity, height: 45,
@@ -282,19 +326,6 @@ class _EventDialogState extends State<_EventDialog> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _optionBox(int index) {
-    const placeholderImages = ['https://picsum.photos/id/102/100/100', 'https://picsum.photos/id/106/100/100', 'https://picsum.photos/id/108/100/100'];
-    return Container(
-      width: 80, height: 60,
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.shade300), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(placeholderImages[index % placeholderImages.length], fit: BoxFit.cover),
       ),
     );
   }

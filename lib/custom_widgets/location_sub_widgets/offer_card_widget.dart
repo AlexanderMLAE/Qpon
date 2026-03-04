@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/detalles_oferta.dart';
 
 class OfferCardWidget extends StatelessWidget {
   const OfferCardWidget({
@@ -7,11 +8,44 @@ class OfferCardWidget extends StatelessWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
+    this.localName,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
+  final String? localName;
+
+  @override
+  Widget build(BuildContext context) {
+    return OfferCard(productName: productName, productPrice: productPrice, productDetails: productDetails, imageURL: imageURL, localName: localName);
+  }
+
+}
+
+
+
+class OfferCard extends StatefulWidget {
+  const OfferCard({
+    super.key,
+    required this.productName,
+    required this.productPrice,
+    required this.productDetails,
+    required this.imageURL, 
+    required this.localName,
+  });
+  final String productName;
+  final double productPrice;
+  final String productDetails;
+  final String imageURL;
+  final String? localName;
+  
+
+  @override
+  State<StatefulWidget> createState() => _OfferCardState();
+}
+class _OfferCardState extends State<OfferCard> {
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -29,9 +63,7 @@ class OfferCardWidget extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image(
-                      image: NetworkImage(
-                        imageURL,
-                      ),
+                      image: NetworkImage(widget.imageURL),
                       height: 180,
                       fit: BoxFit.cover,
                     ),
@@ -44,11 +76,11 @@ class OfferCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Precio: $productPrice',
+                  'Precio: ${widget.productPrice}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  productName,
+                  widget.productName,
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
               ],
@@ -56,13 +88,14 @@ class OfferCardWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Container(height: 1, color: Colors.red[300]),
             const SizedBox(height: 8),
-            const Text(
-              'Detalles',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ElevatedButton(
+              onPressed: openDetails,
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              child: Text("Detalles", style: TextStyle(color: Colors.white),),
             ),
             const SizedBox(height: 8),
             Text(
-              productDetails,
+              widget.productDetails,
               style: TextStyle(fontSize: 12, color: Colors.black),
             ),
           ],
@@ -70,4 +103,13 @@ class OfferCardWidget extends StatelessWidget {
       ),
     );
   }
+    void openDetails() {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => DetallesOferta()),
+      );
+    });
+  }
+
 }
