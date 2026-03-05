@@ -14,6 +14,9 @@ import 'package:flutter/foundation.dart'
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
+///
+
+const String GOOGLE_API_KEY = String.fromEnvironment("GOOGLE_API_KEY");
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -53,7 +56,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAMIlqzYc_2ybHvPE9XZFuPORoMeeBzMDY',
+    apiKey: GOOGLE_API_KEY,
     appId: '1:507669394645:android:f4614c20d8e0cc39e7de5c',
     messagingSenderId: '507669394645',
     projectId: 'qpon-app-b3da6',
