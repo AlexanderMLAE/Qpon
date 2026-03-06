@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => const reg.RegisterScreen(),
       },
-      home: const LoginScreen(title: "Qpon",),
+      home: const MyHomePage(),
     );
   }
 }
