@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
 
@@ -17,23 +18,46 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     pitch: 0,
   );
   MapboxMap? mapboxMap;
+  PointAnnotation? pointAnnotation;
+  PointAnnotationManager? pointAnnotationManager;
+  List<PointAnnotation> annotations = [];
 
-  void _onMapCreated(MapboxMap mapboxMap) {
+  Future<void> _onMapCreated(MapboxMap mapboxMap) async {
+    this.mapboxMap = mapboxMap;
+    mapboxMap.setCamera(camera);
+    // Location logic
+    var permissionStatus =
+      await Geolocator.requestPermission();
+    debugPrint("Location Status: $permissionStatus");
     mapboxMap.location.updateSettings(
       LocationComponentSettings(enabled: true, puckBearingEnabled: true),
     );
-    this.mapboxMap = mapboxMap;
+    // Annotations for stores
+    mapboxMap.annotations.createPointAnnotationManager().then((value) async {
+      pointAnnotationManager = value;
+      // Load image from assets, Qpon icon as placeholder
+      final ByteData bytes =
+          await rootBundle.load('assets/symbols/custom-icon.png');
+      final Uint8List list = bytes.buffer.asUint8List();
+      createOneAnnotation(list);
+    });
   }
-
-  // list view children for map options, maybe put this on the map settings
-  Widget _getPermission() {
-    return TextButton(
-      child: Text('get location permission'),
-      onPressed: () async {
-        var status = await Geolocator.requestPermission();
-        debugPrint("Location granted : $status");
-      },
-    );
+    void createOneAnnotation(Uint8List list) {
+    pointAnnotationManager
+        ?.create(PointAnnotationOptions(
+            geometry: Point(
+                coordinates: Position(
+              0.381457,
+              6.687337,
+            )),
+            textField: "custom-icon",
+            textOffset: [0.0, -2.0],
+            textColor: Colors.red.value,
+            iconSize: 1.3,
+            iconOffset: [0.0, -5.0],
+            symbolSortKey: 10,
+            image: list))
+        .then((value) => pointAnnotation = value);
   }
 
   @override
@@ -41,21 +65,13 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     final MapWidget mapWidget = MapWidget(
       key: ValueKey("mapWidge"),
       onMapCreated: _onMapCreated,
-      cameraOptions: camera,
     );
-
-    final List<Widget> listViewChildren = <Widget>[];
-
-    listViewChildren.addAll(<Widget>[_getPermission()]);
 
     return Column(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height - 455,
+        Expanded(
           child: mapWidget,
         ),
-        Expanded(child: ListView(children: listViewChildren)),
       ],
     );
   }
