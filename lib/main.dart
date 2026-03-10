@@ -59,7 +59,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 3;
 
   void _openLogin() {
     Navigator.push(

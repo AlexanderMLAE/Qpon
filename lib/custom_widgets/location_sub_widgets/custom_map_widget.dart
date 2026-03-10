@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
@@ -8,6 +9,33 @@ class CustomMapWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _CustomMapWidgetState();
+}
+
+class Location {
+  final String? name;
+  final double? long;
+  final double? lat;
+
+  Location({this.name, this.long, this.lat});
+
+  factory Location.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Location(
+      name: data?['name'],
+      long: data?["long"],
+      lat: data?["lat"],
+    );
+  }
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (name != null) "name": name,
+      if (long != null) "long": long,
+      if (lat != null) "lat": lat,
+    };
+  }
 }
 
 class _CustomMapWidgetState extends State<CustomMapWidget> {
@@ -26,8 +54,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     this.mapboxMap = mapboxMap;
     mapboxMap.setCamera(camera);
     // Location logic
-    var permissionStatus =
-      await Geolocator.requestPermission();
+    var permissionStatus = await Geolocator.requestPermission();
     debugPrint("Location Status: $permissionStatus");
     mapboxMap.location.updateSettings(
       LocationComponentSettings(enabled: true, puckBearingEnabled: true),
@@ -35,28 +62,40 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     // Annotations for stores
     mapboxMap.annotations.createPointAnnotationManager().then((value) async {
       pointAnnotationManager = value;
-      // Load image from assets, Qpon icon as placeholder
-      final ByteData bytes =
-          await rootBundle.load('assets/symbols/custom-icon.png');
-      final Uint8List list = bytes.buffer.asUint8List();
-      createOneAnnotation(list);
+      fetchStores();
     });
   }
-    void createOneAnnotation(Uint8List list) {
+
+  dynamic fetchStores() {
+    FirebaseFirestore.instance.collection("stores").get().then((
+      querySnapshot,
+    ) {
+      debugPrint("Successfully completed");
+      for (var docSnapshot in querySnapshot.docs) {
+        debugPrint('${docSnapshot.id} => ${docSnapshot.data()}');
+        createOneAnnotation(docSnapshot.data()["long"], docSnapshot.data()["lat"], docSnapshot.data()["name"]);
+      }
+    }, onError: (e) => debugPrint("Error completing: $e"));
+  }
+
+  Future<void> createOneAnnotation(double long, double lat, String name) async {
+    final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
+    final Uint8List list = bytes.buffer.asUint8List();
+
     pointAnnotationManager
-        ?.create(PointAnnotationOptions(
-            geometry: Point(
-                coordinates: Position(
-              0.381457,
-              6.687337,
-            )),
-            textField: "custom-icon",
+        ?.create(
+          PointAnnotationOptions(
+            geometry: Point(coordinates: Position(long, lat)),
+            textField: name,
+            textSize: 12,
             textOffset: [0.0, -2.0],
-            textColor: Colors.red.value,
-            iconSize: 1.3,
+            textColor: Colors.black.toARGB32(),
+            iconSize: 0.1,
             iconOffset: [0.0, -5.0],
             symbolSortKey: 10,
-            image: list))
+            image: list,
+          ),
+        )
         .then((value) => pointAnnotation = value);
   }
 
@@ -67,12 +106,6 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       onMapCreated: _onMapCreated,
     );
 
-    return Column(
-      children: [
-        Expanded(
-          child: mapWidget,
-        ),
-      ],
-    );
+    return Column(children: [Expanded(child: mapWidget)]);
   }
 }
