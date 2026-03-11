@@ -10,34 +10,35 @@ class CustomMapWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CustomMapWidgetState();
 }
+// class Location could be useful later but im commenting it out rn since im not using it for anything yet
+// class Location {
+//   final String? name;
+//   final double? long;
+//   final double? lat;
 
-class Location {
-  final String? name;
-  final double? long;
-  final double? lat;
+//   Location({this.name, this.long, this.lat});
 
-  Location({this.name, this.long, this.lat});
+//   factory Location.fromFirestore(
+//     DocumentSnapshot<Map<String, dynamic>> snapshot,
+//     SnapshotOptions? options,
+//   ) {
+//     final data = snapshot.data();
+//     return Location(
+//       name: data?['name'],
+//       long: data?["long"],
+//       lat: data?["lat"],
+//     );
+//   }
+//   Map<String, dynamic> toFirestore() {
+//     return {
+//       if (name != null) "name": name,
+//       if (long != null) "long": long,
+//       if (lat != null) "lat": lat,
+//     };
+//   }
+// }
 
-  factory Location.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data();
-    return Location(
-      name: data?['name'],
-      long: data?["long"],
-      lat: data?["lat"],
-    );
-  }
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (name != null) "name": name,
-      if (long != null) "long": long,
-      if (lat != null) "lat": lat,
-    };
-  }
-}
-
+// TODO: Add a refresh button or have it refresh on its own somehow
 class _CustomMapWidgetState extends State<CustomMapWidget> {
   CameraOptions camera = CameraOptions(
     center: Point(coordinates: Position(-86.84686, 21.04848)),
@@ -47,7 +48,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   );
   MapboxMap? mapboxMap;
   PointAnnotation? pointAnnotation;
-  PointAnnotationManager? pointAnnotationManager;
+  late PointAnnotationManager pointAnnotationManager;
   List<PointAnnotation> annotations = [];
 
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
@@ -60,12 +61,14 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       LocationComponentSettings(enabled: true, puckBearingEnabled: true),
     );
     // Annotations for stores
-    mapboxMap.annotations.createPointAnnotationManager().then((value) async {
-      pointAnnotationManager = value;
-      fetchStores();
+    pointAnnotationManager = await mapboxMap.annotations.createPointAnnotationManager();
+    pointAnnotationManager.tapEvents(onTap: (PointAnnotation annotation) {
+      onTapFunction(annotation);
     });
+    fetchStores();
   }
 
+  // Reading data from the "stores" collection and creating a point with the values found
   dynamic fetchStores() {
     FirebaseFirestore.instance.collection("stores").get().then((
       querySnapshot,
@@ -78,12 +81,12 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     }, onError: (e) => debugPrint("Error completing: $e"));
   }
 
+  // Function that creates annotations, will probably not be used to manually create any points
   Future<void> createOneAnnotation(double long, double lat, String name) async {
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
-
     pointAnnotationManager
-        ?.create(
+        .create(
           PointAnnotationOptions(
             geometry: Point(coordinates: Position(long, lat)),
             textField: name,
@@ -99,6 +102,10 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         .then((value) => pointAnnotation = value);
   }
 
+  void onTapFunction(PointAnnotation annotation) {
+    debugPrint("WE ARE PRINTING SOMETHING, ${annotation.textField}"); // lol idk
+
+  }
   @override
   Widget build(BuildContext context) {
     final MapWidget mapWidget = MapWidget(
