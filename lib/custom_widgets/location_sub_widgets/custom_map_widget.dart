@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
 import 'stablishment_widget.dart';
+
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
 
@@ -61,28 +62,39 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       LocationComponentSettings(enabled: true, puckBearingEnabled: true),
     );
     // Annotations for stores
-    pointAnnotationManager = await mapboxMap.annotations.createPointAnnotationManager();
-    pointAnnotationManager.tapEvents(onTap: (PointAnnotation annotation) {
-      onTapFunction(annotation);
-    });
+    pointAnnotationManager = await mapboxMap.annotations
+        .createPointAnnotationManager();
+    pointAnnotationManager.tapEvents(
+      onTap: (PointAnnotation annotation) {
+        onTapFunction(annotation);
+      },
+    );
     fetchStores();
   }
 
   // Reading data from the "stores" collection and creating a point with the values found
-  dynamic fetchStores() {
-    FirebaseFirestore.instance.collection("stores").get().then((
-      querySnapshot,
-    ) {
+  void fetchStores() {
+    FirebaseFirestore.instance.collection("stores").get().then((querySnapshot) {
       debugPrint("Successfully completed");
       for (var docSnapshot in querySnapshot.docs) {
         debugPrint('${docSnapshot.id} => ${docSnapshot.data()}');
-        createOneAnnotation(docSnapshot.id, docSnapshot.data()["long"], docSnapshot.data()["lat"], docSnapshot.data()["name"]);
+        createOneAnnotation(
+          docSnapshot.id,
+          docSnapshot.data()["long"],
+          docSnapshot.data()["lat"],
+          docSnapshot.data()["name"],
+        );
       }
     }, onError: (e) => debugPrint("Error completing: $e"));
   }
 
   // Function that creates annotations, will probably not be used to manually create any points
-  Future<void> createOneAnnotation(String id, double long, double lat, String name) async {
+  Future<void> createOneAnnotation(
+    String id,
+    double long,
+    double lat,
+    String name,
+  ) async {
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
     final Map<String, Object> customAnnotationData = {"storeId": id};
@@ -105,20 +117,24 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   void onTapFunction(PointAnnotation annotation) {
-    debugPrint("WE ARE PRINTING SOMETHING, ${annotation.textField}"); // lol idk
-    openStablishment(annotation.textField);
+    debugPrint(
+      "Annotation Data: ${annotation.customData}, ${annotation.textField}",
+    ); // lol idk
+    openStablishment(annotation.customData);
   }
-    void openStablishment(String? stablishmentId) {
+
+  void openStablishment(Map<String, Object>? stablishmentId) {
     setState(() {
       Navigator.push(
         context,
         MaterialPageRoute<void>(
           builder: (context) =>
-              StablishmentWidget(stablishmentId: stablishmentId),
+              StablishmentWidget(stablishmentData: stablishmentId),
         ),
       );
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final MapWidget mapWidget = MapWidget(
