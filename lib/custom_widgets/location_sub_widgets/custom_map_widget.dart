@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
-
+import 'stablishment_widget.dart';
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
 
@@ -76,18 +76,20 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       debugPrint("Successfully completed");
       for (var docSnapshot in querySnapshot.docs) {
         debugPrint('${docSnapshot.id} => ${docSnapshot.data()}');
-        createOneAnnotation(docSnapshot.data()["long"], docSnapshot.data()["lat"], docSnapshot.data()["name"]);
+        createOneAnnotation(docSnapshot.id, docSnapshot.data()["long"], docSnapshot.data()["lat"], docSnapshot.data()["name"]);
       }
     }, onError: (e) => debugPrint("Error completing: $e"));
   }
 
   // Function that creates annotations, will probably not be used to manually create any points
-  Future<void> createOneAnnotation(double long, double lat, String name) async {
+  Future<void> createOneAnnotation(String id, double long, double lat, String name) async {
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
+    final Map<String, Object> customAnnotationData = {"storeId": id};
     pointAnnotationManager
         .create(
           PointAnnotationOptions(
+            customData: customAnnotationData,
             geometry: Point(coordinates: Position(long, lat)),
             textField: name,
             textSize: 12,
@@ -104,7 +106,18 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
 
   void onTapFunction(PointAnnotation annotation) {
     debugPrint("WE ARE PRINTING SOMETHING, ${annotation.textField}"); // lol idk
-
+    openStablishment(annotation.textField);
+  }
+    void openStablishment(String? stablishmentId) {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (context) =>
+              StablishmentWidget(stablishmentId: stablishmentId),
+        ),
+      );
+    });
   }
   @override
   Widget build(BuildContext context) {
