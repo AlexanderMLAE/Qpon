@@ -8,22 +8,22 @@ class OfferCardWidget extends StatelessWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
-    this.localName,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
-  final String? localName;
 
   @override
   Widget build(BuildContext context) {
-    return OfferCard(productName: productName, productPrice: productPrice, productDetails: productDetails, imageURL: imageURL, localName: localName);
+    return OfferCard(
+      productName: productName,
+      productPrice: productPrice,
+      productDetails: productDetails,
+      imageURL: imageURL,
+    );
   }
-
 }
-
-
 
 class OfferCard extends StatefulWidget {
   const OfferCard({
@@ -31,21 +31,18 @@ class OfferCard extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL, 
-    required this.localName,
+    required this.imageURL,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
-  final String? localName;
-  
 
   @override
   State<StatefulWidget> createState() => _OfferCardState();
 }
-class _OfferCardState extends State<OfferCard> {
 
+class _OfferCardState extends State<OfferCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -107,7 +104,8 @@ class _OfferCardState extends State<OfferCard> {
       ),
     );
   }
-    void openDetails() {
+
+  void openDetails() {
     setState(() {
       Navigator.push(
         context,
@@ -115,5 +113,4 @@ class _OfferCardState extends State<OfferCard> {
       );
     });
   }
-
 }

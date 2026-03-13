@@ -198,7 +198,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                     productPrice: (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
                     productDetails: oferta['productDetails'] ?? 'Detalles de la oferta',
                     imageURL: oferta['imageURL'] ?? '',
-                    localName: oferta['localName'] ?? '',
                   ),
                 );
               },
