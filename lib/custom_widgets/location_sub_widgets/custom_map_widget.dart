@@ -97,7 +97,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   ) async {
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
-    final Map<String, Object> customAnnotationData = {"storeId": id};
+    final Map<String, Object> customAnnotationData = {"storeId": id, "storeName": name};
     pointAnnotationManager
         .create(
           PointAnnotationOptions(
