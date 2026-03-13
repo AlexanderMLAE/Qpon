@@ -281,7 +281,7 @@ class _EventDialogState extends State<_EventDialog> {
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const DetallesOferta()),
+                      MaterialPageRoute(builder: (context) => const DetallesOferta(productName: 'placeholder', productPrice: 00.00, productDetails: 'placeholder details', imageURL: 'https://i.imgur.com/vs8QJQY.png',)),
                     );
                   },
                   child: Container(

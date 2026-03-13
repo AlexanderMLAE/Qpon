@@ -107,7 +107,7 @@ class _OfferCardState extends State<OfferCard> {
     setState(() {
       Navigator.push(
         context,
-        MaterialPageRoute<void>(builder: (context) => DetallesOferta()),
+        MaterialPageRoute<void>(builder: (context) => DetallesOferta(productName: widget.productName, productPrice: widget.productPrice, productDetails: widget.productDetails, imageURL: widget.imageURL,)),
       );
     });
   }
