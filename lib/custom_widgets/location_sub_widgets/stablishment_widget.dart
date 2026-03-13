@@ -19,19 +19,14 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
     fetchOffers();
   }
 
-  // TODO: Maybe not read EVERY SINGLE FUCKING offer
   void fetchOffers() {
     String storeId = widget.stablishmentData?["storeId"] as String;
-    FirebaseFirestore.instance.collection("offers").get().then((querySnapshot) {
+    FirebaseFirestore.instance.collection("offers").where("store", isEqualTo: storeId).get().then((querySnapshot) {
       for (var docSnapshot in querySnapshot.docs) {
-        if (docSnapshot.data()["store"] == storeId) {
           setState(() {
             offers.add(docSnapshot.data());
           });
           debugPrint("Offer data: $offers");
-        } else {
-          debugPrint("this is a problem ${docSnapshot.data()}");
-        }
       }
     });
   }
@@ -45,7 +40,7 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
-          child: Text("", style: TextStyle(color: Colors.black)),
+          child: Text("${widget.stablishmentData!["storeName"] ?? "Something went wrong" }", style: TextStyle(color: Colors.black)),
         ),
       ),
       body: Column(
