@@ -50,6 +50,7 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
         children: [
           Text("Store Data ${widget.stablishmentData}"),
           Expanded(
+            // TODO: Test multiple, also it doesnt show up unless i hot reload???? what
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: offers.length,
