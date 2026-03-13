@@ -25,7 +25,9 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
     FirebaseFirestore.instance.collection("offers").get().then((querySnapshot) {
       for (var docSnapshot in querySnapshot.docs) {
         if (docSnapshot.data()["store"] == storeId) {
-          offers.add(docSnapshot.data());
+          setState(() {
+            offers.add(docSnapshot.data());
+          });
           debugPrint("Offer data: $offers");
         } else {
           debugPrint("this is a problem ${docSnapshot.data()}");
@@ -50,7 +52,6 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
         children: [
           Text("Store Data ${widget.stablishmentData}"),
           Expanded(
-            // TODO: Test multiple, also it doesnt show up unless i hot reload???? what
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: offers.length,
