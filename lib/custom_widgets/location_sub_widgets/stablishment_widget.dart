@@ -19,7 +19,6 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
     fetchOffers();
   }
 
-  // TODO: Maybe not read EVERY SINGLE FUCKING offer
   void fetchOffers() {
     String storeId = widget.stablishmentData?["storeId"] as String;
     FirebaseFirestore.instance.collection("offers").where("store", isEqualTo: storeId).get().then((querySnapshot) {

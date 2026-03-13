@@ -3,21 +3,44 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class DetallesOferta extends StatelessWidget {
-  const DetallesOferta({super.key});
-
+  const DetallesOferta({
+    super.key,
+    required this.productName,
+    required this.productPrice,
+    required this.productDetails,
+    required this.imageURL,
+  });
+  final String productName;
+  final double productPrice;
+  final String productDetails;
+  final String imageURL;
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Detalles Oferta',
-      home: DetallesOfertaWidget(),
+      home: DetallesOfertaWidget(
+      productName: productName,
+      productPrice: productPrice,
+      productDetails: productDetails,
+      imageURL: imageURL,
+    ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class DetallesOfertaWidget extends StatefulWidget {
-  const DetallesOfertaWidget({super.key});
-
+  const DetallesOfertaWidget({
+    super.key,
+    required this.productName,
+    required this.productPrice,
+    required this.productDetails,
+    required this.imageURL,
+  });
+  final String productName;
+  final double productPrice;
+  final String productDetails;
+  final String imageURL;
   @override
   State<DetallesOfertaWidget> createState() => _DetallesOfertaWidgetState();
 }
@@ -118,7 +141,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(18),
                         child: Image.network(
-                          'https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
+                          widget.imageURL,
                           width: double.infinity,
                           height: 180,
                           fit: BoxFit.cover,
@@ -136,7 +159,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     ),
                   ),
                   Text(
-                    'Oferta Especial',
+                    widget.productName,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
@@ -145,8 +168,8 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    '\$79.99',
+                  Text( // Price of the offer
+                    '\$ ${widget.productPrice}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromARGB(255, 252, 18, 47),
@@ -155,8 +178,8 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Disfruta de nuestras mejores ofertas y promociones exclusivas. Aplica solo en sucursales participantes.',
+                  Text( // Verbose details of the offer
+                    widget.productDetails, // <-- TODO: Change
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[700], fontSize: 14),
                   ),
@@ -195,8 +218,8 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          '• Válido hasta el 31 de diciembre\n• No acumulable con otras ofertas\n• Presenta el código en la tienda',
+                        Text( // Terms and conditions
+                          '• Válido hasta el 31 de diciembre\n• No acumulable con otras ofertas\n• Presenta el código en la tienda', // TODO: change
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[700],
