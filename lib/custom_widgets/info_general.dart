@@ -304,7 +304,7 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Información general', style: TextStyle(color: Colors.white)),
+        title: const Text('Información general', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
       ),
       body: _isLoading
           ? SafeArea(

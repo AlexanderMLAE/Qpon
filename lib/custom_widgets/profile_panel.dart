@@ -44,14 +44,14 @@ class _ProfilePanelState extends State<ProfilePanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB71C1C), // rojo fuerte parecido al diseño
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
+            icon: const Icon(Icons.close, color: Color.fromARGB(255, 252, 18, 47)),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -65,7 +65,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
               const SizedBox(height: 10),
               CircleAvatar(
                 radius: 44,
-                backgroundColor: Colors.white24,
+                backgroundColor: Color.fromARGB(255, 252, 18, 47),
                 child: _user?.photoURL != null
                     ? ClipOval(
                         child: Image.network(
@@ -76,30 +76,30 @@ class _ProfilePanelState extends State<ProfilePanel> {
                           errorBuilder: (_, _, _) => const Icon(Icons.person, size: 48, color: Colors.white),
                         ),
                       )
-                    : const Icon(Icons.person, size: 48, color: Colors.white),
+                    : const Icon(Icons.person, size: 48, color: Color.fromARGB(255, 252, 18, 47)),
               ),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   _displayName(_user),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: Color.fromARGB(255, 252, 18, 47), fontSize: 20),
                 ),
               ),
               const SizedBox(height: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1565C0),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Text(
                   'Usuario desde 2025',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
               ),
               const SizedBox(height: 24),
@@ -141,7 +141,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 255, 111, 0),
+                          backgroundColor: Color.fromARGB(255, 252, 18, 47),
                           padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
                           foregroundColor: Colors.white,
                         ),
@@ -154,15 +154,15 @@ class _ProfilePanelState extends State<ProfilePanel> {
                             (route) => false,
                           );
                         },
-                        child: const Text('Cerrar sesión'),
+                        child: const Text('Cerrar sesión',style: TextStyle(fontWeight: FontWeight.bold),),
                       ),
                     ),
                     const SizedBox(height: 40),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        'Desarrollado por MyUT © 2025',
-                        style: const TextStyle(color: Color.fromRGBO(255, 255, 255, 0.8), fontSize: 12),
+                        'Desarrollado por Sysmetry © 2025',
+                        style: TextStyle(color: Colors.black, fontSize: 12),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -179,13 +179,13 @@ class _ProfilePanelState extends State<ProfilePanel> {
   Widget _buildOption(BuildContext context, IconData icon, String label, {VoidCallback? onTap}) {
     return Column(
       children: [
-        const Divider(color: Colors.white24, height: 1),
+        const Divider(color: Colors.black, height: 1),
         ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.white,
             child: Icon(icon, color: Colors.black),
           ),
-          title: Text(label, style: const TextStyle(color: Colors.white)),
+          title: Text(label, style: const TextStyle(color: Colors.black)),
           onTap: onTap,
         ),
       ],

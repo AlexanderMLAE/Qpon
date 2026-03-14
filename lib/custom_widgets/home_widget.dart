@@ -125,13 +125,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red),
+          border: Border.all(color: Color.fromARGB(255, 252, 18, 47)),
         ),
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Buscar oferta o establecimiento',
-            prefixIcon: const Icon(Icons.search, color: Colors.red),
+            prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 252, 18, 47)),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             suffixIcon: _searchController.text.isNotEmpty
@@ -157,7 +157,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             'Filtro - Precio:',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
           const SizedBox(width: 8),
@@ -173,7 +173,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value ,style: TextStyle(color: Colors.black ),), 
               );
             }).toList(),
           ),
@@ -214,7 +214,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           Icon(
             Icons.search_off,
             size: 64,
-            color: Colors.red[400],
+            color: Color.fromARGB(255, 252, 18, 47),
           ),
           const SizedBox(height: 16),
           Text(
