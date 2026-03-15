@@ -171,7 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           debugPrint('Regreso de registro');
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 252, 18, 47),
+                          foregroundColor: const Color.fromARGB(
+                            255,
+                            252,
+                            18,
+                            47,
+                          ),
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -215,7 +220,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Continuar con Google' ,style: TextStyle(color: Color.fromARGB(255, 252, 18, 47)),),
+                          : const Text(
+                              'Continuar con Google',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 252, 18, 47),
+                              ),
+                            ),
                     ),
                   ),
                 ],
@@ -267,12 +277,13 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Inicio de sesión'),
-          content: const Text('¡Bienvenido a Qpon!'),
+          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          title: const Text('Inicio de sesión',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+          content: const Text('¡Bienvenido a Qpon!',style: TextStyle(color: Colors.white),),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('OK'),
+              child: const Text('OK',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), ),
             ),
           ],
         ),
@@ -385,12 +396,18 @@ class _LoginScreenState extends State<LoginScreen> {
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
           backgroundColor: Color.fromARGB(255, 252, 18, 47),
-          title: const Text('Inicio de sesion con Google' ,style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-          content: const Text('¡Inicio de sesión exitoso!',style: TextStyle(color: Colors.white)),
+          title: const Text(
+            'Inicio de sesion con Google',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            '¡Inicio de sesión exitoso!',
+            style: TextStyle(color: Colors.white),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('OK',style: TextStyle(color: Colors.white)),
+              child: const Text('OK', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

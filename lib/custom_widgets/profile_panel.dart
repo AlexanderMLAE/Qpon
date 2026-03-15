@@ -144,6 +144,9 @@ class _ProfilePanelState extends State<ProfilePanel> {
                           backgroundColor: Color.fromARGB(255, 252, 18, 47),
                           padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
                           foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         ),
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut();

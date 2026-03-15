@@ -31,16 +31,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       if (user == null) throw Exception('No hay usuario autenticado');
       await user.updatePassword(newPass);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contraseña actualizada')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Contraseña actualizada')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
       String message = 'Error actualizando contraseña';
       // firebase may require reauthentication
       if (e.toString().contains('requires-recent-login')) {
-        message = 'Se requiere volver a iniciar sesión antes de cambiar la contraseña.';
+        message =
+            'Se requiere volver a iniciar sesión antes de cambiar la contraseña.';
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -57,7 +62,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Cambiar contraseña', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Cambiar contraseña',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -70,19 +78,37 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 child: Text(
                   'Cambiar\ncontraseña',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 28),
 
-              Text('Nueva contraseña', style: const TextStyle(color: Colors.white)),
+              Text(
+                'Nueva contraseña',
+                style: const TextStyle(color: Colors.white),
+              ),
               const SizedBox(height: 6),
-              _buildTextField(_passwordController, hint: 'Nueva contraseña', obscure: true),
+              _buildTextField(
+                _passwordController,
+                hint: 'Nueva contraseña',
+                obscure: true,
+              ),
 
               const SizedBox(height: 12),
-              Text('Confirmar contraseña', style: const TextStyle(color: Colors.white)),
+              Text(
+                'Confirmar contraseña',
+                style: const TextStyle(color: Colors.white),
+              ),
               const SizedBox(height: 6),
-              _buildTextField(_confirmController, hint: 'Confirmar contraseña', obscure: true),
+              _buildTextField(
+                _confirmController,
+                hint: 'Confirmar contraseña',
+                obscure: true,
+              ),
 
               const SizedBox(height: 20),
               Center(
@@ -90,8 +116,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isSaving ? null : _save,
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(vertical: 14)),
-                    child: _isSaving ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Guardar', style: TextStyle(color: Colors.white, fontSize: 15), ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: _isSaving
+                        ? const SizedBox(
+                            height: 18,
+                            width: 18,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Guardar',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                   ),
                 ),
               ),
@@ -102,7 +146,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, {required String hint, bool obscure = false}) {
+  Widget _buildTextField(
+    TextEditingController controller, {
+    required String hint,
+    bool obscure = false,
+  }) {
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: TextFormField(
@@ -113,15 +161,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           filled: true,
           fillColor: Colors.white,
           hintText: hint,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
         ),
         validator: (v) {
           if (controller == _passwordController) {
-            if (v == null || v.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
+            if (v == null || v.length < 6)
+              return 'La contraseña debe tener al menos 6 caracteres';
           }
           if (controller == _confirmController) {
-            if (v == null || v != _passwordController.text) return 'Las contraseñas no coinciden';
+            if (v == null || v != _passwordController.text)
+              return 'Las contraseñas no coinciden';
           }
           return null;
         },

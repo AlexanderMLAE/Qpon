@@ -352,7 +352,11 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                             const SizedBox(height: 8),
                             ElevatedButton(
                               onPressed: _isSaving ? null : _changePhoto,
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                        ),
+                              ),
                               child: const Text('Cambiar foto', style: TextStyle(color: Colors.white)),
                             ),
                           ],
@@ -419,7 +423,11 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                       Center(
                         child: ElevatedButton(
                           onPressed: _isSaving ? null : _saveChanges,
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                          ),
                           child: _isSaving
                               ? const SizedBox(
                                   width: 20,
