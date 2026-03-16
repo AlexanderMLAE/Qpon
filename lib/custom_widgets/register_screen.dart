@@ -72,10 +72,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tu correo';
-                      if (!value.contains('@') || !value.contains('.'))
+                      }
+                      if (!value.contains('@') || !value.contains('.')) {
                         return 'Ingresa un correo válido';
+                      }
                       return null;
                     },
                   ),
@@ -100,10 +102,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tu contraseña';
-                      if (value.length < 6)
+                      }
+                      if (value.length < 6) {
                         return 'La contraseña debe tener al menos 6 caracteres';
+                      }
                       return null;
                     },
                   ),
@@ -128,10 +132,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return 'Por favor confirma tu contraseña';
-                      if (value != _passwordController.text)
+                      }
+                      if (value != _passwordController.text) {
                         return 'Las contraseñas no coinciden';
+                      }
                       return null;
                     },
                   ),

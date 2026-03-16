@@ -14,7 +14,7 @@ class DatabaseService {
           'productName': data['product_name'] ?? 'Sin nombre',
           'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
           'productDetails': data['product_details'] ?? '',
-          'imageURL': data['image_url'] ?? '',
+          'imageURL': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
           'localName': data['store'] ?? 'Establecimiento', 
           'storeId': data['store'], // ID
         };

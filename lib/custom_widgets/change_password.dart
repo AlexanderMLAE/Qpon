@@ -172,12 +172,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ),
         validator: (v) {
           if (controller == _passwordController) {
-            if (v == null || v.length < 6)
+            if (v == null || v.length < 6) {
               return 'La contraseña debe tener al menos 6 caracteres';
+            }
           }
           if (controller == _confirmController) {
-            if (v == null || v != _passwordController.text)
+            if (v == null || v != _passwordController.text) {
               return 'Las contraseñas no coinciden';
+            }
           }
           return null;
         },
