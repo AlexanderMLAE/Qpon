@@ -277,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          backgroundColor: Color.fromARGB(255,66, 66, 66),
           title: const Text('Inicio de sesión',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
           content: const Text('¡Bienvenido a Qpon!',style: TextStyle(color: Colors.white),),
           actions: [
@@ -395,7 +395,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          backgroundColor: const Color.fromARGB(255,66, 66, 66),
           title: const Text(
             'Inicio de sesion con Google',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

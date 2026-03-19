@@ -76,12 +76,12 @@ class _OfferCardState extends State<OfferCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Precio: ${widget.productPrice}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  widget.productName,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  widget.productName,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                  '\$ ${widget.productPrice}',
+                  style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
