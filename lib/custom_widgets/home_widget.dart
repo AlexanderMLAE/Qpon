@@ -31,7 +31,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> _cargarOfertas() async {
     try {
-      final ofertas = await DatabaseService.getOfertasReal();
+      final ofertas = await DatabaseService.getOffers();
       setState(() {
         _ofertas = ofertas;
         _ofertasFiltradas = ofertas;

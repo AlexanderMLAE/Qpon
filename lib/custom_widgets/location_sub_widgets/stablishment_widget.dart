@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/database_service.dart';
 import 'offer_card_widget.dart';
 
 // Everything above this may be unnecessary
@@ -12,23 +12,23 @@ class StablishmentWidget extends StatefulWidget {
 }
 
 class _StablishmentWidgetState extends State<StablishmentWidget> {
-  List<Map<String, dynamic>> offers = [];
+  List<Map<String, dynamic>> _offers = [];
   @override
   void initState() {
     super.initState();
     fetchOffers();
   }
 
-  void fetchOffers() {
+  Future<void> fetchOffers() async {
     String storeId = widget.stablishmentData?["storeId"] as String;
-    FirebaseFirestore.instance.collection("offers").where("store", isEqualTo: storeId).get().then((querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-          setState(() {
-            offers.add(docSnapshot.data());
-          });
-          debugPrint("Offer data: $offers");
-      }
-    });
+    try {
+      final offers = await DatabaseService.getStoreOffers(storeId);
+      setState(() {
+        _offers = offers;
+      });
+    } catch (e) {
+      debugPrint("err $e");
+    }
   }
 
   @override
@@ -40,7 +40,10 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
-          child: Text("${widget.stablishmentData!["storeName"] ?? "Something went wrong" }", style: TextStyle(color: Colors.black)),
+          child: Text(
+            "${widget.stablishmentData!["storeName"] ?? "Something went wrong"}",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
       body: Column(
@@ -49,18 +52,18 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: offers.length,
+              itemCount: _offers.length,
               itemBuilder: (context, index) {
-                final offer = offers[index];
+                final offer = _offers[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: OfferCardWidget(
-                    productName: offer['product_name'] ?? 'Producto',
+                    productName: offer['productName'] ?? 'Producto',
                     productPrice:
-                        (offer['product_price'] as num?)?.toDouble() ?? 0.0,
+                        (offer['productPrice'] as num?)?.toDouble() ?? 0.0,
                     productDetails:
-                        offer['product_details'] ?? 'Detalles de la oferta',
-                    imageURL: offer['image_url'] ?? '',
+                        offer['productDetails'] ?? 'Detalles de la oferta',
+                    imageURL: offer['imageURL'] ?? 'https://i.imgur.com/vs8QJQY.png',
                   ),
                 );
               },
