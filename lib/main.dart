@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => const reg.RegisterScreen(),
       },
-      home: const MyHomePage(),
+      home: const LoginScreen(title: "Qpon",),
     );
   }
 }
@@ -59,7 +59,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 3;
+  int currentPageIndex = 0;
 
   void _openLogin() {
     Navigator.push(
