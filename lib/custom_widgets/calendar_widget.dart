@@ -10,16 +10,10 @@ class EventData {
   String note;
   EventData({required this.title, required this.note});
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'note': note,
-      };
+  Map<String, dynamic> toJson() => {'title': title, 'note': note};
 
   factory EventData.fromJson(Map<String, dynamic> json) {
-    return EventData(
-      title: json['title'] ?? '',
-      note: json['note'] ?? '',
-    );
+    return EventData(title: json['title'] ?? '', note: json['note'] ?? '');
   }
 }
 
@@ -91,11 +85,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               width: double.infinity,
               color: Colors.black,
               alignment: Alignment.center,
-              child: const Text('Calendario',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Calendario',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             _buildDaySheet(_today),
@@ -125,7 +122,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   weekendDays: const [DateTime.sunday],
                   daysOfWeekHeight: 40,
                   daysOfWeekStyle: const DaysOfWeekStyle(
-                      decoration: BoxDecoration(color: _kBgRed)),
+                    decoration: BoxDecoration(color: _kBgRed),
+                  ),
                   headerStyle: HeaderStyle(
                     titleCentered: true,
                     formatButtonVisible: false,
@@ -135,16 +133,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   calendarStyle: const CalendarStyle(
                     outsideDaysVisible: false,
                     todayDecoration: BoxDecoration(
-                        color: _kLightRed, shape: BoxShape.circle),
-                    selectedDecoration:
-                        BoxDecoration(color: Colors.transparent),
+                      color: _kLightRed,
+                      shape: BoxShape.circle,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.transparent,
+                    ),
                     weekendTextStyle: TextStyle(color: Colors.red),
                     disabledTextStyle: TextStyle(color: Colors.grey),
                   ),
                   calendarBuilders: CalendarBuilders(
                     defaultBuilder: (_, date, _) {
-                      final isSaved =
-                          _eventosGuardados.containsKey(_normalizeDate(date));
+                      final isSaved = _eventosGuardados.containsKey(
+                        _normalizeDate(date),
+                      );
 
                       if (_tempPressed != null &&
                           isSameDay(date, _tempPressed)) {
@@ -152,13 +154,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       }
                       if (isSaved) {
                         return _circleDay(
-                            date, _kPurple.withValues(alpha: 0.5));
+                          date,
+                          _kPurple.withValues(alpha: 0.5),
+                        );
                       }
                       return Center(child: Text('${date.day}'));
                     },
                     todayBuilder: (_, date, _) {
-                      final isSaved =
-                          _eventosGuardados.containsKey(_normalizeDate(date));
+                      final isSaved = _eventosGuardados.containsKey(
+                        _normalizeDate(date),
+                      );
                       return _circleDay(date, isSaved ? _kPurple : _kLightRed);
                     },
                   ),
@@ -180,15 +185,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
-              2,
-              (_) => Container(
-                    width: 18,
-                    height: 6,
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    decoration: BoxDecoration(
-                        color: Colors.black26,
-                        borderRadius: BorderRadius.circular(3)),
-                  )),
+            2,
+            (_) => Container(
+              width: 18,
+              height: 6,
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+          ),
         ),
         const SizedBox(height: 6),
         Container(
@@ -200,14 +207,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: const [
               BoxShadow(
-                  color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
             ],
           ),
-          child: Text('${d.day}',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold)),
+          child: Text(
+            '${d.day}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         const SizedBox(height: 10),
         Text(_formatearFecha(d), style: const TextStyle(fontSize: 16)),
@@ -217,16 +230,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   Widget _circleDay(DateTime d, Color color, {bool isAnimated = false}) {
     final decoration = BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: isAnimated
-            ? [
-                BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4))
-              ]
-            : null);
+      color: color,
+      shape: BoxShape.circle,
+      boxShadow: isAnimated
+          ? [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ]
+          : null,
+    );
     final child = Text('${d.day}', style: const TextStyle(color: Colors.white));
 
     return isAnimated
@@ -236,12 +251,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             margin: const EdgeInsets.all(6),
             alignment: Alignment.center,
             decoration: decoration,
-            child: child)
+            child: child,
+          )
         : Container(
             margin: const EdgeInsets.all(6),
             alignment: Alignment.center,
             decoration: decoration,
-            child: child);
+            child: child,
+          );
   }
 
   Future<void> _handleSelect(DateTime sel, DateTime foc) async {
@@ -259,9 +276,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         context,
         MaterialPageRoute(
           builder: (context) => const DetallesOfertaWidget(
-            productName: 'Hamburguesa Sencilla',
+            productName: 'Una especialidad',
             productPrice: 109.00,
-            productDetails: '2x1 en hamburguesas los martes.',
+            productDetails: 'Pizza de medio metro de una especialidadß.',
             imageURL: 'https://i.imgur.com/5L3Eg2X.png',
           ),
         ),
@@ -272,10 +289,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     final EventData? resultData = await showDialog<EventData?>(
       context: context,
-      builder: (context) => const _EventDialog(
-        initialTitle: null,
-        initialNote: null,
-      ),
+      builder: (context) =>
+          const _EventDialog(initialTitle: null, initialNote: null),
     );
 
     setState(() {
@@ -301,7 +316,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     'Septiembre',
     'Octubre',
     'Noviembre',
-    'Diciembre'
+    'Diciembre',
   ];
   static const _dias = [
     'Domingo',
@@ -310,7 +325,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     'Miércoles',
     'Jueves',
     'Viernes',
-    'Sábado'
+    'Sábado',
   ];
   String _formatearFecha(DateTime f) =>
       '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';
@@ -355,7 +370,9 @@ class _EventDialogState extends State<_EventDialog> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,17 +386,23 @@ class _EventDialogState extends State<_EventDialog> {
                         controller: _titleController,
                         decoration: const InputDecoration(
                           hintText: 'Ingresar Titulo',
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
                           enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black12)),
+                            borderSide: BorderSide(color: Colors.black12),
+                          ),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black26)),
+                            borderSide: BorderSide(color: Colors.black26),
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 8),
                         ),
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],
@@ -391,9 +414,11 @@ class _EventDialogState extends State<_EventDialog> {
                     hintText: 'Escribe una nota',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black12)),
+                      borderSide: BorderSide(color: Colors.black12),
+                    ),
                     focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black26)),
+                      borderSide: BorderSide(color: Colors.black26),
+                    ),
                     isDense: true,
                   ),
                   style: const TextStyle(fontSize: 14),
@@ -401,7 +426,7 @@ class _EventDialogState extends State<_EventDialog> {
                   minLines: 1,
                 ),
                 const SizedBox(height: 20),
-                
+
                 // --- AQUÍ REDIRIGE SI PRESIONAS LA IMAGEN DENTRO DEL DIÁLOGO ---
                 GestureDetector(
                   onTap: () {
@@ -409,31 +434,34 @@ class _EventDialogState extends State<_EventDialog> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DetallesOfertaWidget(
-                                productName: 'Una especialidad',
-                                productPrice: 109.00,
-                                productDetails: 'Pizza de medio metro de una especialidad.',
-                                imageURL: 'https://i.imgur.com/5L3Eg2X.png',
-                              )),
+                        builder: (context) => const DetallesOfertaWidget(
+                          productName: 'Una especialidad',
+                          productPrice: 109.00,
+                          productDetails:
+                              'Pizza de medio metro de una especialidad.',
+                          imageURL: 'https://i.imgur.com/5L3Eg2X.png',
+                        ),
+                      ),
                     );
                   },
                   child: Container(
                     height: 100,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: const DecorationImage(
-                          // --- IMAGEN QUE SE MUESTRA EN EL DIÁLOGO ---
-                          image: NetworkImage(
-                              'https://i.imgur.com/5L3Eg2X.png'),
-                          fit: BoxFit.cover,
+                      borderRadius: BorderRadius.circular(12),
+                      image: const DecorationImage(
+                        // --- IMAGEN QUE SE MUESTRA EN EL DIÁLOGO ---
+                        image: NetworkImage('https://i.imgur.com/5L3Eg2X.png'),
+                        fit: BoxFit.cover,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 5,
-                              offset: const Offset(0, 3))
-                        ]),
+                      ],
+                    ),
                     alignment: Alignment.center,
                   ),
                 ),
@@ -443,22 +471,29 @@ class _EventDialogState extends State<_EventDialog> {
                   height: 45,
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(
-                        context,
-                        EventData(
-                            title: _titleController.text,
-                            note: _noteController.text)),
+                      context,
+                      EventData(
+                        title: _titleController.text,
+                        note: _noteController.text,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: _kRed,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        elevation: 0),
-                    child: const Text('Guardar',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
+                      backgroundColor: _kRed,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Guardar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -470,7 +505,9 @@ class _EventDialogState extends State<_EventDialog> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                    color: Colors.black, shape: BoxShape.circle),
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
                 child: const Icon(Icons.close, color: Colors.white, size: 20),
               ),
             ),
