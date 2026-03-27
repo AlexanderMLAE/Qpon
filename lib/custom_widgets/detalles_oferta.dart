@@ -11,11 +11,14 @@ class DetallesOferta extends StatelessWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
+    this.targetDate,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
+  final DateTime? targetDate;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,6 +28,7 @@ class DetallesOferta extends StatelessWidget {
         productPrice: productPrice,
         productDetails: productDetails,
         imageURL: imageURL,
+        targetDate: targetDate,
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -38,11 +42,14 @@ class DetallesOfertaWidget extends StatefulWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
+    this.targetDate,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
+  final DateTime? targetDate;
+
   @override
   State<DetallesOfertaWidget> createState() => _DetallesOfertaWidgetState();
 }
@@ -208,7 +215,8 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                           eventosJson != null ? json.decode(eventosJson) : {};
 
                       const termsText = '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda';
-                      final fecha = _parseDate(termsText);
+                      
+                      final fecha = widget.targetDate ?? _parseDate(termsText);
                       final normalizedDate = DateTime(fecha.year, fecha.month, fecha.day);
 
                       final newEvent = EventData(
@@ -223,7 +231,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       datosDecodificados[normalizedDate.toIso8601String()] = newEvent.toJson();
                       await prefs.setString('eventos_qpon', json.encode(datosDecodificados));
 
-                      // ---> AQUÍ TOCAMOS EL TIMBRE PARA AVISAR AL CALENDARIO <---
                       updateCalendarNotifier.value = !updateCalendarNotifier.value;
 
                       if (context.mounted) {

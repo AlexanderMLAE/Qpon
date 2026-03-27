@@ -66,7 +66,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   DateTime _normalizeDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  // --- FUNCIÓN QUE ESCUCHA EL TIMBRE ---
   void _actualizarCalendario() {
     if (mounted) _cargarEventos();
   }
@@ -75,13 +74,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void initState() {
     super.initState();
     _cargarEventos();
-    // Le decimos al calendario que ponga atención al timbre
     updateCalendarNotifier.addListener(_actualizarCalendario);
   }
 
   @override
   void dispose() {
-    // Apagamos el oyente si el calendario se destruye
     updateCalendarNotifier.removeListener(_actualizarCalendario);
     super.dispose();
   }
@@ -317,7 +314,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: const Text('Eliminar del calendario', style: TextStyle(fontWeight: FontWeight.bold)),
-            content: Text('¿Deseas quitar la marca de "${existingEvent.title}" para este día?'),
+            content: Text('¿Deseas quitar la marca de este día?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -354,15 +351,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final normalizedDate = _normalizeDate(sel);
     final existingEvent = _eventosGuardados[normalizedDate];
 
-    if (existingEvent != null) {
+    if (existingEvent != null && existingEvent.productName != null) {
       await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => DetallesOfertaWidget(
-            productName: existingEvent.productName ?? existingEvent.title,
+            productName: existingEvent.productName!,
             productPrice: existingEvent.productPrice ?? 0.0,
             productDetails: existingEvent.productDetails ?? existingEvent.note,
             imageURL: existingEvent.imageURL ?? 'https://i.imgur.com/5L3Eg2X.png',
+            targetDate: normalizedDate, // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
           ),
         ),
       );
@@ -373,19 +371,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     final dynamic resultData = await showDialog<dynamic>(
       context: context,
-      builder: (context) =>
-          const _EventDialog(initialTitle: null, initialNote: null),
+      builder: (context) => _EventDialog(
+        initialTitle: existingEvent?.title, 
+        initialNote: existingEvent?.note,
+      ),
     );
 
     if (resultData == "VER_OFERTA") {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const DetallesOfertaWidget(
+          builder: (context) => DetallesOfertaWidget(
             productName: 'Oferta Especial',
             productPrice: 109.0,
             productDetails: 'Una increíble oferta para ti.',
             imageURL: 'https://i.imgur.com/5L3Eg2X.png',
+            targetDate: normalizedDate, // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
           ),
         ),
       );
