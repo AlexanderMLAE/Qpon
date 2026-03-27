@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'calendar_widget.dart';
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({
@@ -19,11 +21,11 @@ class DetallesOferta extends StatelessWidget {
     return MaterialApp(
       title: 'Detalles Oferta',
       home: DetallesOfertaWidget(
-      productName: productName,
-      productPrice: productPrice,
-      productDetails: productDetails,
-      imageURL: imageURL,
-    ),
+        productName: productName,
+        productPrice: productPrice,
+        productDetails: productDetails,
+        imageURL: imageURL,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -50,6 +52,25 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...';
   int currentPageIndex = 0;
 
+  DateTime _parseDate(String text) {
+    final months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    final regex = RegExp(r'(\d{1,2})\s+de\s+([a-zA-Z]+)');
+    final match = regex.firstMatch(text.toLowerCase());
+    
+    if (match != null) {
+      int day = int.tryParse(match.group(1) ?? '1') ?? 1;
+      String monthStr = match.group(2) ?? 'enero';
+      int month = months.indexOf(monthStr) + 1;
+      if (month > 0) {
+        return DateTime(DateTime.now().year, month, day);
+      }
+    }
+    return DateTime.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double topHeaderHeight = MediaQuery.of(context).padding.top + 48;
@@ -57,7 +78,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
         MediaQuery.of(context).padding.bottom + 48;
     final double smallHeaderHeight = topHeaderHeight / 2;
 
-    // ignore: unused_local_variable
     Uint8List? burgerBytes;
     String cleaned = _burgerBase64.trim();
     if (cleaned.startsWith('data:image')) {
@@ -75,7 +95,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
       body: Stack(
         children: [
           const Positioned.fill(child: ColoredBox(color: Colors.white)),
-          // Header superior rojo con "Qpon"
           Positioned(
             top: 0,
             left: 0,
@@ -100,7 +119,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
               ),
             ),
           ),
-          // Header pequeño NEGRO "Oferta"
           Positioned(
             top: topHeaderHeight,
             left: 0,
@@ -120,8 +138,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
               ),
             ),
           ),
-
-          // Contenido scrollable
           Positioned(
             top: topHeaderHeight + smallHeaderHeight,
             bottom: bottomHeaderHeight,
@@ -147,13 +163,13 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                                color: Colors.grey.shade200,
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Imagen no encontrada',
-                                  style: TextStyle(color: Colors.black54),
-                                ),
-                              ),
+                            color: Colors.grey.shade200,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'Imagen no encontrada',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -168,7 +184,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text( // Price of the offer
+                  Text(
                     '\$ ${widget.productPrice}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -178,14 +194,47 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text( // Verbose details of the offer
-                    widget.productDetails, // <-- TODO: Change
+                  Text(
+                    widget.productDetails,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[700], fontSize: 14),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      final String? eventosJson = prefs.getString('eventos_qpon');
+                      Map<String, dynamic> datosDecodificados =
+                          eventosJson != null ? json.decode(eventosJson) : {};
+
+                      const termsText = '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda';
+                      final fecha = _parseDate(termsText);
+                      final normalizedDate = DateTime(fecha.year, fecha.month, fecha.day);
+
+                      final newEvent = EventData(
+                        title: widget.productName,
+                        note: widget.productDetails,
+                        productName: widget.productName,
+                        productPrice: widget.productPrice,
+                        productDetails: widget.productDetails,
+                        imageURL: widget.imageURL,
+                      );
+
+                      datosDecodificados[normalizedDate.toIso8601String()] = newEvent.toJson();
+                      await prefs.setString('eventos_qpon', json.encode(datosDecodificados));
+
+                      // ---> AQUÍ TOCAMOS EL TIMBRE PARA AVISAR AL CALENDARIO <---
+                      updateCalendarNotifier.value = !updateCalendarNotifier.value;
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Oferta guardada en el calendario'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 252, 18, 47),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -218,8 +267,8 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text( // Terms and conditions
-                          '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda', // TODO: change
+                        Text(
+                          '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[700],

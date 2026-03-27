@@ -5,15 +5,44 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'detalles_oferta.dart';
 
+// ---> EL TIMBRE INVISIBLE <---
+final ValueNotifier<bool> updateCalendarNotifier = ValueNotifier(false);
+
 class EventData {
   String title;
   String note;
-  EventData({required this.title, required this.note});
+  String? productName;
+  double? productPrice;
+  String? productDetails;
+  String? imageURL;
 
-  Map<String, dynamic> toJson() => {'title': title, 'note': note};
+  EventData({
+    required this.title, 
+    required this.note,
+    this.productName,
+    this.productPrice,
+    this.productDetails,
+    this.imageURL,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'title': title, 
+    'note': note,
+    'productName': productName,
+    'productPrice': productPrice,
+    'productDetails': productDetails,
+    'imageURL': imageURL,
+  };
 
   factory EventData.fromJson(Map<String, dynamic> json) {
-    return EventData(title: json['title'] ?? '', note: json['note'] ?? '');
+    return EventData(
+      title: json['title'] ?? '', 
+      note: json['note'] ?? '',
+      productName: json['productName'],
+      productPrice: json['productPrice'] != null ? (json['productPrice'] as num).toDouble() : null,
+      productDetails: json['productDetails'],
+      imageURL: json['imageURL'],
+    );
   }
 }
 
@@ -37,10 +66,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   DateTime _normalizeDate(DateTime d) => DateTime(d.year, d.month, d.day);
 
+  // --- FUNCIÓN QUE ESCUCHA EL TIMBRE ---
+  void _actualizarCalendario() {
+    if (mounted) _cargarEventos();
+  }
+
   @override
   void initState() {
     super.initState();
     _cargarEventos();
+    // Le decimos al calendario que ponga atención al timbre
+    updateCalendarNotifier.addListener(_actualizarCalendario);
+  }
+
+  @override
+  void dispose() {
+    // Apagamos el oyente si el calendario se destruye
+    updateCalendarNotifier.removeListener(_actualizarCalendario);
+    super.dispose();
   }
 
   Future<void> _cargarEventos() async {
@@ -50,6 +93,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     if (eventosJson != null) {
       final Map<String, dynamic> datosDecodificados = json.decode(eventosJson);
       setState(() {
+        _eventosGuardados.clear();
         datosDecodificados.forEach((fechaString, eventoData) {
           final fecha = DateTime.parse(fechaString);
           _eventosGuardados[fecha] = EventData.fromJson(eventoData);
@@ -119,10 +163,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   },
                   selectedDayPredicate: (_) => false,
                   onDaySelected: _handleSelect,
-                  
-                  // ---> AQUÍ SE AGREGÓ LA LLAMADA AL MANTENER PRESIONADO <---
-                  onDayLongPressed: _handleLongPress, 
-
+                  onDayLongPressed: _handleLongPress,
                   weekendDays: const [DateTime.sunday],
                   daysOfWeekHeight: 40,
                   daysOfWeekStyle: const DaysOfWeekStyle(
@@ -265,7 +306,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           );
   }
 
-  // ---> AQUÍ SE AGREGÓ LA FUNCIÓN PARA ELIMINAR LA MARCA <---
   Future<void> _handleLongPress(DateTime sel, DateTime foc) async {
     final normalizedDate = _normalizeDate(sel);
     final existingEvent = _eventosGuardados[normalizedDate];
@@ -277,7 +317,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: const Text('Eliminar del calendario', style: TextStyle(fontWeight: FontWeight.bold)),
-            content: Text('¿Deseas quitar la marca de este día?'),
+            content: Text('¿Deseas quitar la marca de "${existingEvent.title}" para este día?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -314,34 +354,54 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final normalizedDate = _normalizeDate(sel);
     final existingEvent = _eventosGuardados[normalizedDate];
 
-    // --- AQUÍ REDIRIGE SI EL DÍA YA ESTÁ GUARDADO (MORADO) ---
     if (existingEvent != null) {
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const DetallesOfertaWidget(
-            productName: 'Una especialidad',
-            productPrice: 109.00,
-            productDetails: 'Pizza de medio metro de una especialidadß.',
-            imageURL: 'https://i.imgur.com/5L3Eg2X.png',
+          builder: (context) => DetallesOfertaWidget(
+            productName: existingEvent.productName ?? existingEvent.title,
+            productPrice: existingEvent.productPrice ?? 0.0,
+            productDetails: existingEvent.productDetails ?? existingEvent.note,
+            imageURL: existingEvent.imageURL ?? 'https://i.imgur.com/5L3Eg2X.png',
           ),
         ),
       );
+      await _cargarEventos();
       setState(() => _tempPressed = null);
       return;
     }
 
-    final EventData? resultData = await showDialog<EventData?>(
+    final dynamic resultData = await showDialog<dynamic>(
       context: context,
       builder: (context) =>
           const _EventDialog(initialTitle: null, initialNote: null),
     );
 
+    if (resultData == "VER_OFERTA") {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DetallesOfertaWidget(
+            productName: 'Oferta Especial',
+            productPrice: 109.0,
+            productDetails: 'Una increíble oferta para ti.',
+            imageURL: 'https://i.imgur.com/5L3Eg2X.png',
+          ),
+        ),
+      );
+      await _cargarEventos();
+      setState(() {
+        _tempPressed = null;
+        _focusedDay = foc;
+      });
+      return;
+    }
+
     setState(() {
       _tempPressed = null;
       _focusedDay = foc;
 
-      if (resultData != null) {
+      if (resultData != null && resultData is EventData) {
         _eventosGuardados[normalizedDate] = resultData;
         _guardarEventos();
       }
@@ -349,27 +409,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   static const _meses = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
   ];
   static const _dias = [
-    'Domingo',
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
+    'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado',
   ];
   String _formatearFecha(DateTime f) =>
       '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';
@@ -471,22 +515,9 @@ class _EventDialogState extends State<_EventDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                // --- AQUÍ REDIRIGE SI PRESIONAS LA IMAGEN DENTRO DEL DIÁLOGO ---
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DetallesOfertaWidget(
-                          productName: 'Una especialidad',
-                          productPrice: 109.00,
-                          productDetails:
-                              'Pizza de medio metro de una especialidad.',
-                          imageURL: 'https://i.imgur.com/5L3Eg2X.png',
-                        ),
-                      ),
-                    );
+                    Navigator.pop(context, "VER_OFERTA");
                   },
                   child: Container(
                     height: 100,
@@ -494,7 +525,6 @@ class _EventDialogState extends State<_EventDialog> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: const DecorationImage(
-                        // --- IMAGEN QUE SE MUESTRA EN EL DIÁLOGO ---
                         image: NetworkImage('https://i.imgur.com/5L3Eg2X.png'),
                         fit: BoxFit.cover,
                       ),
