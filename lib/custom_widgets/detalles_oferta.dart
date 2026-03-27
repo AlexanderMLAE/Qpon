@@ -219,7 +219,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                         ),
                         const SizedBox(height: 8),
                         Text( // Terms and conditions
-                          '• Válido hasta el 31 de diciembre\n• No acumulable con otras ofertas\n• Presenta el código en la tienda', // TODO: change
+                          '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda', // TODO: change
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[700],

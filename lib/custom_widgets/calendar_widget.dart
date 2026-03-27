@@ -119,6 +119,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   },
                   selectedDayPredicate: (_) => false,
                   onDaySelected: _handleSelect,
+                  
+                  // ---> AQUÍ SE AGREGÓ LA LLAMADA AL MANTENER PRESIONADO <---
+                  onDayLongPressed: _handleLongPress, 
+
                   weekendDays: const [DateTime.sunday],
                   daysOfWeekHeight: 40,
                   daysOfWeekStyle: const DaysOfWeekStyle(
@@ -259,6 +263,46 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             decoration: decoration,
             child: child,
           );
+  }
+
+  // ---> AQUÍ SE AGREGÓ LA FUNCIÓN PARA ELIMINAR LA MARCA <---
+  Future<void> _handleLongPress(DateTime sel, DateTime foc) async {
+    final normalizedDate = _normalizeDate(sel);
+    final existingEvent = _eventosGuardados[normalizedDate];
+
+    if (existingEvent != null) {
+      final bool? confirmDelete = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: const Text('Eliminar del calendario', style: TextStyle(fontWeight: FontWeight.bold)),
+            content: Text('¿Deseas quitar la marca de este día?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _kRed,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (confirmDelete == true) {
+        setState(() {
+          _eventosGuardados.remove(normalizedDate);
+          _guardarEventos();
+        });
+      }
+    }
   }
 
   Future<void> _handleSelect(DateTime sel, DateTime foc) async {
