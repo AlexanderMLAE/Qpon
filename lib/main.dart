@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
@@ -43,10 +44,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Rutas de navegación
-      routes: {
-        '/register': (context) => const reg.RegisterScreen(),
-      },
-      home: const LoginScreen(title: "Qpon",),
+      routes: {'/register': (context) => const reg.RegisterScreen()},
+      home: const LoginScreen(title: "Qpon"),
     );
   }
 }
@@ -75,27 +74,46 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
-        title: Center(
-          child: TextButton(
-            onPressed: _openLogin,
-            child: const Text(
-              'Qpon',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+        centerTitle:
+            true, // Esto obliga al título a centrarse en todas las plataformas
+        title: TextButton(
+          onPressed: _openLogin,
+          child: const Text(
+            'Qpon',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfilePanel()),
+          StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              final user = snapshot.data;
+              return IconButton(
+                iconSize: 45, // Aumenta el tamaño interactuable del botón
+                icon: user?.photoURL != null
+                    ? CircleAvatar(
+                        radius:
+                            22, // Aumenta el tamaño de la foto de perfil (antes 15)
+                        backgroundImage: NetworkImage(user!.photoURL!),
+                      )
+                    : const Icon(
+                        Icons.account_circle,
+                        color: Colors.black,
+                        size:
+                            45, // Aumenta el tamaño del icono por defecto (antes 30)
+                      ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfilePanel(),
+                    ),
+                  );
+                },
               );
             },
           ),

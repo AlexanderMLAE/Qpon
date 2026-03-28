@@ -1,52 +1,49 @@
-class DatabaseService {
-  // Método para obtener ofertas favoritas (solo datos de ejemplo)
-  static Future<List<Map<String, dynamic>>> getOfertasFavoritas(
-    int usuarioId,
-  ) async {
-    // Simular tiempo de carga de red
-    await Future.delayed(const Duration(seconds: 2));
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-    return [
-      {
-        'productName': 'Hamburguesa Especial',
-        'productPrice': 79.99,
-        'productDetails': 'Hamburguesa con queso + papas + refresco',
-        'imageURL':
-            'https://res.cloudinary.com/amecar/image/upload/f_auto/v1738363260/CarlsJr-Oferta14DeFebrero-WebsiteLoNuevo-960x540_28_zbnjwa.jpg',
-        'localName': 'Carl\'s Jr.',
-      },
-      {
-        'productName': 'Pizzas Grandes',
-        'productPrice': 199.99,
-        'productDetails': '2 Pizzas grandes - Pepperoni o Queso',
-        'imageURL':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyG90wDoJR9xUYrMsMbyxFzrTkSvMBtg0OA&s',
-        'localName': 'Dominos Pizza',
-      },
-      {
-        'productName': 'Café + Postre',
-        'productPrice': 45.50,
-        'productDetails': 'Café americano + Pan de Chocolate',
-        'imageURL':
-            'https://static.promodescuentos.com/threads/raw/9eV2E/985793_1/re/768x768/qt/60/985793_1.jpg',
-        'localName': 'Starbucks',
-      },
-      {
-        'productName': 'Pizza Familiar',
-        'productPrice': 129.00,
-        'productDetails': 'Pizza familiar 4 ingredientes a elegir',
-        'imageURL':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMs40YuNqHjYJAI0-ErO37giwq78rYUDgieQ&s',
-        'localName': 'Pizza Hut',
-      },
-      {
-        'productName': 'Platillos Favoritos',
-        'productPrice': 109.00,
-        'productDetails': 'Desayunos variados',
-        'imageURL':
-            'https://d3hpc9frzzutmq.cloudfront.net/cdn/ihop/uploads/2025/07/27150757/header-mobile.png',
-        'localName': 'Ihop',
-      },
-    ];
+class DatabaseService {
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  static Future<List<Map<String, dynamic>>> getOffers() async {
+    try {
+      QuerySnapshot querySnapshot = await _db.collection("offers").get();
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        return {
+          'productName': data['product_name'] ?? 'Sin nombre',
+          'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
+          'productDetails': data['product_details'] ?? 'Placeholder Details',
+          'imageURL': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
+          'localName': data['store'] ?? 'Establecimiento',
+          'storeId': data['store'], // ID
+        };
+      }).toList();
+    } catch (e) {
+      ("Error en Firebase: $e");
+      return [];
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getStoreOffers(String storeId) async {
+    try {
+      QuerySnapshot querySnapshot = await _db.collection("offers").where("store", isEqualTo: storeId) .get();
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        return {
+          'productName': data['product_name'] ?? 'Sin nombre',
+          'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
+          'productDetails': data['product_details'] ?? '',
+          'imageURL': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
+          'localName': data['store'] ?? 'Establecimiento',
+          'storeId': data['store'], // ID
+        };
+      }).toList();
+    } catch (e) {
+      ("Error en Firebase: $e");
+      return [];
+    }
   }
 }

@@ -8,22 +8,22 @@ class OfferCardWidget extends StatelessWidget {
     required this.productPrice,
     required this.productDetails,
     required this.imageURL,
-    this.localName,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
-  final String? localName;
 
   @override
   Widget build(BuildContext context) {
-    return OfferCard(productName: productName, productPrice: productPrice, productDetails: productDetails, imageURL: imageURL, localName: localName);
+    return OfferCard(
+      productName: productName,
+      productPrice: productPrice,
+      productDetails: productDetails,
+      imageURL: imageURL,
+    );
   }
-
 }
-
-
 
 class OfferCard extends StatefulWidget {
   const OfferCard({
@@ -31,21 +31,18 @@ class OfferCard extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL, 
-    required this.localName,
+    required this.imageURL,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageURL;
-  final String? localName;
-  
 
   @override
   State<StatefulWidget> createState() => _OfferCardState();
 }
-class _OfferCardState extends State<OfferCard> {
 
+class _OfferCardState extends State<OfferCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -76,22 +73,26 @@ class _OfferCardState extends State<OfferCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Precio: ${widget.productPrice}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  widget.productName,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  widget.productName,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                  '\$ ${widget.productPrice}',
+                  style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Container(height: 1, color: Colors.red[300]),
+            Container(height: 1, color: Color.fromARGB(255, 252, 18, 47)),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: openDetails,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: Text("Detalles", style: TextStyle(color: Colors.white),),
+              style: ElevatedButton.styleFrom(backgroundColor: Color.fromARGB(255, 252, 18, 47),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              )),
+              child: Text("Detalles", style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 8),
             Text(
@@ -103,13 +104,13 @@ class _OfferCardState extends State<OfferCard> {
       ),
     );
   }
-    void openDetails() {
+
+  void openDetails() {
     setState(() {
       Navigator.push(
         context,
-        MaterialPageRoute<void>(builder: (context) => DetallesOferta()),
+        MaterialPageRoute<void>(builder: (context) => DetallesOferta(productName: widget.productName, productPrice: widget.productPrice, productDetails: widget.productDetails, imageURL: widget.imageURL,)),
       );
     });
   }
-
 }

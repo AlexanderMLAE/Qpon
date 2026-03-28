@@ -31,7 +31,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> _cargarOfertas() async {
     try {
-      final ofertas = await DatabaseService.getOfertasFavoritas(1);
+      final ofertas = await DatabaseService.getOffers();
       setState(() {
         _ofertas = ofertas;
         _ofertasFiltradas = ofertas;
@@ -46,13 +46,21 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   void _filtrarOfertas() {
     final query = _searchController.text.toLowerCase();
-    
+
     setState(() {
       _ofertasFiltradas = _ofertas.where((oferta) {
-        final nombreMatch = oferta['productName']?.toString().toLowerCase().contains(query) ?? false;
-        final localMatch = oferta['localName']?.toString().toLowerCase().contains(query) ?? false;
-        final detallesMatch = oferta['productDetails']?.toString().toLowerCase().contains(query) ?? false;
-        
+        final nombreMatch =
+            oferta['productName']?.toString().toLowerCase().contains(query) ??
+            false;
+        final localMatch =
+            oferta['localName']?.toString().toLowerCase().contains(query) ??
+            false;
+        final detallesMatch =
+            oferta['productDetails']?.toString().toLowerCase().contains(
+              query,
+            ) ??
+            false;
+
         return nombreMatch || localMatch || detallesMatch;
       }).toList();
 
@@ -94,11 +102,11 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Column(
       children: [
         _buildHeader(),
-        
+
         _buildSearchBar(),
-        
+
         _buildFilterSection(),
-        
+
         _buildOfertasList(),
       ],
     );
@@ -125,15 +133,21 @@ class _HomeWidgetState extends State<HomeWidget> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red),
+          border: Border.all(color: Color.fromARGB(255, 252, 18, 47)),
         ),
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Buscar oferta o establecimiento',
-            prefixIcon: const Icon(Icons.search, color: Colors.red),
+            prefixIcon: const Icon(
+              Icons.search,
+              color: Color.fromARGB(255, 252, 18, 47),
+            ),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
                     icon: const Icon(Icons.clear, color: Colors.grey),
@@ -155,27 +169,25 @@ class _HomeWidgetState extends State<HomeWidget> {
         children: [
           const Text(
             'Filtro - Precio:',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
           const SizedBox(width: 8),
           DropdownButton<String>(
             value: _filtroPrecio,
             underline: Container(height: 0),
             onChanged: _aplicarFiltroPrecio,
-            items: const [
-              'Todos',
-              'Baratos (\$0-50)',
-              'Medios (\$51-100)',
-              'Caros (\$100+)',
-            ].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+            items:
+                const [
+                  'Todos',
+                  'Baratos (\$0-50)',
+                  'Medios (\$51-100)',
+                  'Caros (\$100+)',
+                ].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: TextStyle(color: Colors.black)),
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -195,10 +207,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: OfferCardWidget(
                     productName: oferta['productName'] ?? 'Producto',
-                    productPrice: (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
-                    productDetails: oferta['productDetails'] ?? 'Detalles de la oferta',
+                    productPrice:
+                        (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
+                    productDetails:
+                        oferta['productDetails'] ?? 'Detalles de la oferta',
                     imageURL: oferta['imageURL'] ?? '',
-                    localName: oferta['localName'] ?? '',
                   ),
                 );
               },
@@ -214,17 +227,14 @@ class _HomeWidgetState extends State<HomeWidget> {
           Icon(
             Icons.search_off,
             size: 64,
-            color: Colors.red[400],
+            color: Color.fromARGB(255, 252, 18, 47),
           ),
           const SizedBox(height: 16),
           Text(
             _searchController.text.isEmpty
                 ? 'No hay ofertas disponibles'
                 : 'No se encontraron resultados para "${_searchController.text}"',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
             textAlign: TextAlign.center,
           ),
         ],

@@ -21,7 +21,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
 
   Future<void> _cargarOfertas() async {
     try {
-      final ofertas = await DatabaseService.getOfertasFavoritas(1);
+      final ofertas = await DatabaseService.getOffers();
       setState(() {
         _ofertas = ofertas;
         _cargando = false;

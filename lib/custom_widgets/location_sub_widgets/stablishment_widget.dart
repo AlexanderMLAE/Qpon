@@ -1,52 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/database_service.dart';
 import 'offer_card_widget.dart';
-import 'database_service.dart';
-
-class StablishmentScreen extends StatelessWidget {
-  const StablishmentScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-      ),
-      home: StablishmentWidget(stablishmentName: 'Establecimiento Placeholder'),
-    );
-  }
-}
 
 // Everything above this may be unnecessary
 class StablishmentWidget extends StatefulWidget {
-  const StablishmentWidget({super.key, required this.stablishmentName});
-  final String stablishmentName;
+  const StablishmentWidget({super.key, required this.stablishmentData});
+  final Map<String, Object>? stablishmentData;
 
   @override
   State<StatefulWidget> createState() => _StablishmentWidgetState();
 }
 
 class _StablishmentWidgetState extends State<StablishmentWidget> {
-  List<Map<String, dynamic>> _ofertas = [];
-  bool _cargando = true;
-
+  List<Map<String, dynamic>> _offers = [];
   @override
   void initState() {
     super.initState();
-    _cargarOfertas();
+    fetchOffers();
   }
 
-  Future<void> _cargarOfertas() async {
+  Future<void> fetchOffers() async {
+    String storeId = widget.stablishmentData?["storeId"] as String;
     try {
-      final ofertas = await DatabaseService.getOfertasFavoritas(1);
+      final offers = await DatabaseService.getStoreOffers(storeId);
       setState(() {
-        _ofertas = ofertas;
-        _cargando = false;
+        _offers = offers;
       });
     } catch (e) {
-      setState(() {
-        _cargando = false;
-      });
+      debugPrint("err $e");
     }
   }
 
@@ -59,72 +40,37 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 252, 18, 47),
         title: Center(
-          child: Text("", style: TextStyle(color: Colors.black)),
-        ),
-      ),
-      body: _cargando
-          ? const Center(child: CircularProgressIndicator())
-          : _ofertas.isEmpty
-              ? _buildEmptyState()
-              : _buildListaOfertas(),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Container(
-      alignment: Alignment.topCenter,
-      child: const Padding(
-        padding: EdgeInsets.only(top: 20),
-        child: Column(
-          children: [
-            Text(
-              '',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 40),
-            Icon(Icons.favorite_border, size: 60, color: Colors.grey),
-            SizedBox(height: 20),
-            Text(
-              'No se encontraron ofertas',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildListaOfertas() {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
-            'Ofertas encontradas',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            "${widget.stablishmentData!["storeName"] ?? "Something went wrong"}",
+            style: TextStyle(color: Colors.black),
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: _ofertas.length,
-            itemBuilder: (context, index) {
-              final oferta = _ofertas[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: OfferCardWidget(
-                  productName: oferta['productName'] ?? 'Producto',
-                  productPrice:
-                      (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
-                  productDetails:
-                      oferta['productDetails'] ?? 'Detalles de la oferta',
-                  imageURL: oferta['imageURL'] ?? '',
-                ),
-              );
-            },
+      ),
+      body: Column(
+        children: [
+          Text("Store Data ${widget.stablishmentData}"),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _offers.length,
+              itemBuilder: (context, index) {
+                final offer = _offers[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: OfferCardWidget(
+                    productName: offer['productName'] ?? 'Producto',
+                    productPrice:
+                        (offer['productPrice'] as num?)?.toDouble() ?? 0.0,
+                    productDetails:
+                        offer['productDetails'] ?? 'Detalles de la oferta',
+                    imageURL: offer['imageURL'] ?? 'https://i.imgur.com/vs8QJQY.png',
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
