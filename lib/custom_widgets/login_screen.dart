@@ -277,13 +277,25 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          backgroundColor: Color.fromARGB(255,66, 66, 66),
-          title: const Text('Inicio de sesión',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-          content: const Text('¡Bienvenido a Qpon!',style: TextStyle(color: Colors.white),),
+          backgroundColor: Color.fromARGB(255, 66, 66, 66),
+          title: const Text(
+            'Inicio de sesión',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            '¡Bienvenido a Qpon!',
+            style: TextStyle(color: Colors.white),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('OK',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -349,24 +361,41 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-      );
-
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      final String? accessToken;
+      final String? idToken;
+      // Ensuring its initialized
+      try {
+        await googleSignIn.initialize();
+      } catch (e) {
+        debugPrint('Failed to initialize Google sign in: $e');
+      }
+      // Sign out first just in case
       try {
         await googleSignIn.signOut();
-      } catch (_) {}
-
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) {
-        // Usuario canceló
-        return;
+      } catch (e) {
+        debugPrint('Error while signing out: $e');
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final idToken = googleAuth.idToken;
-      final accessToken = googleAuth.accessToken;
+      final GoogleSignInAccount? googleUser;
+      try {
+        googleUser = await googleSignIn.authenticate();
+        final List<String> scopes = ['email', 'profile'];
+        final clientAuth = await googleUser.authorizationClient.authorizeScopes(
+          scopes,
+        );
+        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+        idToken = googleAuth.idToken;
+        accessToken = clientAuth.accessToken;
+      } on GoogleSignInException catch (e) {
+        debugPrint(
+          'Google sign in error: code: ${e.code.name} description:${e.description} details:${e.details}, error: e',
+        );
+        rethrow;
+      } catch (error) {
+        debugPrint('Unexpected Google Sign-In error: $error');
+        rethrow;
+      }
 
       if (idToken == null) {
         throw FirebaseAuthException(
@@ -395,7 +424,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          backgroundColor: const Color.fromARGB(255,66, 66, 66),
+          backgroundColor: const Color.fromARGB(255, 66, 66, 66),
           title: const Text(
             'Inicio de sesion con Google',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
