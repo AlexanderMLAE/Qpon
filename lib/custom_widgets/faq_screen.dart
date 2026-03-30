@@ -98,7 +98,7 @@ class _FaqScreenState extends State<FaqScreen> {
         titleTextStyle: const TextStyle(
           color: Colors.white,
           fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
         ),
       ),
       body: Column(
@@ -108,9 +108,13 @@ class _FaqScreenState extends State<FaqScreen> {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar preguntas...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
+                prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 252, 18, 47),),
+                focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                  color: const Color.fromARGB(255, 252, 18, 47),
+                  width: 2,
+                  ),
                 ),
                 contentPadding: const EdgeInsets.all(16),
               ),
@@ -146,7 +150,7 @@ class _FaqScreenState extends State<FaqScreen> {
                         ),
                         title: Text(
                           item['question'] ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         children: [
                           Padding(

@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: const Text(
             'Qpon',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
@@ -119,38 +119,47 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
-        indicatorColor: Colors.white,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          navigationBarTheme: NavigationBarThemeData(
+            iconTheme: WidgetStateProperty.all(
+              const IconThemeData(color: Colors.black),
+            ),
           ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.favorite),
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.calendar_month),
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendario',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.location_on),
-            icon: Icon(Icons.location_on),
-            label: 'Ubicación',
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+          indicatorColor: Colors.white,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.favorite),
+              icon: Icon(Icons.favorite),
+              label: 'Favoritos',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.calendar_month),
+              icon: Icon(Icons.calendar_month),
+              label: 'Calendario',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.location_on),
+              icon: Icon(Icons.location_on),
+              label: 'Ubicación',
+            ),
+          ],
+        ),
       ),
       //Se queda el dia marcado del calendario
       body: IndexedStack(

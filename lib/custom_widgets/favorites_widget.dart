@@ -36,18 +36,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        centerTitle: true,
-        title: const Text(
-          'Favoritos',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        ),
-      ),
       body: _cargando
           ? const Center(child: CircularProgressIndicator())
           : _ofertas.isEmpty

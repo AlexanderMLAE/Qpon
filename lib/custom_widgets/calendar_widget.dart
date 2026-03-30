@@ -121,26 +121,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              height: 56,
-              width: double.infinity,
-              color: Colors.black,
-              alignment: Alignment.center,
-              child: const Text(
-                'Calendario',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             const SizedBox(height: 8),
             _buildDaySheet(_today),
             const SizedBox(height: 12),
             Container(
               width: 350,
-              height: 480,
+              height: 450,
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: _kRed, width: 8),

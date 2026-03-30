@@ -28,18 +28,6 @@ class _LocationWidgetState extends State<LocationWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        centerTitle: true,
-        title: const Text(
-          'Ubicacion',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        ),
-      ),
       body: Column(
         children: <Widget>[
           Container(
@@ -78,13 +66,13 @@ class _LocationWidgetState extends State<LocationWidget> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.red),
+                      border: Border.all(color: Color.fromARGB(255, 252, 18, 47)),
                     ),
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
                         hintText: 'Buscar oferta o establecimiento',
-                        prefixIcon: const Icon(Icons.search, color: Colors.red),
+                        prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 252, 18, 47)),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -106,7 +94,16 @@ class _LocationWidgetState extends State<LocationWidget> {
                   ),
                   ElevatedButton(
                     onPressed: updateMap,
-                    child: Text('Buscar'),
+                    style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    child: Text('Buscar',
+                    style: TextStyle(color: Colors.white)
+                    ),
                   ),
                   // Map
                   Expanded(child: _mapWidget),

@@ -47,7 +47,6 @@ class _OfferCardState extends State<OfferCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
