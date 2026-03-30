@@ -57,16 +57,28 @@ class DetallesOfertaWidget extends StatefulWidget {
 class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
   static const String _burgerBase64 =
       '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhU...';
+
+  Uint8List? burgerBytes;
   int currentPageIndex = 0;
 
   DateTime _parseDate(String text) {
     final months = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre',
     ];
     final regex = RegExp(r'(\d{1,2})\s+de\s+([a-zA-Z]+)');
     final match = regex.firstMatch(text.toLowerCase());
-    
+
     if (match != null) {
       int day = int.tryParse(match.group(1) ?? '1') ?? 1;
       String monthStr = match.group(2) ?? 'enero';
@@ -85,7 +97,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
         MediaQuery.of(context).padding.bottom + 48;
     final double smallHeaderHeight = topHeaderHeight / 2;
 
-    Uint8List? burgerBytes;
     String cleaned = _burgerBase64.trim();
     if (cleaned.startsWith('data:image')) {
       final int idx = cleaned.indexOf('base64,');
@@ -170,13 +181,13 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                            color: Colors.grey.shade200,
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Imagen no encontrada',
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                          ),
+                                color: Colors.grey.shade200,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Imagen no encontrada',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ),
                         ),
                       ),
                     ),
@@ -210,14 +221,21 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                   ElevatedButton(
                     onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      final String? eventosJson = prefs.getString('eventos_qpon');
+                      final String? eventosJson = prefs.getString(
+                        'eventos_qpon',
+                      );
                       Map<String, dynamic> datosDecodificados =
                           eventosJson != null ? json.decode(eventosJson) : {};
 
-                      const termsText = '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda';
-                      
+                      const termsText =
+                          '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda';
+
                       final fecha = widget.targetDate ?? _parseDate(termsText);
-                      final normalizedDate = DateTime(fecha.year, fecha.month, fecha.day);
+                      final normalizedDate = DateTime(
+                        fecha.year,
+                        fecha.month,
+                        fecha.day,
+                      );
 
                       final newEvent = EventData(
                         title: widget.productName,
@@ -228,10 +246,15 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                         imageURL: widget.imageURL,
                       );
 
-                      datosDecodificados[normalizedDate.toIso8601String()] = newEvent.toJson();
-                      await prefs.setString('eventos_qpon', json.encode(datosDecodificados));
+                      datosDecodificados[normalizedDate.toIso8601String()] =
+                          newEvent.toJson();
+                      await prefs.setString(
+                        'eventos_qpon',
+                        json.encode(datosDecodificados),
+                      );
 
-                      updateCalendarNotifier.value = !updateCalendarNotifier.value;
+                      updateCalendarNotifier.value =
+                          !updateCalendarNotifier.value;
 
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
