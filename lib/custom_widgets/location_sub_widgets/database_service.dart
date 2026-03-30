@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class DatabaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static Future<List<Map<String, dynamic>>> getOffers() async {
+  static Future<List<Map<String, dynamic>>> fetchOffers() async {
     try {
       QuerySnapshot querySnapshot = await _db.collection("offers").get();
 
@@ -25,9 +26,14 @@ class DatabaseService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getStoreOffers(String storeId) async {
+  static Future<List<Map<String, dynamic>>> fetchStoreOffers(
+    String storeId,
+  ) async {
     try {
-      QuerySnapshot querySnapshot = await _db.collection("offers").where("store", isEqualTo: storeId) .get();
+      QuerySnapshot querySnapshot = await _db
+          .collection("offers")
+          .where("store", isEqualTo: storeId)
+          .get();
 
       return querySnapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
@@ -45,5 +51,21 @@ class DatabaseService {
       ("Error en Firebase: $e");
       return [];
     }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchStores() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("stores")
+          .get();
+      debugPrint('Successfully read stores from DB');
+
+      return querySnapshot.docs.map((doc) {
+        return {"id": doc.id, ...doc.data()};
+      }).toList();
+    } catch (e) {
+      debugPrint('Error on fetchStores: $e');
+    }
+    return [];
   }
 }

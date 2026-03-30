@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
+import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/database_service.dart';
 import 'stablishment_widget.dart';
 
 class CustomMapWidget extends StatefulWidget {
@@ -39,7 +39,6 @@ class CustomMapWidget extends StatefulWidget {
 //   }
 // }
 
-// TODO: Add a refresh button or have it refresh on its own somehow
 class _CustomMapWidgetState extends State<CustomMapWidget> {
   CameraOptions camera = CameraOptions(
     center: Point(coordinates: Position(-86.84686, 21.04848)),
@@ -73,19 +72,16 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   // Reading data from the "stores" collection and creating a point with the values found
-  void fetchStores() {
-    FirebaseFirestore.instance.collection("stores").get().then((querySnapshot) {
-      debugPrint("Successfully completed");
-      for (var docSnapshot in querySnapshot.docs) {
-        debugPrint('${docSnapshot.id} => ${docSnapshot.data()}');
-        createOneAnnotation(
-          docSnapshot.id,
-          docSnapshot.data()["long"],
-          docSnapshot.data()["lat"],
-          docSnapshot.data()["name"],
-        );
-      }
-    }, onError: (e) => debugPrint("Error completing: $e"));
+  Future<void> fetchStores() async {
+    final stores = await DatabaseService.fetchStores();
+    for (var store in stores) {
+      createOneAnnotation(
+        store["id"],
+        store["long"],
+        store["lat"],
+        store["name"],
+      );
+    }
   }
 
   // Function that creates annotations, will probably not be used to manually create any points
@@ -97,7 +93,10 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   ) async {
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
-    final Map<String, Object> customAnnotationData = {"storeId": id, "storeName": name};
+    final Map<String, Object> customAnnotationData = {
+      "storeId": id,
+      "storeName": name,
+    };
     pointAnnotationManager
         .create(
           PointAnnotationOptions(

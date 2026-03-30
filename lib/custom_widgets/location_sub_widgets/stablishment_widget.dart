@@ -16,13 +16,13 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
   @override
   void initState() {
     super.initState();
-    fetchOffers();
+    getOffers();
   }
 
-  Future<void> fetchOffers() async {
+  Future<void> getOffers() async {
     String storeId = widget.stablishmentData?["storeId"] as String;
     try {
-      final offers = await DatabaseService.getStoreOffers(storeId);
+      final offers = await DatabaseService.fetchStoreOffers(storeId);
       setState(() {
         _offers = offers;
       });
