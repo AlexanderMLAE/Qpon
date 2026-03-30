@@ -25,9 +25,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   WidgetsFlutterBinding.ensureInitialized();
-  // ignore: constant_identifier_names
-  const String ACCESS_TOKEN = String.fromEnvironment("ACCESS_TOKEN");
-  MapboxOptions.setAccessToken(ACCESS_TOKEN);
+  const String accessToken = String.fromEnvironment("ACCESS_TOKEN");
+  MapboxOptions.setAccessToken(accessToken);
   runApp(const MyApp());
 }
 
@@ -45,7 +44,17 @@ class MyApp extends StatelessWidget {
       ),
       // Rutas de navegación
       routes: {'/register': (context) => const reg.RegisterScreen()},
-      home: const LoginScreen(title: "Qpon"),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          return snapshot.data == null
+              ? LoginScreen(title: 'Qpon')
+              : MyHomePage();
+        },
+      ),
     );
   }
 }
