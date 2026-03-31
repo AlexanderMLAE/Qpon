@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'location_sub_widgets/offer_card_widget.dart';
-import 'location_sub_widgets/database_service.dart';
+import 'sub_widgets/offer_card_widget.dart';
+import 'sub_widgets/database_service.dart';
 
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/database_service.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/database_service.dart';
 import 'offer_card_widget.dart';
 
 // Everything above this may be unnecessary

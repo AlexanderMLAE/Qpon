@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
-import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/database_service.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/database_service.dart';
 import 'stablishment_widget.dart';
 
 class CustomMapWidget extends StatefulWidget {

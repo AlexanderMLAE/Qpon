@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/custom_widgets/location_sub_widgets/custom_map_widget.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/custom_map_widget.dart';
 
 // Consider renaming some classes
 class LocationScreen extends StatelessWidget {
