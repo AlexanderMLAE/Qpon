@@ -6,14 +6,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 // Imports de tus archivos
-import 'package:proyecto_qpon/firebase_options.dart';
-import 'custom_widgets/favorites_widget.dart';
-import 'custom_widgets/calendar_widget.dart';
-import 'custom_widgets/location_widget.dart';
-import 'custom_widgets/login_screen.dart';
-import 'custom_widgets/register_screen.dart' as reg;
-import 'custom_widgets/home_widget.dart';
-import 'custom_widgets/profile_panel.dart';
+import 'package:proyecto_qpon/database/firebase_options.dart';
+import 'features/favorites/favorites_screen.dart';
+import 'features/home/filters/calendar_widget.dart';
+import 'features/map/map_screen.dart';
+import 'features/login/login_screen.dart';
+import 'features/login/register_screen.dart' as reg;
+import 'features/home/home_screen.dart';
+import 'features/login/profile_panel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

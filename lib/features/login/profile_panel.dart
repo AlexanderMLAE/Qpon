@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';
-import 'info_general.dart';
-import 'change_password.dart';
-import 'privacy_center.dart';
-import 'faq_screen.dart';
+import '../settings/info_general.dart';
+import '../settings/change_password_screen.dart';
+import '../settings/privacy_center.dart';
+import '../settings/faq_screen.dart';
 
 class ProfilePanel extends StatefulWidget {
   const ProfilePanel({super.key});

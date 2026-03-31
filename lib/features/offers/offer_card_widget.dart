@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/custom_widgets/offer_details.dart';
+import 'package:proyecto_qpon/features/offers/offer_details_screen.dart';
 
 class OfferCardWidget extends StatelessWidget {
   const OfferCardWidget({

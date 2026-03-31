@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/custom_widgets/sub_widgets/offer_card_builder.dart';
-import 'sub_widgets/database_service.dart';
+import 'package:proyecto_qpon/shared/offer_card_builder.dart';
+import '../../shared/firestore_service.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});

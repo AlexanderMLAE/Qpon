@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
-import 'package:proyecto_qpon/custom_widgets/sub_widgets/database_service.dart';
-import 'stablishment_widget.dart';
+import 'package:proyecto_qpon/shared/firestore_service.dart';
+import '../stores/store_screen.dart';
 
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
@@ -119,16 +119,16 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     debugPrint(
       "Annotation Data: ${annotation.customData}, ${annotation.textField}",
     ); // lol idk
-    openStablishment(annotation.customData);
+    openStore(annotation.customData);
   }
 
-  void openStablishment(Map<String, Object>? stablishmentId) {
+  void openStore(Map<String, Object>? storeId) {
     setState(() {
       Navigator.push(
         context,
         MaterialPageRoute<void>(
           builder: (context) =>
-              StablishmentWidget(stablishmentData: stablishmentId),
+              StoreWidget(storeData: storeId),
         ),
       );
     });

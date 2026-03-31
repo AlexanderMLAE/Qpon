@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'calendar_widget.dart';
+import '../home/filters/calendar_widget.dart';
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({
