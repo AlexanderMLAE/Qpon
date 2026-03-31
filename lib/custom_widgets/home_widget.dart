@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'sub_widgets/offer_card_widget.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/offer_card_builder.dart';
 import 'sub_widgets/database_service.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -11,7 +11,7 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   List<Map<String, dynamic>> _ofertas = [];
-  List<Map<String, dynamic>> _ofertasFiltradas = [];
+  List<Map<String, dynamic>> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
   String _filtroPrecio = 'Todos';
@@ -34,7 +34,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       final ofertas = await DatabaseService.fetchOffers();
       setState(() {
         _ofertas = ofertas;
-        _ofertasFiltradas = ofertas;
+        _filteredOffers = ofertas;
         _cargando = false;
       });
     } catch (e) {
@@ -48,7 +48,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     final query = _searchController.text.toLowerCase();
 
     setState(() {
-      _ofertasFiltradas = _ofertas.where((oferta) {
+      _filteredOffers = _ofertas.where((oferta) {
         final nombreMatch =
             oferta['productName']?.toString().toLowerCase().contains(query) ??
             false;
@@ -65,7 +65,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       }).toList();
 
       if (_filtroPrecio != 'Todos') {
-        _ofertasFiltradas = _ofertasFiltradas.where((oferta) {
+        _filteredOffers = _filteredOffers.where((oferta) {
           final precio = (oferta['productPrice'] as num?)?.toDouble() ?? 0.0;
           switch (_filtroPrecio) {
             case 'Baratos (\$0-50)':
@@ -196,25 +196,11 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Widget _buildOfertasList() {
     return Expanded(
-      child: _ofertasFiltradas.isEmpty
+      child: _filteredOffers.isEmpty
           ? _buildEmptyState()
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _ofertasFiltradas.length,
-              itemBuilder: (context, index) {
-                final oferta = _ofertasFiltradas[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: OfferCardWidget(
-                    productName: oferta['productName'] ?? 'Producto',
-                    productPrice:
-                        (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
-                    productDetails:
-                        oferta['productDetails'] ?? 'Detalles de la oferta',
-                    imageURL: oferta['imageURL'] ?? '',
-                  ),
-                );
-              },
+          : OfferCardBuilder.buildOfferCard(
+              _filteredOffers.length,
+              _filteredOffers,
             ),
     );
   }

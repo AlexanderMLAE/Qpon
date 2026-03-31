@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/offer_card_builder.dart';
 import 'sub_widgets/offer_card_widget.dart';
 import 'sub_widgets/database_service.dart';
 
@@ -10,7 +11,7 @@ class FavoritesWidget extends StatefulWidget {
 }
 
 class _FavoritesWidgetState extends State<FavoritesWidget> {
-  List<Map<String, dynamic>> _ofertas = [];
+  List<Map<String, dynamic>> _offers = [];
   bool _cargando = true;
 
   @override
@@ -23,7 +24,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     try {
       final ofertas = await DatabaseService.fetchOffers();
       setState(() {
-        _ofertas = ofertas;
+        _offers = ofertas;
         _cargando = false;
       });
     } catch (e) {
@@ -38,7 +39,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     return Scaffold(
       body: _cargando
           ? const Center(child: CircularProgressIndicator())
-          : _ofertas.isEmpty
+          : _offers.isEmpty
           ? _buildEmptyState()
           : _buildListaOfertas(),
     );
@@ -79,24 +80,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: _ofertas.length,
-            itemBuilder: (context, index) {
-              final oferta = _ofertas[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: OfferCardWidget(
-                  productName: oferta['productName'] ?? 'Producto',
-                  productPrice:
-                      (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
-                  productDetails:
-                      oferta['productDetails'] ?? 'Detalles de la oferta',
-                  imageURL: oferta['imageURL'] ?? '',
-                ),
-              );
-            },
-          ),
+          child: OfferCardBuilder.buildOfferCard(_offers.length, _offers),
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/custom_widgets/sub_widgets/database_service.dart';
-import 'offer_card_widget.dart';
+import 'package:proyecto_qpon/custom_widgets/sub_widgets/offer_card_builder.dart';
 
 // Everything above this may be unnecessary
 class StablishmentWidget extends StatefulWidget {
@@ -51,25 +51,7 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
         children: [
           Text("Store Data ${widget.stablishmentData}"),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _offers.length,
-              itemBuilder: (context, index) {
-                final offer = _offers[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: OfferCardWidget(
-                    productName: offer['productName'] ?? 'Producto',
-                    productPrice:
-                        (offer['productPrice'] as num?)?.toDouble() ?? 0.0,
-                    productDetails:
-                        offer['productDetails'] ?? 'Detalles de la oferta',
-                    imageURL:
-                        offer['imageURL'] ?? 'https://i.imgur.com/vs8QJQY.png',
-                  ),
-                );
-              },
-            ),
+            child: OfferCardBuilder.buildOfferCard(_offers.length, _offers),
           ),
         ],
       ),
