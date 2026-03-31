@@ -73,9 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
-        centerTitle:
-            true, // Esto obliga al título a centrarse en todas las plataformas
+        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
+        centerTitle: true, // Esto obliga al título a centrarse en todas las plataformas
         title: TextButton(
           onPressed: _openLogin,
           child: const Text(
@@ -99,10 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         radius:
                             22, // Aumenta el tamaño de la foto de perfil (antes 15)
                         backgroundImage: NetworkImage(user!.photoURL!),
+                        backgroundColor: Colors.black87,
                       )
                     : const Icon(
                         Icons.account_circle,
-                        color: Colors.black,
                         size:
                             45, // Aumenta el tamaño del icono por defecto (antes 30)
                       ),
@@ -134,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
               currentPageIndex = index;
             });
           },
-          backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+          backgroundColor: const Color.fromARGB(255, 227, 18, 47),
           indicatorColor: Colors.white,
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[

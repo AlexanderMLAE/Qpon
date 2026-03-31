@@ -6,8 +6,9 @@ class PrivacyCenterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB71C1C),
+      backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(

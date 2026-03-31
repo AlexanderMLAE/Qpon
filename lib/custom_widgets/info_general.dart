@@ -296,8 +296,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB71C1C),
+      backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -309,7 +310,7 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
       body: _isLoading
           ? SafeArea(
               child: Container(
-                color: const Color(0xFFB71C1C),
+                color: const Color.fromARGB(255, 227, 18, 47),
                 child: const Center(child: CircularProgressIndicator(color: Colors.white)),
               ),
             )
@@ -327,7 +328,7 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                             const SizedBox(height: 8),
                             CircleAvatar(
                               radius: 44,
-                              backgroundColor: Colors.white24,
+                              backgroundColor: Colors.black87,
                               child: _pickedImageBytes != null
                                   ? ClipOval(
                                       child: Image.memory(

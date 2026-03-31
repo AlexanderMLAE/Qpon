@@ -66,13 +66,13 @@ class _LocationWidgetState extends State<LocationWidget> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color.fromARGB(255, 252, 18, 47)),
+                      border: Border.all(color: Color.fromARGB(255, 227, 18, 47)),
                     ),
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
                         hintText: 'Buscar oferta o establecimiento',
-                        prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 252, 18, 47)),
+                        prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 227, 18, 47)),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -95,7 +95,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                   ElevatedButton(
                     onPressed: updateMap,
                     style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+                    backgroundColor: const Color.fromARGB(255, 227, 18, 47),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

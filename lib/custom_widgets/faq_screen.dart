@@ -91,8 +91,9 @@ class _FaqScreenState extends State<FaqScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Preguntas frecuentes'),
-        backgroundColor: Colors.red.shade700,
+        backgroundColor: Color.fromARGB(255, 227, 18, 47),
         foregroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.white),
         titleTextStyle: const TextStyle(
@@ -108,11 +109,11 @@ class _FaqScreenState extends State<FaqScreen> {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar preguntas...',
-                prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 252, 18, 47),),
+                prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 227, 18, 47),),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                  color: const Color.fromARGB(255, 252, 18, 47),
+                  color: const Color.fromARGB(255, 227, 18, 47),
                   width: 2,
                   ),
                 ),

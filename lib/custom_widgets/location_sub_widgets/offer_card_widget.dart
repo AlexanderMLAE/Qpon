@@ -82,11 +82,11 @@ class _OfferCardState extends State<OfferCard> {
               ],
             ),
             const SizedBox(height: 8),
-            Container(height: 1, color: Color.fromARGB(255, 252, 18, 47)),
+            Container(height: 1, color: Color.fromARGB(255, 227, 18, 47)),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: openDetails,
-              style: ElevatedButton.styleFrom(backgroundColor: Color.fromARGB(255, 252, 18, 47),
+              style: ElevatedButton.styleFrom(backgroundColor: Color.fromARGB(255, 227, 18, 47),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),

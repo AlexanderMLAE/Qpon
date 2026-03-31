@@ -54,8 +54,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB71C1C),
+      backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -76,7 +77,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                  'Cambiar\ncontraseña',
+                  'Ingresar\nNueva Contraseña',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,

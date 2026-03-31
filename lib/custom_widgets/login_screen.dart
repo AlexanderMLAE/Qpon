@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 18, 47),
+                          color: const Color.fromARGB(255, 227, 18, 47),
                           width: 2,
                         ),
                       ),
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 18, 47),
+                          color: const Color.fromARGB(255, 227, 18, 47),
                           width: 2,
                         ),
                       ),
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+                        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -171,12 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           debugPrint('Regreso de registro');
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(
-                            255,
-                            252,
-                            18,
-                            47,
-                          ),
+                          foregroundColor: const Color.fromARGB(255, 227, 18, 47),
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -223,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           : const Text(
                               'Continuar con Google',
                               style: TextStyle(
-                                color: Color.fromARGB(255, 252, 18, 47),
+                                color: Color.fromARGB(255, 227, 18, 47),
                               ),
                             ),
                     ),
@@ -331,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
-            backgroundColor: Color.fromARGB(255, 252, 18, 47),
+            backgroundColor: Color.fromARGB(255, 227, 18, 47),
           ),
         );
       }
@@ -342,7 +337,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error inesperado: $e'),
-            backgroundColor: Color.fromARGB(255, 252, 18, 47),
+            backgroundColor: Color.fromARGB(255, 227, 18, 47),
           ),
         );
       }
@@ -475,7 +470,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
-            backgroundColor: Color.fromARGB(255, 252, 18, 47),
+            backgroundColor: Color.fromARGB(255, 227, 18, 47),
             duration: const Duration(seconds: 5),
           ),
         );
@@ -486,7 +481,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error inesperado: $e'),
-            backgroundColor: Color.fromARGB(255, 252, 18, 47),
+            backgroundColor: Color.fromARGB(255, 227, 18, 47),
             duration: const Duration(seconds: 5),
           ),
         );

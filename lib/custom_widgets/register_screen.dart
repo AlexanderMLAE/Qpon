@@ -31,10 +31,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
         title: const Text(
           'Registro - Qpon',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
@@ -65,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 18, 47),
+                          color: const Color.fromARGB(255, 227, 18, 47),
                           width: 2,
                         ),
                       ),
@@ -96,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 18, 47),
+                          color: const Color.fromARGB(255, 227, 18, 47),
                           width: 2,
                         ),
                       ),
@@ -126,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: const Color.fromARGB(255, 252, 18, 47),
+                          color: const Color.fromARGB(255, 227, 18, 47),
                           width: 2,
                         ),
                       ),
@@ -147,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+                        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -187,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: const Text(
                           'Inicia sesión aquí',
                           style: TextStyle(
-                            color: Color.fromARGB(255, 252, 18, 47),
+                            color: Color.fromARGB(255, 227, 18, 47),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -271,7 +273,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(errorMessage),
-          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          backgroundColor: Color.fromARGB(255, 227, 18, 47),
           duration: const Duration(seconds: 4),
         ),
       );
@@ -282,7 +284,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text('Error inesperado: $e'),
-          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          backgroundColor: Color.fromARGB(255, 227, 18, 47),
           duration: const Duration(seconds: 4),
         ),
       );

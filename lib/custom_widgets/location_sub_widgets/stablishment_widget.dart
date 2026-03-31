@@ -38,11 +38,12 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 252, 18, 47),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
         title: Center(
           child: Text(
             "${widget.stablishmentData!["storeName"] ?? "Something went wrong"}",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),

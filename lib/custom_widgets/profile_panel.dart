@@ -51,7 +51,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Color.fromARGB(255, 252, 18, 47)),
+            icon: const Icon(Icons.close, color: Color.fromARGB(255, 227, 18, 47)),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -65,7 +65,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
               const SizedBox(height: 10),
               CircleAvatar(
                 radius: 44,
-                backgroundColor: Color.fromARGB(255, 252, 18, 47),
+                backgroundColor: Color.fromARGB(255, 227, 18, 47),
                 child: _user?.photoURL != null
                     ? ClipOval(
                         child: Image.network(
@@ -76,7 +76,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
                           errorBuilder: (_, _, _) => const Icon(Icons.person, size: 48, color: Colors.white),
                         ),
                       )
-                    : const Icon(Icons.person, size: 48, color: Color.fromARGB(255, 252, 18, 47)),
+                    : const Icon(Icons.person, size: 48, color: Color.fromARGB(255, 227, 18, 47)),
               ),
               const SizedBox(height: 12),
               Container(
@@ -87,7 +87,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
                 ),
                 child: Text(
                   _displayName(_user),
-                  style: TextStyle(color: Color.fromARGB(255, 252, 18, 47), fontSize: 20),
+                  style: TextStyle(color: Color.fromARGB(255, 227, 18, 47), fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 6),
@@ -141,7 +141,7 @@ class _ProfilePanelState extends State<ProfilePanel> {
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+                          backgroundColor: Color.fromARGB(255, 227, 18, 47),
                           padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(

@@ -17,7 +17,7 @@ class EventData {
   String? imageURL;
 
   EventData({
-    required this.title, 
+    required this.title,
     required this.note,
     this.productName,
     this.productPrice,
@@ -26,7 +26,7 @@ class EventData {
   });
 
   Map<String, dynamic> toJson() => {
-    'title': title, 
+    'title': title,
     'note': note,
     'productName': productName,
     'productPrice': productPrice,
@@ -36,20 +36,22 @@ class EventData {
 
   factory EventData.fromJson(Map<String, dynamic> json) {
     return EventData(
-      title: json['title'] ?? '', 
+      title: json['title'] ?? '',
       note: json['note'] ?? '',
       productName: json['productName'],
-      productPrice: json['productPrice'] != null ? (json['productPrice'] as num).toDouble() : null,
+      productPrice: json['productPrice'] != null
+          ? (json['productPrice'] as num).toDouble()
+          : null,
       productDetails: json['productDetails'],
       imageURL: json['imageURL'],
     );
   }
 }
 
-const _kRed = Color(0xFFFF4848);
-const _kLightRed = Color(0xFFFF9F9F);
-const _kBgRed = Color(0xFFFFD0D0);
-const _kPurple = Color(0xFF9C27B0);
+const _kRed = Color.fromARGB(255, 227, 18, 47);
+const _kLightRed = Color.fromARGB(255, 227, 18, 47);
+const _kBgRed = Color.fromARGB(255, 255, 164, 177);
+const _kPurple = Color.fromARGB(255, 112, 12, 129);
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
@@ -155,8 +157,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   headerStyle: HeaderStyle(
                     titleCentered: true,
                     formatButtonVisible: false,
-                    decoration: const BoxDecoration(color: Color(0xFFFA8181)),
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 227, 18, 47),
+                    ),
                     titleTextFormatter: (d, _) => _meses[d.month - 1],
+                    titleTextStyle: const TextStyle(
+                      color: Colors.white, // Color del texto del mes
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   calendarStyle: const CalendarStyle(
                     outsideDaysVisible: false,
@@ -167,7 +176,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     selectedDecoration: BoxDecoration(
                       color: Colors.transparent,
                     ),
-                    weekendTextStyle: TextStyle(color: Colors.red),
+                    weekendTextStyle: TextStyle(
+                      color: Colors.black,
+                    ),
                     disabledTextStyle: TextStyle(color: Colors.grey),
                   ),
                   calendarBuilders: CalendarBuilders(
@@ -219,7 +230,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               height: 6,
               margin: const EdgeInsets.symmetric(horizontal: 3),
               decoration: BoxDecoration(
-                color: Colors.black26,
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
@@ -298,21 +309,34 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: const Text('Eliminar del calendario', style: TextStyle(fontWeight: FontWeight.bold)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text(
+              'Eliminar del calendario',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             content: Text('¿Deseas quitar la marca de este día?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kRed,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                child: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Eliminar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
@@ -345,8 +369,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productName: existingEvent.productName!,
             productPrice: existingEvent.productPrice ?? 0.0,
             productDetails: existingEvent.productDetails ?? existingEvent.note,
-            imageURL: existingEvent.imageURL ?? 'https://i.imgur.com/5L3Eg2X.png',
-            targetDate: normalizedDate, // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
+            imageURL:
+                existingEvent.imageURL ?? 'https://i.imgur.com/5L3Eg2X.png',
+            targetDate:
+                normalizedDate, // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
           ),
         ),
       );
@@ -358,7 +384,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     final dynamic resultData = await showDialog<dynamic>(
       context: context,
       builder: (context) => _EventDialog(
-        initialTitle: existingEvent?.title, 
+        initialTitle: existingEvent?.title,
         initialNote: existingEvent?.note,
       ),
     );
@@ -372,7 +398,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productPrice: 109.0,
             productDetails: 'Una increíble oferta para ti.',
             imageURL: 'https://i.imgur.com/5L3Eg2X.png',
-            targetDate: normalizedDate, // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
+            targetDate:
+                normalizedDate, // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
           ),
         ),
       );
@@ -396,11 +423,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   static const _meses = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
   ];
   static const _dias = [
-    'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado',
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
   ];
   String _formatearFecha(DateTime f) =>
       '${_dias[f.weekday % 7]}, ${_meses[f.month - 1]} del ${f.year}';

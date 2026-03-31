@@ -133,7 +133,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Color.fromARGB(255, 252, 18, 47)),
+          border: Border.all(color: Color.fromARGB(255, 227, 18, 47)),
         ),
         child: TextField(
           controller: _searchController,
@@ -141,7 +141,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             hintText: 'Buscar oferta o establecimiento',
             prefixIcon: const Icon(
               Icons.search,
-              color: Color.fromARGB(255, 252, 18, 47),
+              color: Color.fromARGB(255, 227, 18, 47),
             ),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
@@ -227,7 +227,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           Icon(
             Icons.search_off,
             size: 64,
-            color: Color.fromARGB(255, 252, 18, 47),
+            color: Color.fromARGB(255, 227, 18, 47),
           ),
           const SizedBox(height: 16),
           Text(
