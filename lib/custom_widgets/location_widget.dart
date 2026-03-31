@@ -30,32 +30,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Container(
-            // Top bar
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  height: 30,
-                  child: TextButton(
-                    style: ButtonStyle(alignment: Alignment.center),
-                    child: Text(
-                      '${widget.locationText} - ${locationRadius}Km',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onPressed: () async {
-                      openBottomSheet();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _topBar(),
           // Body
           Expanded(
             child: Padding(
@@ -66,49 +41,85 @@ class _LocationWidgetState extends State<LocationWidget> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color.fromARGB(255, 227, 18, 47)),
-                    ),
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: 'Buscar oferta o establecimiento',
-                        prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 227, 18, 47)),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                        suffixIcon: _controller.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(
-                                  Icons.clear,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  _controller.clear();
-                                },
-                              )
-                            : null,
+                      border: Border.all(
+                        color: Color.fromARGB(255, 227, 18, 47),
                       ),
                     ),
+                    child: _searchField(),
                   ),
                   ElevatedButton(
                     onPressed: updateMap,
                     style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                        ),
+                      backgroundColor: const Color.fromARGB(255, 227, 18, 47),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    child: Text('Buscar',
-                    style: TextStyle(color: Colors.white)
+                    ),
+                    child: Text(
+                      'Buscar',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   // Map
                   Expanded(child: _mapWidget),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextField _searchField() {
+    return TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+        hintText: 'Buscar oferta o establecimiento',
+        prefixIcon: const Icon(
+          Icons.search,
+          color: Color.fromARGB(255, 227, 18, 47),
+        ),
+        border: InputBorder.none,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        suffixIcon: _controller.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear, color: Colors.grey),
+                onPressed: () {
+                  _controller.clear();
+                },
+              )
+            : null,
+      ),
+    );
+  }
+
+  Container _topBar() {
+    return Container(
+      // Top bar
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          SizedBox(
+            height: 30,
+            child: TextButton(
+              style: ButtonStyle(alignment: Alignment.center),
+              child: Text(
+                '${widget.locationText} - ${locationRadius}Km',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: () async {
+                openBottomSheet();
+              },
             ),
           ),
         ],
@@ -121,8 +132,6 @@ class _LocationWidgetState extends State<LocationWidget> {
       _mapWidget = CustomMapWidget();
     });
   }
-
-
 
   void openBottomSheet() {
     {
@@ -149,23 +158,8 @@ class _LocationWidgetState extends State<LocationWidget> {
                           verticalDirection: VerticalDirection.down,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Spacer(flex: 2),
-                                const Text(
-                                  'Elige una Ubicacion',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Spacer(),
-                                ElevatedButton(
-                                  child: const Icon(Icons.close),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
+                            _sheetTopBar(context),
                             //Map
-                            SizedBox(height: 200, child: _mapWidget),
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
@@ -178,22 +172,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                                 labelText: 'Buscar una ciudad',
                               ),
                             ),
-                            Slider(
-                              min: 1.0,
-                              max: 25.0,
-                              value: locationRadius.toDouble(),
-                              onChanged: (double value) {
-                                setStateOnSheet(() {
-                                  locationRadius = value.toInt();
-                                });
-                                setState(() {
-                                  locationRadius = value.toInt();
-                                });
-                              },
-                            ),
-                            Text(
-                              '1km  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  25km',
-                            ), // ugly lol
+                            _radiusSlider(setStateOnSheet),
                           ],
                         ),
                       ),
@@ -206,5 +185,49 @@ class _LocationWidgetState extends State<LocationWidget> {
         },
       );
     }
+  }
+
+  Row _radiusSlider(StateSetter setStateOnSheet) {
+    return Row(
+      children: [
+        Text('1km'),
+        Expanded(
+          child: Slider(
+            divisions: 25,
+            showValueIndicator: ShowValueIndicator.alwaysVisible,
+            min: 1.0,
+            max: 25.0,
+            value: locationRadius.toDouble(),
+            onChanged: (double value) {
+              setStateOnSheet(() {
+                locationRadius = value.toInt();
+              });
+              setState(() {
+                locationRadius = value.toInt();
+              });
+            },
+          ),
+        ),
+        Text('25km'),
+      ],
+    );
+  }
+
+  Row _sheetTopBar(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Spacer(flex: 2),
+        const Text(
+          'Elige una Ubicacion',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Spacer(),
+        ElevatedButton(
+          child: const Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
   }
 }
