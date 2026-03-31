@@ -39,8 +39,8 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
       body: _cargando
           ? const Center(child: CircularProgressIndicator())
           : _ofertas.isEmpty
-              ? _buildEmptyState()
-              : _buildListaOfertas(),
+          ? _buildEmptyState()
+          : _buildListaOfertas(),
     );
   }
 
@@ -88,8 +88,10 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: OfferCardWidget(
                   productName: oferta['productName'] ?? 'Producto',
-                  productPrice: (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
-                  productDetails: oferta['productDetails'] ?? 'Detalles de la oferta',
+                  productPrice:
+                      (oferta['productPrice'] as num?)?.toDouble() ?? 0.0,
+                  productDetails:
+                      oferta['productDetails'] ?? 'Detalles de la oferta',
                   imageURL: oferta['imageURL'] ?? '',
                 ),
               );

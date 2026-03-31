@@ -47,7 +47,10 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       if (doc.exists) {
         final data = doc.data();
         final birthdayIso = data?['birthday_iso'] as String?;
@@ -58,10 +61,13 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
             // parse yyyy-MM-dd
             try {
               _pickedBirthday = DateTime.parse(birthdayIso);
-              _birthdayController.text = '${_pickedBirthday!.day.toString().padLeft(2, '0')} ${_monthName(_pickedBirthday!.month)} ${_pickedBirthday!.year}';
+              _birthdayController.text =
+                  '${_pickedBirthday!.day.toString().padLeft(2, '0')} ${_monthName(_pickedBirthday!.month)} ${_pickedBirthday!.year}';
             } catch (_) {
               // fallback to readable string
-              if (birthdayReadable != null && birthdayReadable.isNotEmpty) _birthdayController.text = birthdayReadable;
+              if (birthdayReadable != null && birthdayReadable.isNotEmpty) {
+                _birthdayController.text = birthdayReadable;
+              }
             }
           } else if (birthdayReadable != null && birthdayReadable.isNotEmpty) {
             _birthdayController.text = birthdayReadable;
@@ -77,13 +83,18 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
           }
         });
         // Si existe birthday legible pero no birthday_iso, intentar parsear y guardar sincronizado
-        if ((birthdayIso == null || birthdayIso.isEmpty) && birthdayReadable != null && birthdayReadable.isNotEmpty) {
+        if ((birthdayIso == null || birthdayIso.isEmpty) &&
+            birthdayReadable != null &&
+            birthdayReadable.isNotEmpty) {
           final parsed = _parseReadableBirthday(birthdayReadable);
           if (parsed != null) {
             try {
-              await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-                'birthday_iso': parsed.toIso8601String().split('T').first,
-              }, SetOptions(merge: true));
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .set({
+                    'birthday_iso': parsed.toIso8601String().split('T').first,
+                  }, SetOptions(merge: true));
               // actualizar también la variable local para mantener sincronía
               if (mounted) {
                 setState(() {
@@ -121,7 +132,8 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
     if (picked != null) {
       setState(() {
         _pickedBirthday = picked;
-        _birthdayController.text = '${picked.day.toString().padLeft(2, '0')} ${_monthName(picked.month)} ${picked.year}';
+        _birthdayController.text =
+            '${picked.day.toString().padLeft(2, '0')} ${_monthName(picked.month)} ${picked.year}';
       });
     }
   }
@@ -145,7 +157,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Foto seleccionada, recuerda guardar los cambios')),
+        const SnackBar(
+          content: Text('Foto seleccionada, recuerda guardar los cambios'),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -157,7 +171,19 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
 
   String _monthName(int m) {
     const months = [
-      '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      '',
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
     return months[m];
   }
@@ -215,7 +241,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
         if (newName.isNotEmpty && newName != user.displayName) {
           await user.updateDisplayName(newName);
         }
-        if (newPhotoUrl != null && newPhotoUrl.isNotEmpty && newPhotoUrl != user.photoURL) {
+        if (newPhotoUrl != null &&
+            newPhotoUrl.isNotEmpty &&
+            newPhotoUrl != user.photoURL) {
           await user.updatePhotoURL(newPhotoUrl);
         }
 
@@ -226,19 +254,23 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
         if (_birthdayController.text.isNotEmpty) {
           updates['birthday'] = _birthdayController.text;
         }
-        final DateTime? birthdayIsoSource = _pickedBirthday ?? _parseReadableBirthday(_birthdayController.text);
+        final DateTime? birthdayIsoSource =
+            _pickedBirthday ?? _parseReadableBirthday(_birthdayController.text);
         if (birthdayIsoSource != null) {
-          updates['birthday_iso'] = birthdayIsoSource.toIso8601String().split('T').first;
+          updates['birthday_iso'] = birthdayIsoSource
+              .toIso8601String()
+              .split('T')
+              .first;
         }
         if (newPhotoUrl != null && newPhotoUrl.isNotEmpty) {
           updates['photo_url'] = newPhotoUrl;
         }
 
         if (updates.isNotEmpty) {
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
-                updates,
-                SetOptions(merge: true),
-              );
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set(updates, SetOptions(merge: true));
         }
 
         await user.reload();
@@ -252,11 +284,15 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cambios guardados')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Cambios guardados')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error guardando: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error guardando: $e')));
     } finally {
       if (mounted) {
         setState(() => _isSaving = false);
@@ -266,7 +302,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
 
   Future<String?> _uploadProfileImage(User user) async {
     try {
-      final Reference storageRef = FirebaseStorage.instance.ref('users/${user.uid}/profile.jpg');
+      final Reference storageRef = FirebaseStorage.instance.ref(
+        'users/${user.uid}/profile.jpg',
+      );
       UploadTask? uploadTask;
 
       if (!kIsWeb && _pickedImage != null) {
@@ -287,7 +325,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
       return snapshot.ref.getDownloadURL();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo subir la foto: $e')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('No se pudo subir la foto: $e')));
       }
       return null;
     }
@@ -305,13 +345,18 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Información general', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Información general',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: _isLoading
           ? SafeArea(
               child: Container(
                 color: const Color.fromARGB(255, 227, 18, 47),
-                child: const Center(child: CircularProgressIndicator(color: Colors.white)),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
               ),
             )
           : SafeArea(
@@ -339,26 +384,38 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                                       ),
                                     )
                                   : (_photoUrl != null && _photoUrl!.isNotEmpty)
-                                      ? ClipOval(
-                                          child: Image.network(
-                                            _photoUrl!,
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, _, _) => const Icon(Icons.person, size: 48, color: Colors.white),
-                                          ),
-                                        )
-                                      : const Icon(Icons.person, size: 48, color: Colors.white),
+                                  ? ClipOval(
+                                      child: Image.network(
+                                        _photoUrl!,
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, _, _) => const Icon(
+                                          Icons.person,
+                                          size: 48,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.person,
+                                      size: 48,
+                                      color: Colors.white,
+                                    ),
                             ),
                             const SizedBox(height: 8),
                             ElevatedButton(
                               onPressed: _isSaving ? null : _changePhoto,
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                        ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
-                              child: const Text('Cambiar foto', style: TextStyle(color: Colors.white)),
+                              child: const Text(
+                                'Cambiar foto',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ],
                         ),
@@ -368,7 +425,12 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
 
                       _label('Tu nombre'),
                       const SizedBox(height: 6),
-                      _buildTextField(_nameController, hint: 'Nombre completo', icon: Icons.person, enabled: true),
+                      _buildTextField(
+                        _nameController,
+                        hint: 'Nombre completo',
+                        icon: Icons.person,
+                        enabled: true,
+                      ),
 
                       const SizedBox(height: 12),
                       _label('Tu cumpleaños'),
@@ -376,21 +438,37 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                       GestureDetector(
                         onTap: _selectBirthday,
                         child: AbsorbPointer(
-                          child: _buildTextField(_birthdayController, hint: 'Fecha de nacimiento', icon: Icons.cake, enabled: true),
+                          child: _buildTextField(
+                            _birthdayController,
+                            hint: 'Fecha de nacimiento',
+                            icon: Icons.cake,
+                            enabled: true,
+                          ),
                         ),
                       ),
 
                       const SizedBox(height: 12),
                       _label('Correo electronico'),
                       const SizedBox(height: 6),
-                      _buildTextField(_emailController, hint: 'Email', icon: Icons.email, enabled: false),
+                      _buildTextField(
+                        _emailController,
+                        hint: 'Email',
+                        icon: Icons.email,
+                        enabled: false,
+                      ),
 
                       const SizedBox(height: 12),
                       _label('Genero'),
                       const SizedBox(height: 6),
                       Row(
                         children: [
-                          CircleAvatar(backgroundColor: Colors.white, child: Icon(Icons.person_outline, color: Colors.black)),
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.person_outline,
+                              color: Colors.black,
+                            ),
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<String>(
@@ -398,13 +476,28 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
                               ),
                               items: const [
-                                DropdownMenuItem(value: 'Masculino', child: Text('Masculino')),
-                                DropdownMenuItem(value: 'Femenino', child: Text('Femenino')),
-                                DropdownMenuItem(value: 'Prefiero no decirlo', child: Text('Prefiero no decirlo')),
+                                DropdownMenuItem(
+                                  value: 'Masculino',
+                                  child: Text('Masculino'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Femenino',
+                                  child: Text('Femenino'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Prefiero no decirlo',
+                                  child: Text('Prefiero no decirlo'),
+                                ),
                               ],
                               onChanged: (v) {
                                 setState(() {
@@ -412,7 +505,9 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                                 });
                               },
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Selecciona tu género';
+                                if (v == null || v.isEmpty) {
+                                  return 'Selecciona tu género';
+                                }
                                 return null;
                               },
                             ),
@@ -424,18 +519,29 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
                       Center(
                         child: ElevatedButton(
                           onPressed: _isSaving ? null : _saveChanges,
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           child: _isSaving
                               ? const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
                                 )
-                              : const Text('Guardar cambios', style: TextStyle(color: Colors.white)),
+                              : const Text(
+                                  'Guardar cambios',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         ),
                       ),
                     ],
@@ -446,9 +552,17 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
     );
   }
 
-  Widget _label(String text) => Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
+  Widget _label(String text) => Text(
+    text,
+    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  );
 
-  Widget _buildTextField(TextEditingController controller, {required String hint, required IconData icon, bool enabled = true}) {
+  Widget _buildTextField(
+    TextEditingController controller, {
+    required String hint,
+    required IconData icon,
+    bool enabled = true,
+  }) {
     return Row(
       children: [
         CircleAvatar(
@@ -464,13 +578,22 @@ class _InfoGeneralScreenState extends State<InfoGeneralScreen> {
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
               suffixIcon: const Icon(Icons.edit, size: 18),
               hintText: hint,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none,
+              ),
             ),
             validator: (v) {
-              if (controller == _nameController && (v == null || v.trim().isEmpty)) return 'Ingresa tu nombre';
+              if (controller == _nameController &&
+                  (v == null || v.trim().isEmpty)) {
+                return 'Ingresa tu nombre';
+              }
               return null;
             },
           ),

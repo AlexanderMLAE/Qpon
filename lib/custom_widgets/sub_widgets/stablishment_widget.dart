@@ -64,7 +64,8 @@ class _StablishmentWidgetState extends State<StablishmentWidget> {
                         (offer['productPrice'] as num?)?.toDouble() ?? 0.0,
                     productDetails:
                         offer['productDetails'] ?? 'Detalles de la oferta',
-                    imageURL: offer['imageURL'] ?? 'https://i.imgur.com/vs8QJQY.png',
+                    imageURL:
+                        offer['imageURL'] ?? 'https://i.imgur.com/vs8QJQY.png',
                   ),
                 );
               },

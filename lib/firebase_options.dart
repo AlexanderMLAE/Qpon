@@ -17,6 +17,7 @@ import 'package:flutter/foundation.dart'
 ///
 
 const String GOOGLE_API_KEY = String.fromEnvironment("GOOGLE_API_KEY");
+
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {

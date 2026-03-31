@@ -176,9 +176,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     selectedDecoration: BoxDecoration(
                       color: Colors.transparent,
                     ),
-                    weekendTextStyle: TextStyle(
-                      color: Colors.black,
-                    ),
+                    weekendTextStyle: TextStyle(color: Colors.black),
                     disabledTextStyle: TextStyle(color: Colors.grey),
                   ),
                   calendarBuilders: CalendarBuilders(

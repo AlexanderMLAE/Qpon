@@ -51,7 +51,10 @@ class _ProfilePanelState extends State<ProfilePanel> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Color.fromARGB(255, 227, 18, 47)),
+            icon: const Icon(
+              Icons.close,
+              color: Color.fromARGB(255, 227, 18, 47),
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -73,21 +76,36 @@ class _ProfilePanelState extends State<ProfilePanel> {
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => const Icon(Icons.person, size: 48, color: Colors.white),
+                          errorBuilder: (_, _, _) => const Icon(
+                            Icons.person,
+                            size: 48,
+                            color: Colors.white,
+                          ),
                         ),
                       )
-                    : const Icon(Icons.person, size: 48, color: Color.fromARGB(255, 227, 18, 47)),
+                    : const Icon(
+                        Icons.person,
+                        size: 48,
+                        color: Color.fromARGB(255, 227, 18, 47),
+                      ),
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   _displayName(_user),
-                  style: TextStyle(color: Color.fromARGB(255, 227, 18, 47), fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 227, 18, 47),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
@@ -107,57 +125,93 @@ class _ProfilePanelState extends State<ProfilePanel> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildOption(context, Icons.info, 'Información General', onTap: () async {
-                      final res = await Navigator.push<bool?>(
-                        context,
-                        MaterialPageRoute(builder: (context) => const InfoGeneralScreen()),
-                      );
-                      if (res == true) {
-                        await _loadUser();
-                      }
-                    }),
-                    _buildOption(context, Icons.lock, 'Cambiar Contraseña', onTap: () async {
-                      final res = await Navigator.push<bool?>(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
-                      );
-                      if (res == true) {
-                        // opcional: mostrar confirmación adicional o refrescar
-                      }
-                    }),
-                    _buildOption(context, Icons.privacy_tip, 'Centro de privacidad', onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const PrivacyCenterScreen()),
-                      );
-                    }),
-                    _buildOption(context, Icons.help_outline, 'Preguntas frecuentes', onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const FaqScreen()),
-                      );
-                    }),
+                    _buildOption(
+                      context,
+                      Icons.info,
+                      'Información General',
+                      onTap: () async {
+                        final res = await Navigator.push<bool?>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InfoGeneralScreen(),
+                          ),
+                        );
+                        if (res == true) {
+                          await _loadUser();
+                        }
+                      },
+                    ),
+                    _buildOption(
+                      context,
+                      Icons.lock,
+                      'Cambiar Contraseña',
+                      onTap: () async {
+                        final res = await Navigator.push<bool?>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ChangePasswordScreen(),
+                          ),
+                        );
+                        if (res == true) {
+                          // opcional: mostrar confirmación adicional o refrescar
+                        }
+                      },
+                    ),
+                    _buildOption(
+                      context,
+                      Icons.privacy_tip,
+                      'Centro de privacidad',
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PrivacyCenterScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildOption(
+                      context,
+                      Icons.help_outline,
+                      'Preguntas frecuentes',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FaqScreen(),
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 20),
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(255, 227, 18, 47),
-                          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 36,
+                            vertical: 12,
+                          ),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut();
                           if (!context.mounted) return;
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (_) => const LoginScreen(title: 'qpon')),
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(title: 'qpon'),
+                            ),
                             (route) => false,
                           );
                         },
-                        child: const Text('Cerrar sesión',style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: const Text(
+                          'Cerrar sesión',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -179,7 +233,12 @@ class _ProfilePanelState extends State<ProfilePanel> {
     );
   }
 
-  Widget _buildOption(BuildContext context, IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _buildOption(
+    BuildContext context,
+    IconData icon,
+    String label, {
+    VoidCallback? onTap,
+  }) {
     return Column(
       children: [
         const Divider(color: Colors.black, height: 1),

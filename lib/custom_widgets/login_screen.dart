@@ -171,7 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           debugPrint('Regreso de registro');
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 227, 18, 47),
+                          foregroundColor: const Color.fromARGB(
+                            255,
+                            227,
+                            18,
+                            47,
+                          ),
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),

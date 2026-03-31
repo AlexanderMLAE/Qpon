@@ -83,7 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-        centerTitle: true, // Esto obliga al título a centrarse en todas las plataformas
+        centerTitle:
+            true, // Esto obliga al título a centrarse en todas las plataformas
         title: TextButton(
           onPressed: _openLogin,
           child: const Text(
