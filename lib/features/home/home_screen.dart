@@ -14,7 +14,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<Map<String, dynamic>> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
-  String _filtroPrecio = 'Todos';
 
   @override
   void initState() {
@@ -63,29 +62,6 @@ class _HomeWidgetState extends State<HomeWidget> {
 
         return nombreMatch || localMatch || detallesMatch;
       }).toList();
-
-      if (_filtroPrecio != 'Todos') {
-        _filteredOffers = _filteredOffers.where((oferta) {
-          final precio = (oferta['productPrice'] as num?)?.toDouble() ?? 0.0;
-          switch (_filtroPrecio) {
-            case 'Baratos (\$0-50)':
-              return precio <= 50;
-            case 'Medios (\$51-100)':
-              return precio > 50 && precio <= 100;
-            case 'Caros (\$100+)':
-              return precio > 100;
-            default:
-              return true;
-          }
-        }).toList();
-      }
-    });
-  }
-
-  void _aplicarFiltroPrecio(String? nuevoFiltro) {
-    setState(() {
-      _filtroPrecio = nuevoFiltro ?? 'Todos';
-      _filtrarOfertas();
     });
   }
 
@@ -101,27 +77,10 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget _buildHomeContent() {
     return Column(
       children: [
-        _buildHeader(),
 
         _buildSearchBar(),
 
-        _buildFilterSection(),
-
         _buildOfertasList(),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 10),
-          child: Text(
-            'Las Mejores Ofertas Cerca de Ti',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
       ],
     );
   }
@@ -158,38 +117,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                 : null,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilterSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          const Text(
-            'Filtro - Precio:',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          const SizedBox(width: 8),
-          DropdownButton<String>(
-            value: _filtroPrecio,
-            underline: Container(height: 0),
-            onChanged: _aplicarFiltroPrecio,
-            items:
-                const [
-                  'Todos',
-                  'Baratos (\$0-50)',
-                  'Medios (\$51-100)',
-                  'Caros (\$100+)',
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: TextStyle(color: Colors.black)),
-                  );
-                }).toList(),
-          ),
-        ],
       ),
     );
   }

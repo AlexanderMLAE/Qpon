@@ -38,18 +38,16 @@ class _StoreWidgetState extends State<StoreWidget> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-        title: Center(
-          child: Text(
+        title: Text(
             "${widget.storeData!["storeName"] ?? "Something went wrong"}",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
-      ),
       body: Column(
         children: [
-          Text("Store Data ${widget.storeData}"),
           Expanded(
             child: OfferCardBuilder.buildOfferCard(_offers.length, _offers),
           ),
