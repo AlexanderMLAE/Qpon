@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:proyecto_qpon/features/favorites/data/saved_offer_model.dart';
+import 'package:sqflite/sqflite.dart';
+
+class LocalDatabase {
+  static Future<dynamic> getLocalDatabase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // open the database
+    final database = openDatabase(
+      join(await getDatabasesPath(), 'local_database.db'),
+      // Create the database
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE favorite_offers(id INTEGER PRIMARY KEY, productName TEXT, productPrice REAL, productDetails TEXT, imageUrl TEXT)',
+        );
+      },
+      version: 1,
+    );
+    return database;
+  }
+
+  static Future<List<Map<String, Object?>>> getSavedOfferCards() async {
+    final db = await getLocalDatabase();
+
+    final List<Map<String, Object?>> savedOfferCardMaps = await db.query(
+      'favorite_offers',
+    );
+
+    return savedOfferCardMaps;
+  }
+
+  static Future<void> insertSavedOfferCard(SavedOfferCard savedOffer) async {
+    final db = await getLocalDatabase();
+
+    await db.insert(
+      'favorite_offers',
+      savedOffer.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    debugPrint('Oferta guardada en DB $savedOffer');
+  }
+}
