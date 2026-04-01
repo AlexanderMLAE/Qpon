@@ -12,11 +12,13 @@ class DetallesOferta extends StatelessWidget {
     required this.productDetails,
     required this.imageUrl,
     this.targetDate,
+    required this.offerId,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageUrl;
+  final String offerId;
   final DateTime? targetDate;
 
   @override
@@ -29,6 +31,7 @@ class DetallesOferta extends StatelessWidget {
         productDetails: productDetails,
         imageUrl: imageUrl,
         targetDate: targetDate,
+        offerId: offerId,
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -43,11 +46,13 @@ class DetallesOfertaWidget extends StatefulWidget {
     required this.productDetails,
     required this.imageUrl,
     this.targetDate,
+    required this.offerId,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
   final String imageUrl;
+  final String offerId;
   final DateTime? targetDate;
 
   @override
@@ -65,6 +70,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
     productPrice: widget.productPrice,
     productDetails: widget.productDetails,
     imageUrl: widget.imageUrl,
+    offerId: widget.offerId,
   );
   @override
   Widget build(BuildContext context) {

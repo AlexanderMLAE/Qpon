@@ -12,7 +12,7 @@ class LocalDatabase {
       // Create the database
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE favorite_offers(id INTEGER PRIMARY KEY, productName TEXT, productPrice REAL, productDetails TEXT, imageUrl TEXT)',
+          'CREATE TABLE favorite_offers(id INTEGER PRIMARY KEY, offerId TEXT NOT NULL UNIQUE, productName TEXT, productPrice REAL, productDetails TEXT, imageUrl TEXT)',
         );
       },
       version: 1,
