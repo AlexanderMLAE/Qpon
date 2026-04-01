@@ -14,7 +14,7 @@ class EventData {
   String? productName;
   double? productPrice;
   String? productDetails;
-  String? imageURL;
+  String? imageUrl;
 
   EventData({
     required this.title,
@@ -22,7 +22,7 @@ class EventData {
     this.productName,
     this.productPrice,
     this.productDetails,
-    this.imageURL,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toJson() => {
@@ -31,7 +31,7 @@ class EventData {
     'productName': productName,
     'productPrice': productPrice,
     'productDetails': productDetails,
-    'imageURL': imageURL,
+    'imageUrl': imageUrl,
   };
 
   factory EventData.fromJson(Map<String, dynamic> json) {
@@ -43,7 +43,7 @@ class EventData {
           ? (json['productPrice'] as num).toDouble()
           : null,
       productDetails: json['productDetails'],
-      imageURL: json['imageURL'],
+      imageUrl: json['imageUrl'],
     );
   }
 }
@@ -368,7 +368,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productPrice: existingEvent.productPrice ?? 0.0,
             productDetails: existingEvent.productDetails ?? existingEvent.note,
             imageUrl:
-                existingEvent.imageURL ?? 'https://i.imgur.com/5L3Eg2X.png',
+                existingEvent.imageUrl ?? 'https://i.imgur.com/5L3Eg2X.png',
             targetDate:
                 normalizedDate, // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
           ),

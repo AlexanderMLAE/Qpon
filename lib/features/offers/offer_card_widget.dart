@@ -7,12 +7,12 @@ class OfferCardWidget extends StatelessWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL,
+    required this.imageUrl,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
-  final String imageURL;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class OfferCardWidget extends StatelessWidget {
       productName: productName,
       productPrice: productPrice,
       productDetails: productDetails,
-      imageURL: imageURL,
+      imageUrl: imageUrl,
     );
   }
 }
@@ -31,12 +31,12 @@ class OfferCard extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL,
+    required this.imageUrl,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
-  final String imageURL;
+  final String imageUrl;
 
   @override
   State<StatefulWidget> createState() => _OfferCardState();
@@ -59,7 +59,7 @@ class _OfferCardState extends State<OfferCard> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image(
-                      image: NetworkImage(widget.imageURL),
+                      image: NetworkImage(widget.imageUrl),
                       height: 180,
                       fit: BoxFit.cover,
                     ),
@@ -119,7 +119,7 @@ class _OfferCardState extends State<OfferCard> {
             productName: widget.productName,
             productPrice: widget.productPrice,
             productDetails: widget.productDetails,
-            imageURL: widget.imageURL,
+            imageUrl: widget.imageUrl,
           ),
         ),
       );
