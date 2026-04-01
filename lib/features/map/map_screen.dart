@@ -25,58 +25,68 @@ class _LocationWidgetState extends State<LocationWidget> {
   CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          _topBar(),
-          // Body
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Color.fromARGB(255, 227, 18, 47),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Column(
+      children: <Widget>[
+        _topBar(),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 227, 18, 47),
+                          ),
+                        ),
+                        child: _searchField(),
                       ),
                     ),
-                    child: _searchField(),
-                  ),
-                  ElevatedButton(
-                    onPressed: updateMap,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 6),
+                    ElevatedButton(
+                      onPressed: updateMap,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Buscar',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    child: Text(
-                      'Buscar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  // Map
-                  Expanded(child: _mapWidget),
-                ],
-              ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Map
+                Expanded(child: _mapWidget),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   TextField _searchField() {
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
-        hintText: 'Buscar oferta o establecimiento',
+        hintText: 'Buscar establecimiento',
         prefixIcon: const Icon(
           Icons.search,
           color: Color.fromARGB(255, 227, 18, 47),
