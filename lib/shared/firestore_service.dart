@@ -9,8 +9,9 @@ class DatabaseService {
       QuerySnapshot querySnapshot = await _db.collection("offers").get();
 
       return querySnapshot.docs.map((doc) {
+        final id = doc.id;
         final data = doc.data() as Map<String, dynamic>;
-
+        debugPrint('doc id: $id');
         return {
           'productName': data['product_name'] ?? 'Sin nombre',
           'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
@@ -18,6 +19,7 @@ class DatabaseService {
           'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
           'localName': data['store'] ?? 'Establecimiento',
           'storeId': data['store'], // ID
+          'offerId': id,
         };
       }).toList();
     } catch (e) {
@@ -59,10 +61,10 @@ class DatabaseService {
           .collection("stores")
           .get();
       debugPrint('Successfully read stores from DB');
-
       return querySnapshot.docs.map((doc) {
         return {"id": doc.id, ...doc.data()};
       }).toList();
+
     } catch (e) {
       debugPrint('Error on fetchStores: $e');
     }

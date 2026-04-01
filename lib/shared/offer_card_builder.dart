@@ -15,6 +15,7 @@ class OfferCardBuilder {
             productPrice: (offer['productPrice'] as num?)?.toDouble() ?? 0.0,
             productDetails: offer['productDetails'] ?? 'Details',
             imageUrl: offer['imageUrl'] ?? 'https://i.imgur.com/vs8QJQY.png',
+            offerId: offer['offerId'] ?? 'was null',
           ),
         );
       },

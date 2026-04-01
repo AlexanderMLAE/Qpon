@@ -369,8 +369,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productDetails: existingEvent.productDetails ?? existingEvent.note,
             imageUrl:
                 existingEvent.imageUrl ?? 'https://i.imgur.com/5L3Eg2X.png',
-            targetDate:
-                normalizedDate, // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
+            targetDate: normalizedDate,
+            offerId:
+                'from calendar', // <--- SE MANDA LA FECHA PARA QUE SE SOBREESCRIBA AHÍ MISMO
           ),
         ),
       );
@@ -396,8 +397,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productPrice: 109.0,
             productDetails: 'Una increíble oferta para ti.',
             imageUrl: 'https://i.imgur.com/5L3Eg2X.png',
-            targetDate:
-                normalizedDate, // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
+            targetDate: normalizedDate,
+            offerId: 'from calendar', // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
           ),
         ),
       );
