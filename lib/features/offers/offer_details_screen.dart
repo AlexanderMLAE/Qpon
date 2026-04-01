@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../home/filters/calendar_widget.dart';
+import 'package:proyecto_qpon/database/local_database.dart';
+import 'package:proyecto_qpon/features/favorites/data/saved_offer_model.dart';
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({
@@ -27,7 +27,7 @@ class DetallesOferta extends StatelessWidget {
         productName: productName,
         productPrice: productPrice,
         productDetails: productDetails,
-        imageURL: imageURL,
+        imageUrl: imageURL,
         targetDate: targetDate,
       ),
       debugShowCheckedModeBanner: false,
@@ -41,13 +41,13 @@ class DetallesOfertaWidget extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL,
+    required this.imageUrl,
     this.targetDate,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
-  final String imageURL;
+  final String imageUrl;
   final DateTime? targetDate;
 
   @override
@@ -60,36 +60,12 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
 
   Uint8List? burgerBytes;
   int currentPageIndex = 0;
-
-  DateTime _parseDate(String text) {
-    final months = [
-      'enero',
-      'febrero',
-      'marzo',
-      'abril',
-      'mayo',
-      'junio',
-      'julio',
-      'agosto',
-      'septiembre',
-      'octubre',
-      'noviembre',
-      'diciembre',
-    ];
-    final regex = RegExp(r'(\d{1,2})\s+de\s+([a-zA-Z]+)');
-    final match = regex.firstMatch(text.toLowerCase());
-
-    if (match != null) {
-      int day = int.tryParse(match.group(1) ?? '1') ?? 1;
-      String monthStr = match.group(2) ?? 'enero';
-      int month = months.indexOf(monthStr) + 1;
-      if (month > 0) {
-        return DateTime(DateTime.now().year, month, day);
-      }
-    }
-    return DateTime.now();
-  }
-
+  SavedOfferCard get thisOffer => SavedOfferCard(
+    productName: widget.productName,
+    productPrice: widget.productPrice,
+    productDetails: widget.productDetails,
+    imageUrl: widget.imageUrl,
+  );
   @override
   Widget build(BuildContext context) {
     final double topHeaderHeight = MediaQuery.of(context).padding.top + 48;
@@ -175,7 +151,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(18),
                         child: Image.network(
-                          widget.imageURL,
+                          widget.imageUrl,
                           width: double.infinity,
                           height: 180,
                           fit: BoxFit.cover,
@@ -219,52 +195,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      final String? eventosJson = prefs.getString(
-                        'eventos_qpon',
-                      );
-                      Map<String, dynamic> datosDecodificados =
-                          eventosJson != null ? json.decode(eventosJson) : {};
-
-                      const termsText =
-                          '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda';
-
-                      final fecha = widget.targetDate ?? _parseDate(termsText);
-                      final normalizedDate = DateTime(
-                        fecha.year,
-                        fecha.month,
-                        fecha.day,
-                      );
-
-                      final newEvent = EventData(
-                        title: widget.productName,
-                        note: widget.productDetails,
-                        productName: widget.productName,
-                        productPrice: widget.productPrice,
-                        productDetails: widget.productDetails,
-                        imageURL: widget.imageURL,
-                      );
-
-                      datosDecodificados[normalizedDate.toIso8601String()] =
-                          newEvent.toJson();
-                      await prefs.setString(
-                        'eventos_qpon',
-                        json.encode(datosDecodificados),
-                      );
-
-                      updateCalendarNotifier.value =
-                          !updateCalendarNotifier.value;
-
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Oferta guardada en el calendario'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: saveOffer,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 252, 18, 47),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -315,5 +246,10 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
         ],
       ),
     );
+  }
+
+  Future<void> saveOffer() async {
+    LocalDatabase.insertSavedOfferCard(thisOffer);
+    debugPrint('Oferta mandada para guardas $thisOffer');
   }
 }

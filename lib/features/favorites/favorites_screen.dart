@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/shared/offer_card_builder.dart';
-import '../../shared/firestore_service.dart';
 
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({super.key});
@@ -11,36 +11,30 @@ class FavoritesWidget extends StatefulWidget {
 
 class _FavoritesWidgetState extends State<FavoritesWidget> {
   List<Map<String, dynamic>> _offers = [];
-  bool _cargando = true;
 
   @override
   void initState() {
     super.initState();
-    _cargarOfertas();
+    _loadOffers();
   }
 
-  Future<void> _cargarOfertas() async {
+  Future<void> _loadOffers() async {
     try {
-      final ofertas = await DatabaseService.fetchOffers();
+      final offers = await LocalDatabase.getSavedOfferCards();
       setState(() {
-        _offers = ofertas;
-        _cargando = false;
+        _offers = offers;
       });
+
+      debugPrint('Ofertas Guardadas en state: $_offers');
     } catch (e) {
-      setState(() {
-        _cargando = false;
-      });
+      debugPrint('Error leyendo ofertas $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _cargando
-          ? const Center(child: CircularProgressIndicator())
-          : _offers.isEmpty
-          ? _buildEmptyState()
-          : _buildListaOfertas(),
+      body: _offers.isEmpty ? _buildEmptyState() : _buildListaOfertas(),
     );
   }
 
