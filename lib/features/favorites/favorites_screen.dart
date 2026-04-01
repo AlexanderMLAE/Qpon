@@ -41,10 +41,11 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   Widget _buildEmptyState() {
     return Container(
       alignment: Alignment.topCenter,
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.only(top: 20),
         child: Column(
           children: [
+            ElevatedButton(onPressed: _loadOffers, child: Text('load')),
             Text(
               'En este Apartado puedes agregar tus Ofertas Favoritas',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -65,6 +66,8 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   Widget _buildListaOfertas() {
     return Column(
       children: [
+        ElevatedButton(onPressed: deleteFavorites, child: Text('Delete')),
+        ElevatedButton(onPressed: _loadOffers, child: Text('Reload')),
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
@@ -77,5 +80,9 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         ),
       ],
     );
+  }
+
+  Future<void> deleteFavorites() async {
+    await LocalDatabase.deleteSavedOfferCards();
   }
 }
