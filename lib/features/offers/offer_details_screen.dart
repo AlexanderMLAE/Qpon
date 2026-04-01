@@ -10,13 +10,13 @@ class DetallesOferta extends StatelessWidget {
     required this.productName,
     required this.productPrice,
     required this.productDetails,
-    required this.imageURL,
+    required this.imageUrl,
     this.targetDate,
   });
   final String productName;
   final double productPrice;
   final String productDetails;
-  final String imageURL;
+  final String imageUrl;
   final DateTime? targetDate;
 
   @override
@@ -27,7 +27,7 @@ class DetallesOferta extends StatelessWidget {
         productName: productName,
         productPrice: productPrice,
         productDetails: productDetails,
-        imageUrl: imageURL,
+        imageUrl: imageUrl,
         targetDate: targetDate,
       ),
       debugShowCheckedModeBanner: false,
@@ -250,6 +250,6 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
 
   Future<void> saveOffer() async {
     LocalDatabase.insertSavedOfferCard(thisOffer);
-    debugPrint('Oferta mandada para guardas $thisOffer');
+    debugPrint('Oferta mandada para guardar $thisOffer');
   }
 }
