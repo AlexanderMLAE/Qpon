@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
           backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-          indicatorColor: Colors.white,
+          indicatorColor: Colors.transparent,
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[
             NavigationDestination(
@@ -154,17 +154,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.favorite),
-              icon: Icon(Icons.favorite),
+              icon: Icon(Icons.favorite_outline),
               label: 'Favoritos',
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.calendar_month),
-              icon: Icon(Icons.calendar_month),
+              icon: Icon(Icons.calendar_month_outlined),
               label: 'Calendario',
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.location_on),
-              icon: Icon(Icons.location_on),
+              icon: Icon(Icons.location_on_outlined),
               label: 'Ubicación',
             ),
           ],
