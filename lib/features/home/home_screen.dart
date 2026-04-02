@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/shared/offer_card_builder.dart';
-import '../../shared/firestore_service.dart';
+import 'package:proyecto_qpon/shared/firestore_service.dart';
+import 'package:proyecto_qpon/features/home/filters/filter_price.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -14,6 +15,10 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<Map<String, dynamic>> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
+  
+  double? _minPrice;
+  double? _maxPrice;
+  bool _priceFilterActive = false;
 
   @override
   void initState() {
@@ -55,13 +60,34 @@ class _HomeWidgetState extends State<HomeWidget> {
             oferta['localName']?.toString().toLowerCase().contains(query) ??
             false;
         final detallesMatch =
-            oferta['productDetails']?.toString().toLowerCase().contains(
-              query,
-            ) ??
+            oferta['productDetails']?.toString().toLowerCase().contains(query) ??
             false;
-
-        return nombreMatch || localMatch || detallesMatch;
+        
+        final textMatch = nombreMatch || localMatch || detallesMatch;
+        
+        bool priceMatch = true;
+        if (_priceFilterActive) {
+          final productPrice = oferta['productPrice']?.toDouble() ?? 0.0;
+          
+          if (_minPrice != null && productPrice < _minPrice!) {
+            priceMatch = false;
+          }
+          if (_maxPrice != null && productPrice > _maxPrice!) {
+            priceMatch = false;
+          }
+        }
+        
+        return textMatch && priceMatch;
       }).toList();
+    });
+  }
+
+  void _onPriceFilterApplied(double? minPrice, double? maxPrice) {
+    setState(() {
+      _minPrice = minPrice;
+      _maxPrice = maxPrice;
+      _priceFilterActive = (minPrice != null || maxPrice != null);
+      _filtrarOfertas();
     });
   }
 
@@ -77,9 +103,15 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget _buildHomeContent() {
     return Column(
       children: [
-
         _buildSearchBar(),
-
+        
+        PriceFilterWidget(
+          onFilterApplied: _onPriceFilterApplied,
+          initialMinPrice: _minPrice,
+          initialMaxPrice: _maxPrice,
+          isActive: _priceFilterActive,
+        ),
+                
         _buildOfertasList(),
       ],
     );
@@ -87,7 +119,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
