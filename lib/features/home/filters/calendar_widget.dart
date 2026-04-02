@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../offers/offer_details_screen.dart';
+import '../../offers/presentation/offer_details_screen.dart';
 
 // ---> EL TIMBRE INVISIBLE <---
 final ValueNotifier<bool> updateCalendarNotifier = ValueNotifier(false);

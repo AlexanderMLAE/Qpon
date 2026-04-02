@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:proyecto_qpon/features/favorites/data/saved_offer_model.dart';
+import 'package:proyecto_qpon/features/offers/data/saved_offer_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalDatabase {

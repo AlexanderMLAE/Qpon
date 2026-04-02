@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/features/offers/offer_card_widget.dart';
+import 'package:proyecto_qpon/features/offers/presentation/offer_card_widget.dart';
 
 class OfferCardBuilder {
   static Widget buildOfferCard(int length, List<Map<String, dynamic>> offers) {

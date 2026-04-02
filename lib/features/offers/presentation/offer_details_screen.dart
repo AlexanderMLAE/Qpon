@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
-import 'package:proyecto_qpon/features/favorites/data/saved_offer_model.dart';
+import 'package:proyecto_qpon/features/offers/data/saved_offer_model.dart';
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({
