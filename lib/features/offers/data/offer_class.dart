@@ -36,11 +36,14 @@ class Offer {
   // Gets an offer as a map and return an offer object
   factory Offer.fromMapToOffer(Map<String, dynamic> offerMap) {
     return Offer(
-      productName: offerMap['productName'] as String,
-      productPrice: offerMap['productPrice'] as double,
-      productDetails: offerMap['productDetails'] as String,
-      imageUrl: offerMap['imageUrl'] as String,
-      offerId: offerMap['offerId'] as String,
+      productName: offerMap['productName'] as String? ?? 'Null name',
+      productPrice: offerMap['productPrice'] as double? ?? 00.00,
+      productDetails: offerMap['productDetails'] as String? ?? 'Null details',
+      imageUrl:
+          // Qpon logo as fallback image
+          offerMap['imageUrl'] as String? ?? 'https://i.imgur.com/vs8QJQY.png',
+          // Qpon HQ as fallback store
+      offerId: offerMap['offerId'] as String? ?? 'uMvODcPYJczc8cU5pc5d',
     );
   }
 

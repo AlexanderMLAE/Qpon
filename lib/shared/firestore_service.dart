@@ -6,69 +6,37 @@ class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Returns a list of the offers as a Map (key: value)
-  static Future<List<Map<String, dynamic>>> fetchOffers() async {
+  static Future<List<Map<String, dynamic>>> _fetchOffers({
+    String? storeId,
+  }) async {
     try {
-      QuerySnapshot querySnapshot = await _db.collection("offers").get();
+      Query query = _db.collection('offers');
+
+      // Filter by storeId if provided
+      if (storeId != null) {
+        query = query.where('store', isEqualTo: storeId);
+      }
+
+      QuerySnapshot querySnapshot = await query.get();
 
       return querySnapshot.docs.map((doc) {
         final id = doc.id;
         final data = doc.data() as Map<String, dynamic>;
         debugPrint('doc id: $id');
-        return {
-          'productName': data['product_name'] ?? 'Sin nombre',
-          'productPrice': data['product_price'] ?? 0.0,
-          'productDetails': data['product_details'] ?? 'Placeholder Details',
-          'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
-          'storeId': data['store'], // ID of the store
-          'offerId': id,
-        };
+        return {'id': id, ...data};
       }).toList();
     } catch (e) {
-      ("Error en Firebase: $e");
+      debugPrint("Error en Firebase: $e");
       return [];
     }
   }
 
   // Gets the list of offer maps and turns them to a list of offer objects
-  static Future<List<Offer>> getOffersList() async {
-    final offersList = await fetchOffers();
-
-    return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
-  }
-
-  // Returns List of offers as map filtered by Store id
-  static Future<List<Map<String, dynamic>>> fetchStoreOffers(
-    String storeId,
-  ) async {
-    try {
-      QuerySnapshot querySnapshot = await _db
-          .collection("offers")
-          .where("store", isEqualTo: storeId)
-          .get();
-
-      return querySnapshot.docs.map((doc) {
-        final id = doc.id;
-        final data = doc.data() as Map<String, dynamic>;
-
-        return {
-          'productName': data['product_name'] ?? 'Sin nombre',
-          'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
-          'productDetails': data['product_details'] ?? '',
-          'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
-          'storeId': data['store'], // ID
-          'offerId': id,
-        };
-      }).toList();
-    } catch (e) {
-      ("Error en Firebase: $e");
-      return [];
+  static Future<List<Offer>> getOffersList(String? storeId) async {
+    List offersList = await _fetchOffers();
+    if (storeId != null) {
+      offersList = await _fetchOffers(storeId: storeId);
     }
-  }
-
-  // Same thing as before but with the filtered offers
-  static Future<List<Offer>> getStoreOffersList(String storeId) async {
-    final offersList = await fetchStoreOffers(storeId);
-
     return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 

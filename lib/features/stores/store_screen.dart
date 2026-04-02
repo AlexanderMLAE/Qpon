@@ -22,7 +22,7 @@ class _StoreWidgetState extends State<StoreWidget> {
   Future<void> getOffers() async {
     String storeId = widget.storeData?["storeId"] as String;
     try {
-      final offers = await FirestoreService.getStoreOffersList(storeId);
+      final offers = await FirestoreService.getOffersList(storeId);
       setState(() {
         _offers = offers;
       });
