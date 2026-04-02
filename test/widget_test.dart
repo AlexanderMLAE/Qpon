@@ -13,7 +13,7 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
-    
+
     // Verify that the app shows the title 'Qpon' in the UI.
     expect(find.text('Qpon'), findsOneWidget);
   });

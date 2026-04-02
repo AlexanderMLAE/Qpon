@@ -398,7 +398,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             productDetails: 'Una increíble oferta para ti.',
             imageUrl: 'https://i.imgur.com/5L3Eg2X.png',
             targetDate: normalizedDate,
-            offerId: 'from calendar', // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
+            offerId:
+                'from calendar', // <--- SE MANDA LA FECHA DEL DÍA QUE TOCASTE
           ),
         ),
       );

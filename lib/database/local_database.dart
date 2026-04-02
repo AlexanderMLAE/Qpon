@@ -12,6 +12,8 @@ class LocalDatabase {
       // Create the database
       onCreate: (db, version) {
         return db.execute(
+          // Creates the table for favorite offers
+          // "id" is the PK identifier on the DB - offerId is the identifire from firestore, is unique to avoid duplicate favorite offers
           'CREATE TABLE favorite_offers(id INTEGER PRIMARY KEY, offerId TEXT NOT NULL UNIQUE, productName TEXT, productPrice REAL, productDetails TEXT, imageUrl TEXT)',
         );
       },
@@ -20,6 +22,7 @@ class LocalDatabase {
     return database;
   }
 
+  // Gets favorite offer cards as map from local db and returns list of offer objects
   static Future<List<Offer>> getSavedOfferCards() async {
     final Database db = await getLocalDatabase();
 
@@ -29,6 +32,7 @@ class LocalDatabase {
     return savedOfferCardMaps.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
+  // Gets a single offer object and inserts it to favorites table as map
   static Future<void> insertSavedOfferCard(Offer savedOffer) async {
     final Database db = await getLocalDatabase();
 
@@ -40,6 +44,7 @@ class LocalDatabase {
     debugPrint('Oferta guardada en DB $savedOffer');
   }
 
+  // Deletes every offer saved on favorites
   static Future<void> deleteSavedOfferCards() async {
     final db = await getLocalDatabase();
 

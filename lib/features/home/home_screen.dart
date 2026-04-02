@@ -44,18 +44,21 @@ class _HomeWidgetState extends State<HomeWidget> {
     }
   }
 
+  // Filter offers by name or details -- will be expanded later
   void _filtrarOfertas() {
     final query = _searchController.text.toLowerCase();
 
     setState(() {
       _filteredOffers = _ofertas.where((oferta) {
-        final nombreMatch =
-            oferta.productName.toString().toLowerCase().contains(query);
+        final nombreMatch = oferta.productName
+            .toString()
+            .toLowerCase()
+            .contains(query);
 
-        final detallesMatch =
-            oferta.productDetails.toString().toLowerCase().contains(
-              query,
-            );
+        final detallesMatch = oferta.productDetails
+            .toString()
+            .toLowerCase()
+            .contains(query);
 
         return nombreMatch || detallesMatch;
       }).toList();
@@ -194,10 +197,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Expanded(
       child: _filteredOffers.isEmpty
           ? _buildEmptyState()
-          : Offer.buildOfferCard(
-              _filteredOffers.length,
-              _filteredOffers,
-            ),
+          : Offer.buildOfferCard(_filteredOffers.length, _filteredOffers),
     );
   }
 
