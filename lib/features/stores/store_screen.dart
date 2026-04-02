@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
 
-// Everything above this may be unnecessary
 class StoreWidget extends StatefulWidget {
   const StoreWidget({super.key, required this.storeData});
   final Map<String, Object>? storeData;
