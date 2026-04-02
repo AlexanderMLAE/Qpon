@@ -15,7 +15,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   @override
   void initState() {
     super.initState();
-  _loadOffers();
+    _loadOffers();
   }
 
   Future<void> _loadOffers() async {
@@ -75,9 +75,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(
-          child: Offer.buildOfferCard(_offers.length, _offers),
-        ),
+        Expanded(child: Offer.buildOfferCard(_offers.length, _offers)),
       ],
     );
   }

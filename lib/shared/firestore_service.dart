@@ -5,6 +5,7 @@ import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // Returns a list of the offers as a Map (key: value)
   static Future<List<Map<String, dynamic>>> fetchOffers() async {
     try {
       QuerySnapshot querySnapshot = await _db.collection("offers").get();
@@ -18,7 +19,7 @@ class FirestoreService {
           'productPrice': data['product_price'] ?? 0.0,
           'productDetails': data['product_details'] ?? 'Placeholder Details',
           'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
-          'storeId': data['store'], // ID
+          'storeId': data['store'], // ID of the store
           'offerId': id,
         };
       }).toList();
@@ -28,12 +29,14 @@ class FirestoreService {
     }
   }
 
+  // Gets the list of offer maps and turns them to a list of offer objects
   static Future<List<Offer>> getOffersList() async {
     final offersList = await fetchOffers();
 
     return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
+  // Returns List of offers as map filtered by Store id
   static Future<List<Map<String, dynamic>>> fetchStoreOffers(
     String storeId,
   ) async {
@@ -61,7 +64,9 @@ class FirestoreService {
       return [];
     }
   }
-    static Future<List<Offer>> getStoreOffersList(String storeId) async {
+
+  // Same thing as before but with the filtered offers
+  static Future<List<Offer>> getStoreOffersList(String storeId) async {
     final offersList = await fetchStoreOffers(storeId);
 
     return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
