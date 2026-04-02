@@ -42,7 +42,7 @@ class Offer {
       imageUrl:
           // Qpon logo as fallback image
           offerMap['imageUrl'] as String? ?? 'https://i.imgur.com/vs8QJQY.png',
-          // Qpon HQ as fallback store
+      // Qpon HQ as fallback store
       offerId: offerMap['offerId'] as String? ?? 'uMvODcPYJczc8cU5pc5d',
     );
   }
@@ -57,13 +57,7 @@ class Offer {
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
           // Will probably change this so that the OfferCardWidget takes an offer object as parameter instead
-          child: OfferCardWidget(
-            productName: offer.productName,
-            productPrice: (offer.productPrice as num?)?.toDouble() ?? 0.0,
-            productDetails: offer.productDetails,
-            imageUrl: offer.imageUrl,
-            offerId: offer.offerId,
-          ),
+          child: OfferCardWidget(offer: offer),
         );
       },
     );
