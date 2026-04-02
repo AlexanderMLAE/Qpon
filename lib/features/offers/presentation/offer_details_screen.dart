@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
-import 'package:proyecto_qpon/features/offers/data/saved_offer_model.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 
 class DetallesOferta extends StatelessWidget {
   const DetallesOferta({
@@ -65,7 +65,7 @@ class _DetallesOfertaWidgetState extends State<DetallesOfertaWidget> {
 
   Uint8List? burgerBytes;
   int currentPageIndex = 0;
-  SavedOfferCard get thisOffer => SavedOfferCard(
+  Offer get thisOffer => Offer(
     productName: widget.productName,
     productPrice: widget.productPrice,
     productDetails: widget.productDetails,

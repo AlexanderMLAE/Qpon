@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/shared/offer_card_builder.dart';
-import 'package:proyecto_qpon/shared/firestore_service.dart';
 import 'package:proyecto_qpon/features/home/filters/filter_price.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
+import '../../shared/firestore_service.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -11,8 +11,8 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  List<Map<String, dynamic>> _ofertas = [];
-  List<Map<String, dynamic>> _filteredOffers = [];
+  List<Offer> _ofertas = [];
+  List<Offer> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
 
@@ -35,7 +35,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> _cargarOfertas() async {
     try {
-      final ofertas = await DatabaseService.fetchOffers();
+      final ofertas = await FirestoreService.getOffersList();
       setState(() {
         _ofertas = ofertas;
         _filteredOffers = ofertas;
@@ -54,22 +54,18 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() {
       _filteredOffers = _ofertas.where((oferta) {
         final nombreMatch =
-            oferta['productName']?.toString().toLowerCase().contains(query) ??
-            false;
-        final localMatch =
-            oferta['localName']?.toString().toLowerCase().contains(query) ??
-            false;
-        final detallesMatch =
-            oferta['productDetails']?.toString().toLowerCase().contains(
-              query,
-            ) ??
-            false;
+            oferta.productName.toString().toLowerCase().contains(query);
 
-        final textMatch = nombreMatch || localMatch || detallesMatch;
+        final detallesMatch =
+            oferta.productDetails.toString().toLowerCase().contains(
+              query,
+            );
+
+        final textMatch = nombreMatch || detallesMatch;
 
         bool priceMatch = true;
         if (_priceFilterActive) {
-          final productPrice = oferta['productPrice']?.toDouble() ?? 0.0;
+          final productPrice = oferta.productPrice.toDouble();
 
           if (_minPrice != null && productPrice < _minPrice!) {
             priceMatch = false;
@@ -159,7 +155,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Expanded(
       child: _filteredOffers.isEmpty
           ? _buildEmptyState()
-          : OfferCardBuilder.buildOfferCard(
+          : Offer.buildOfferCard(
               _filteredOffers.length,
               _filteredOffers,
             ),

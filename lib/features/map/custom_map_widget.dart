@@ -73,7 +73,8 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
 
   // Reading data from the "stores" collection and creating a point with the values found
   Future<void> fetchStores() async {
-    final stores = await DatabaseService.fetchStores();
+    final stores = await FirestoreService.fetchStores();
+    debugPrint('Stores from firestore: $stores');
     for (var store in stores) {
       createOneAnnotation(
         store["id"],

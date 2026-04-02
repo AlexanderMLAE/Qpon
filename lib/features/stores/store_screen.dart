@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
-import 'package:proyecto_qpon/shared/offer_card_builder.dart';
 
 // Everything above this may be unnecessary
 class StoreWidget extends StatefulWidget {
@@ -12,7 +12,7 @@ class StoreWidget extends StatefulWidget {
 }
 
 class _StoreWidgetState extends State<StoreWidget> {
-  List<Map<String, dynamic>> _offers = [];
+  List<Offer> _offers = [];
   @override
   void initState() {
     super.initState();
@@ -22,7 +22,7 @@ class _StoreWidgetState extends State<StoreWidget> {
   Future<void> getOffers() async {
     String storeId = widget.storeData?["storeId"] as String;
     try {
-      final offers = await DatabaseService.fetchStoreOffers(storeId);
+      final offers = await FirestoreService.getStoreOffersList(storeId);
       setState(() {
         _offers = offers;
       });
@@ -49,7 +49,7 @@ class _StoreWidgetState extends State<StoreWidget> {
       body: Column(
         children: [
           Expanded(
-            child: OfferCardBuilder.buildOfferCard(_offers.length, _offers),
+            child: Offer.buildOfferCard(_offers.length, _offers),
           ),
         ],
       ),
