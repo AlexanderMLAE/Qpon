@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 
-class DatabaseService {
+class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   static Future<List<Map<String, dynamic>>> fetchOffers() async {
@@ -14,10 +15,9 @@ class DatabaseService {
         debugPrint('doc id: $id');
         return {
           'productName': data['product_name'] ?? 'Sin nombre',
-          'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
+          'productPrice': data['product_price'] ?? 0.0,
           'productDetails': data['product_details'] ?? 'Placeholder Details',
           'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
-          'localName': data['store'] ?? 'Establecimiento',
           'storeId': data['store'], // ID
           'offerId': id,
         };
@@ -26,6 +26,12 @@ class DatabaseService {
       ("Error en Firebase: $e");
       return [];
     }
+  }
+
+  static Future<List<Offer>> getOffersList() async {
+    final offersList = await fetchOffers();
+
+    return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
   static Future<List<Map<String, dynamic>>> fetchStoreOffers(
@@ -38,6 +44,7 @@ class DatabaseService {
           .get();
 
       return querySnapshot.docs.map((doc) {
+        final id = doc.id;
         final data = doc.data() as Map<String, dynamic>;
 
         return {
@@ -45,14 +52,19 @@ class DatabaseService {
           'productPrice': (data['product_price'] as num?)?.toDouble() ?? 0.0,
           'productDetails': data['product_details'] ?? '',
           'imageUrl': data['image_url'] ?? 'https://i.imgur.com/vs8QJQY.png',
-          'localName': data['store'] ?? 'Establecimiento',
           'storeId': data['store'], // ID
+          'offerId': id,
         };
       }).toList();
     } catch (e) {
       ("Error en Firebase: $e");
       return [];
     }
+  }
+    static Future<List<Offer>> getStoreOffersList(String storeId) async {
+    final offersList = await fetchStoreOffers(storeId);
+
+    return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
   static Future<List<Map<String, dynamic>>> fetchStores() async {
@@ -64,7 +76,6 @@ class DatabaseService {
       return querySnapshot.docs.map((doc) {
         return {"id": doc.id, ...doc.data()};
       }).toList();
-
     } catch (e) {
       debugPrint('Error on fetchStores: $e');
     }

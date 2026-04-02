@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:proyecto_qpon/features/offers/data/saved_offer_model.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalDatabase {
@@ -20,17 +20,16 @@ class LocalDatabase {
     return database;
   }
 
-  static Future<List<Map<String, Object?>>> getSavedOfferCards() async {
+  static Future<List<Offer>> getSavedOfferCards() async {
     final Database db = await getLocalDatabase();
 
     final List<Map<String, Object?>> savedOfferCardMaps = await db.query(
       'favorite_offers',
     );
-
-    return savedOfferCardMaps;
+    return savedOfferCardMaps.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
-  static Future<void> insertSavedOfferCard(SavedOfferCard savedOffer) async {
+  static Future<void> insertSavedOfferCard(Offer savedOffer) async {
     final Database db = await getLocalDatabase();
 
     await db.insert(

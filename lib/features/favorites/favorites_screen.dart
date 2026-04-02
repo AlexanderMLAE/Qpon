@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
-import 'package:proyecto_qpon/shared/offer_card_builder.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({super.key});
@@ -10,12 +10,12 @@ class FavoritesWidget extends StatefulWidget {
 }
 
 class _FavoritesWidgetState extends State<FavoritesWidget> {
-  List<Map<String, dynamic>> _offers = [];
+  List<Offer> _offers = [];
 
   @override
   void initState() {
     super.initState();
-    _loadOffers();
+  _loadOffers();
   }
 
   Future<void> _loadOffers() async {
@@ -76,7 +76,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
           ),
         ),
         Expanded(
-          child: OfferCardBuilder.buildOfferCard(_offers.length, _offers),
+          child: Offer.buildOfferCard(_offers.length, _offers),
         ),
       ],
     );

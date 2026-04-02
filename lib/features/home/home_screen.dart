@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/shared/offer_card_builder.dart';
+import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import '../../shared/firestore_service.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -10,8 +10,8 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  List<Map<String, dynamic>> _ofertas = [];
-  List<Map<String, dynamic>> _filteredOffers = [];
+  List<Offer> _ofertas = [];
+  List<Offer> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
   String _filtroPrecio = 'Todos';
@@ -31,7 +31,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> _cargarOfertas() async {
     try {
-      final ofertas = await DatabaseService.fetchOffers();
+      final ofertas = await FirestoreService.getOffersList();
       setState(() {
         _ofertas = ofertas;
         _filteredOffers = ofertas;
@@ -50,23 +50,19 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() {
       _filteredOffers = _ofertas.where((oferta) {
         final nombreMatch =
-            oferta['productName']?.toString().toLowerCase().contains(query) ??
-            false;
-        final localMatch =
-            oferta['localName']?.toString().toLowerCase().contains(query) ??
-            false;
-        final detallesMatch =
-            oferta['productDetails']?.toString().toLowerCase().contains(
-              query,
-            ) ??
-            false;
+            oferta.productName.toString().toLowerCase().contains(query);
 
-        return nombreMatch || localMatch || detallesMatch;
+        final detallesMatch =
+            oferta.productDetails.toString().toLowerCase().contains(
+              query,
+            );
+
+        return nombreMatch || detallesMatch;
       }).toList();
 
       if (_filtroPrecio != 'Todos') {
         _filteredOffers = _filteredOffers.where((oferta) {
-          final precio = (oferta['productPrice'] as num?)?.toDouble() ?? 0.0;
+          final precio = (oferta.productPrice as num?)?.toDouble() ?? 0.0;
           switch (_filtroPrecio) {
             case 'Baratos (\$0-50)':
               return precio <= 50;
@@ -198,7 +194,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Expanded(
       child: _filteredOffers.isEmpty
           ? _buildEmptyState()
-          : OfferCardBuilder.buildOfferCard(
+          : Offer.buildOfferCard(
               _filteredOffers.length,
               _filteredOffers,
             ),
