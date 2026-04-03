@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_card_widget.dart';
 
 class Offer {
-  final String productName; // product_name -- On firestore --
-  final double productPrice; // product_price
-  final String productDetails; // product_details
-  final String imageUrl; // image_url
+  final String productName; //
+  final double productPrice; //
+  final String productDetails; //
+  final String imageUrl; //
   final String offerId; // id of the offer document
 
   const Offer({
@@ -37,7 +37,7 @@ class Offer {
   factory Offer.fromMapToOffer(Map<String, dynamic> offerMap) {
     return Offer(
       productName: offerMap['productName'] as String? ?? 'Null name',
-      productPrice: offerMap['productPrice'] as double? ?? 00.00,
+      productPrice: (offerMap['productPrice'] as num?)?.toDouble() ?? 0.0,
       productDetails: offerMap['productDetails'] as String? ?? 'Null details',
       imageUrl:
           // Qpon logo as fallback image
