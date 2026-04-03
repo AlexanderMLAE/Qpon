@@ -42,8 +42,7 @@ class Offer {
       imageUrl:
           // Qpon logo as fallback image
           offerMap['imageUrl'] as String? ?? 'https://i.imgur.com/vs8QJQY.png',
-      // Qpon HQ as fallback store
-      offerId: offerMap['offerId'] as String? ?? 'uMvODcPYJczc8cU5pc5d',
+      offerId: offerMap['offerId'] as String? ?? 'ID WAS NULL',
     );
   }
 

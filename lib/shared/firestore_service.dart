@@ -23,7 +23,7 @@ class FirestoreService {
         final id = doc.id;
         final data = doc.data() as Map<String, dynamic>;
         debugPrint('fetched data: $id $data');
-        return {'id': id, ...data};
+        return {'offerId': id, ...data};
       }).toList();
     } catch (e) {
       debugPrint("Error en Firebase: $e");
@@ -32,14 +32,14 @@ class FirestoreService {
   }
 
   // Gets the list of offer maps and turns them to a list of offer objects
-  static Future<List<Offer>> getOffersList({
-    String? storeId,
-  }) async {
+  static Future<List<Offer>> getOffersList({String? storeId}) async {
     List offersList = await _fetchOffers();
     if (storeId != null) {
       offersList = await _fetchOffers(storeId: storeId);
     }
-    debugPrint('offersList: $offersList ${offersList.map((map) => Offer.fromMapToOffer(map)).toList()}');
+    debugPrint(
+      'offersList: $offersList ${offersList.map((map) => Offer.fromMapToOffer(map)).toList()}',
+    );
     return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 

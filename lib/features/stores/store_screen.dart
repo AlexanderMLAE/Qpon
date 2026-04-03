@@ -47,9 +47,7 @@ class _StoreWidgetState extends State<StoreWidget> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Offer.buildOfferCard(_offers.length, _offers),
-          ),
+          Expanded(child: Offer.buildOfferCard(_offers.length, _offers)),
         ],
       ),
     );

@@ -29,6 +29,7 @@ class LocalDatabase {
     final List<Map<String, Object?>> savedOfferCardMaps = await db.query(
       'favorite_offers',
     );
+    debugPrint("Retrieved offers from Local DB: $savedOfferCardMaps");
     return savedOfferCardMaps.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
@@ -41,7 +42,7 @@ class LocalDatabase {
       savedOffer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    debugPrint('Oferta guardada en DB $savedOffer');
+    debugPrint('Offer inserted to Local DB ${savedOffer.toMap()}');
   }
 
   // Deletes every offer saved on favorites
