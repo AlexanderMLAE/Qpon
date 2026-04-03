@@ -26,7 +26,7 @@ class _StoreWidgetState extends State<StoreWidget> {
         _offers = offers;
       });
     } catch (e) {
-      debugPrint("err $e");
+      debugPrint("Error in store screen getting offers $e");
     }
   }
 

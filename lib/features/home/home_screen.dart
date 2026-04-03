@@ -36,12 +36,15 @@ class _HomeWidgetState extends State<HomeWidget> {
   Future<void> _cargarOfertas() async {
     try {
       final ofertas = await FirestoreService.getOffersList();
+
+      debugPrint("Offers in home $_ofertas");
       setState(() {
         _ofertas = ofertas;
         _filteredOffers = ofertas;
         _cargando = false;
       });
     } catch (e) {
+      debugPrint("Error getting offers in home $e");
       setState(() {
         _cargando = false;
       });
