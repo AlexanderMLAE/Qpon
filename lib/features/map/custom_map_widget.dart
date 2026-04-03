@@ -127,8 +127,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       Navigator.push(
         context,
         MaterialPageRoute<void>(
-          builder: (context) =>
-              StoreWidget(storeData: storeId),
+          builder: (context) => StoreWidget(storeData: storeId),
         ),
       );
     });

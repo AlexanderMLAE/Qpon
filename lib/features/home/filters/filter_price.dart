@@ -29,7 +29,7 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
     super.initState();
     _minController = TextEditingController();
     _maxController = TextEditingController();
-    
+
     if (widget.initialMinPrice != null) {
       _minController.text = widget.initialMinPrice!.toString();
       _tempMinPrice = widget.initialMinPrice;
@@ -62,11 +62,17 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
               backgroundColor: Colors.white,
               title: const Row(
                 children: [
-                  Icon(Icons.filter_alt, color: Color.fromARGB(255, 227, 18, 47)),
+                  Icon(
+                    Icons.filter_alt,
+                    color: Color.fromARGB(255, 227, 18, 47),
+                  ),
                   SizedBox(width: 8),
                   Text(
                     'Filtrar por precio',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 227, 18, 47)),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 227, 18, 47),
+                    ),
                   ),
                 ],
               ),
@@ -85,19 +91,27 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
                         labelText: 'Precio mínimo',
                         labelStyle: TextStyle(color: Colors.grey),
                         hintText: 'ejemplo: 100',
-                        prefixIcon: Icon(Icons.attach_money, color: Colors.black),
+                        prefixIcon: Icon(
+                          Icons.attach_money,
+                          color: Colors.black,
+                        ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
                       ),
                       onChanged: (value) {
                         setStateDialog(() {
-                          _tempMinPrice = value.isEmpty ? null : double.tryParse(value);
+                          _tempMinPrice = value.isEmpty
+                              ? null
+                              : double.tryParse(value);
                         });
                       },
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -110,34 +124,55 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
                         labelText: 'Precio máximo',
                         labelStyle: TextStyle(color: Colors.grey),
                         hintText: 'ejemplo: 500',
-                        prefixIcon: Icon(Icons.attach_money, color: Colors.black,),
+                        prefixIcon: Icon(
+                          Icons.attach_money,
+                          color: Colors.black,
+                        ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
                       ),
                       onChanged: (value) {
                         setStateDialog(() {
-                          _tempMaxPrice = value.isEmpty ? null : double.tryParse(value);
+                          _tempMaxPrice = value.isEmpty
+                              ? null
+                              : double.tryParse(value);
                         });
                       },
                     ),
                   ),
-                  
+
                   if (widget.isActive) ...[
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 226, 216, 228),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Color.fromARGB(255, 75, 0, 130)),
+                        border: Border.all(
+                          color: Color.fromARGB(255, 75, 0, 130),
+                        ),
                       ),
                       child: const Row(
                         children: [
-                          Icon(Icons.check_circle, color: Color.fromARGB(255, 75, 0, 130), size: 16),
+                          Icon(
+                            Icons.check_circle,
+                            color: Color.fromARGB(255, 75, 0, 130),
+                            size: 16,
+                          ),
                           SizedBox(width: 10),
                           Text(
                             'Filtro activo',
-                            style: TextStyle(color: Color.fromARGB(255, 75, 0, 130),fontWeight: FontWeight.bold, fontSize: 14),
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 75, 0, 130),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -150,23 +185,28 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancelar', selectionColor: Color.fromARGB(255, 75, 0, 130)),
+                  child: const Text(
+                    'Cancelar',
+                    selectionColor: Color.fromARGB(255, 75, 0, 130),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     // Validar que mínimo sea menor que máximo
-                    if (_tempMinPrice != null && 
-                        _tempMaxPrice != null && 
+                    if (_tempMinPrice != null &&
+                        _tempMaxPrice != null &&
                         _tempMinPrice! > _tempMaxPrice!) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('El precio mínimo no puede ser mayor al máximo'),
+                          content: Text(
+                            'El precio mínimo no puede ser mayor al máximo',
+                          ),
                           backgroundColor: Colors.red,
                         ),
                       );
                       return;
                     }
-                    
+
                     widget.onFilterApplied(_tempMinPrice, _tempMaxPrice);
                     Navigator.pop(context);
                   },
@@ -178,7 +218,10 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
                   ),
                   child: const Text(
                     'Aplicar',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -189,51 +232,47 @@ class _PriceFilterWidgetState extends State<PriceFilterWidget> {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Row(
-      children: [
-        InputChip(
-          label: Text(
-            widget.isActive ? _getPriceRangeText() : 'Filtrar por precio',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          InputChip(
+            label: Text(
+              widget.isActive ? _getPriceRangeText() : 'Filtrar por precio',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
+            avatar: const Icon(Icons.filter_alt, size: 22, color: Colors.white),
+            onPressed: _showFilterDialog,
+            backgroundColor: const Color.fromARGB(255, 227, 18, 47),
+            side: BorderSide.none,
+            deleteIcon: widget.isActive
+                ? const Icon(Icons.close, size: 18, color: Colors.white)
+                : null,
+            onDeleted: widget.isActive
+                ? () {
+                    widget.onFilterApplied(null, null);
+                  }
+                : null,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+            visualDensity: VisualDensity.compact,
           ),
-          avatar: const Icon(
-            Icons.filter_alt,
-            size: 22,
-            color: Colors.white,
-          ),
-          onPressed: _showFilterDialog,
-          backgroundColor: const Color.fromARGB(255, 227, 18, 47),
-          side: BorderSide.none,
-          deleteIcon: widget.isActive 
-              ? const Icon(Icons.close, size: 18, color: Colors.white)
-              : null,
-          onDeleted: widget.isActive
-              ? () {
-                  widget.onFilterApplied(null, null);
-                }
-              : null,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-          visualDensity: VisualDensity.compact,
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   String _getPriceRangeText() {
-    final minText = widget.initialMinPrice != null 
-        ? '\$${widget.initialMinPrice!.toStringAsFixed(0)}' 
+    final minText = widget.initialMinPrice != null
+        ? '\$${widget.initialMinPrice!.toStringAsFixed(0)}'
         : '\$0';
-    final maxText = widget.initialMaxPrice != null 
-        ? '\$${widget.initialMaxPrice!.toStringAsFixed(0)}' 
+    final maxText = widget.initialMaxPrice != null
+        ? '\$${widget.initialMaxPrice!.toStringAsFixed(0)}'
         : '∞';
     return '$minText - $maxText';
   }

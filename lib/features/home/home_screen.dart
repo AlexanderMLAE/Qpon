@@ -15,7 +15,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<Map<String, dynamic>> _filteredOffers = [];
   bool _cargando = true;
   final TextEditingController _searchController = TextEditingController();
-  
+
   double? _minPrice;
   double? _maxPrice;
   bool _priceFilterActive = false;
@@ -60,15 +60,17 @@ class _HomeWidgetState extends State<HomeWidget> {
             oferta['localName']?.toString().toLowerCase().contains(query) ??
             false;
         final detallesMatch =
-            oferta['productDetails']?.toString().toLowerCase().contains(query) ??
+            oferta['productDetails']?.toString().toLowerCase().contains(
+              query,
+            ) ??
             false;
-        
+
         final textMatch = nombreMatch || localMatch || detallesMatch;
-        
+
         bool priceMatch = true;
         if (_priceFilterActive) {
           final productPrice = oferta['productPrice']?.toDouble() ?? 0.0;
-          
+
           if (_minPrice != null && productPrice < _minPrice!) {
             priceMatch = false;
           }
@@ -76,7 +78,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             priceMatch = false;
           }
         }
-        
+
         return textMatch && priceMatch;
       }).toList();
     });
@@ -104,14 +106,14 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Column(
       children: [
         _buildSearchBar(),
-        
+
         PriceFilterWidget(
           onFilterApplied: _onPriceFilterApplied,
           initialMinPrice: _minPrice,
           initialMaxPrice: _maxPrice,
           isActive: _priceFilterActive,
         ),
-                
+
         _buildOfertasList(),
       ],
     );

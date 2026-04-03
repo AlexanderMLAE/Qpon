@@ -42,10 +42,10 @@ class _StoreWidgetState extends State<StoreWidget> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color.fromARGB(255, 227, 18, 47),
         title: Text(
-            "${widget.storeData!["storeName"] ?? "Something went wrong"}",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+          "${widget.storeData!["storeName"] ?? "Something went wrong"}",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+      ),
       body: Column(
         children: [
           Expanded(
