@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({super.key});
@@ -15,7 +16,14 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   @override
   void initState() {
     super.initState();
+    savedOfferUpdateNotifier.addListener(_loadOffers);
     _loadOffers();
+  }
+
+  @override
+  void dispose() {
+    savedOfferUpdateNotifier.removeListener(_loadOffers);
+    super.dispose();
   }
 
   Future<void> _loadOffers() async {
@@ -45,7 +53,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         padding: EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            ElevatedButton(onPressed: _loadOffers, child: Text('load')),
             Text(
               'En este Apartado puedes agregar tus Ofertas Favoritas',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -66,8 +73,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   Widget _buildListaOfertas() {
     return Column(
       children: [
-        ElevatedButton(onPressed: deleteFavorites, child: Text('Delete')),
-        ElevatedButton(onPressed: _loadOffers, child: Text('Reload')),
+        ElevatedButton(onPressed: _deleteFavorites, child: Text('Delete')),
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
@@ -80,7 +86,9 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     );
   }
 
-  Future<void> deleteFavorites() async {
+  Future<void> _deleteFavorites() async {
     await LocalDatabase.deleteAllSavedOfferCards();
+    // Make the notifier know something happened so we reload the offers, is this better than just calling _loadOffers from here?
+    savedOfferUpdateNotifier.value++;
   }
 }

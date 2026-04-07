@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 
 class OfferDetails extends StatefulWidget {
   final Offer offer;
@@ -175,10 +176,14 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Future<void> saveOffer() async {
     LocalDatabase.insertSavedOfferCard(thisOffer);
-    debugPrint('Oferta mandada para guardar ${thisOffer.toString()}');
+    debugPrint('Offer to be saved locally: ${thisOffer.toString()}');
+    // Global notifier so favorites knows to update
+    savedOfferUpdateNotifier.value++;
   }
     Future<void> unsaveOffer() async {
     LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
-    return;
+    debugPrint('Offer to be deleted locally: ${thisOffer.toString()}');
+    // Same thing
+    savedOfferUpdateNotifier.value++;
   }
 }
