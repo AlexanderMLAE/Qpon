@@ -45,8 +45,14 @@ class LocalDatabase {
     debugPrint('Offer inserted to Local DB ${savedOffer.toMap()}');
   }
 
+  static Future<void> deleteSavedOfferCard(int localId) async {
+    final Database db = await getLocalDatabase();
+
+    await db.delete('favorite_offers', where: 'id = ?', whereArgs: [localId]);
+  }
+
   // Deletes every offer saved on favorites
-  static Future<void> deleteSavedOfferCards() async {
+  static Future<void> deleteAllSavedOfferCards() async {
     final db = await getLocalDatabase();
 
     await db.rawDelete('DELETE FROM favorite_offers');

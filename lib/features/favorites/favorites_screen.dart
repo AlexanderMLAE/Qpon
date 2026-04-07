@@ -81,6 +81,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   }
 
   Future<void> deleteFavorites() async {
-    await LocalDatabase.deleteSavedOfferCards();
+    await LocalDatabase.deleteAllSavedOfferCards();
   }
 }

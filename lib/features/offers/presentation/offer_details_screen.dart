@@ -12,6 +12,8 @@ class OfferDetails extends StatefulWidget {
 
 class _OfferDetailsState extends State<OfferDetails> {
   Offer get thisOffer => widget.offer;
+  Map<String, dynamic> get thisOfferMap => thisOffer.toMap();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +29,7 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            _saveOfferButton(),
+            (thisOffer.localId == null) ? _saveOfferButton() : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
             const SizedBox(height: 24), // Spacer!!!!!
             _offerTerms(),
           ],
@@ -46,7 +48,7 @@ class _OfferDetailsState extends State<OfferDetails> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
           child: Image.network(
-            thisOffer.imageUrl,
+            thisOfferMap['imageUrl'],
             width: double.infinity,
             height: 180,
             fit: BoxFit.cover,
@@ -77,7 +79,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerTitle() {
     return Text(
-      thisOffer.productName,
+      thisOfferMap['productName'],
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Colors.black,
@@ -89,7 +91,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerPrice() {
     return Text(
-      '\$ ${thisOffer.productPrice}',
+      '\$ ${thisOfferMap['productPrice']}',
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Color.fromARGB(255, 252, 18, 47),
@@ -101,7 +103,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerDetails() {
     return Text(
-      thisOffer.productDetails,
+      thisOfferMap['productDetails'],
       textAlign: TextAlign.center,
       style: TextStyle(color: Colors.grey[700], fontSize: 14),
     );
@@ -116,6 +118,24 @@ class _OfferDetailsState extends State<OfferDetails> {
       ),
       child: const Text(
         'Guardar Oferta',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton _unsaveOfferButton() {
+    return ElevatedButton(
+      onPressed: unsaveOffer,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 252, 18, 47),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+      ),
+      child: const Text(
+        'Eliminar Oferta de Favoritos',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,
@@ -145,7 +165,7 @@ class _OfferDetailsState extends State<OfferDetails> {
           ),
           const SizedBox(height: 8),
           Text(
-            '• Válido hasta el 29 de marzo\n• No acumulable con otras ofertas\n• Presenta el código en la tienda',
+            '• Válido hasta ${thisOfferMap['Example']}\n• [Ejemplo]\n• [Ejemplo]',
             style: TextStyle(fontSize: 12, color: Colors.grey[700]),
           ),
         ],
@@ -155,6 +175,10 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Future<void> saveOffer() async {
     LocalDatabase.insertSavedOfferCard(thisOffer);
-    debugPrint('Oferta mandada para guardar $thisOffer');
+    debugPrint('Oferta mandada para guardar ${thisOffer.toString()}');
+  }
+    Future<void> unsaveOffer() async {
+    LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
+    return;
   }
 }
