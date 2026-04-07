@@ -30,7 +30,9 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            (thisOffer.localId == null) ? _saveOfferButton() : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
+            (thisOffer.localId == null)
+                ? _saveOfferButton()
+                : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
             const SizedBox(height: 24), // Spacer!!!!!
             _offerTerms(),
           ],
@@ -180,7 +182,8 @@ class _OfferDetailsState extends State<OfferDetails> {
     // Global notifier so favorites knows to update
     savedOfferUpdateNotifier.value++;
   }
-    Future<void> unsaveOffer() async {
+
+  Future<void> unsaveOffer() async {
     LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
     debugPrint('Offer to be deleted locally: ${thisOffer.toString()}');
     // Same thing
