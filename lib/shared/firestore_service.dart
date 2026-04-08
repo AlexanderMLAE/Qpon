@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 
+/// Handles requests to [FirebaseFirestore]
 class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Returns a list of the offers as a Map (key: value)
+  /// Returns a list of the offers as a [Map] from Firestore
   static Future<List<Map<String, dynamic>>> _fetchOffers({
+    /// Optional to filter by a specific store
     String? storeId,
   }) async {
     try {
@@ -23,6 +25,7 @@ class FirestoreService {
         final id = doc.id;
         final data = doc.data() as Map<String, dynamic>;
         debugPrint('fetched data: $id $data');
+        // Append id of the offer to the returned Map
         return {'offerId': id, ...data};
       }).toList();
     } catch (e) {
@@ -31,7 +34,7 @@ class FirestoreService {
     }
   }
 
-  // Gets the list of offer maps and turns them to a list of offer objects
+  /// Gets the list of offer maps and turns them to a list of offer objects
   static Future<List<Offer>> getOffersList({String? storeId}) async {
     List offersList = await _fetchOffers();
     if (storeId != null) {
@@ -43,6 +46,7 @@ class FirestoreService {
     return offersList.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
+  /// Gets the list of stores from Firestore
   static Future<List<Map<String, dynamic>>> fetchStores() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance

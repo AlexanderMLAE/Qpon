@@ -3,6 +3,7 @@ import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
 
+/// Screen that displays the [Offer]s saved locally
 class FavoritesWidget extends StatefulWidget {
   const FavoritesWidget({super.key});
 
@@ -11,8 +12,10 @@ class FavoritesWidget extends StatefulWidget {
 }
 
 class _FavoritesWidgetState extends State<FavoritesWidget> {
+  // Offers that will be displayed as Offer Cards
   List<Offer> _offers = [];
 
+  // Listener added and removed to refresh offers when one is added
   @override
   void initState() {
     super.initState();
@@ -32,7 +35,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
       setState(() {
         _offers = offers;
       });
-
       debugPrint('Ofertas Guardadas en state: $_offers');
     } catch (e) {
       debugPrint('Error leyendo ofertas $e');
@@ -45,7 +47,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
       body: _offers.isEmpty ? _buildEmptyState() : _buildListaOfertas(),
     );
   }
-
+  /// When there's no saved [Offer]s
   Widget _buildEmptyState() {
     return Container(
       alignment: Alignment.topCenter,
@@ -70,9 +72,11 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     );
   }
 
+  /// Draw the [Offer]s saved as offer cards
   Widget _buildListaOfertas() {
     return Column(
       children: [
+        // Placeholder probably
         ElevatedButton(onPressed: _deleteFavorites, child: Text('Delete')),
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
@@ -86,6 +90,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     );
   }
 
+  /// Deletes ALL of the saved offers from favorites
   Future<void> _deleteFavorites() async {
     await LocalDatabase.deleteAllSavedOfferCards();
     // Make the notifier know something happened so we reload the offers, is this better than just calling _loadOffers from here?

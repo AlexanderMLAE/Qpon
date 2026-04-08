@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/map/custom_map_widget.dart';
 
 // Consider renaming some classes
+// Probably doesnt need a stateless widget? i should look more into this
 class LocationScreen extends StatelessWidget {
   const LocationScreen({super.key, required this.locationText});
   final String locationText;
@@ -21,6 +22,7 @@ class LocationWidget extends StatefulWidget {
 }
 
 class _LocationWidgetState extends State<LocationWidget> {
+  /// (WIP) Radius around the point selected by user, stores outside this radius won't be shown
   int locationRadius = 1;
   CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
@@ -31,6 +33,7 @@ class _LocationWidgetState extends State<LocationWidget> {
       body: Column(
         children: <Widget>[
           _topBar(),
+          // Actual body
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -50,9 +53,9 @@ class _LocationWidgetState extends State<LocationWidget> {
                           child: _searchField(),
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 6), // Spacer
                       ElevatedButton(
-                        onPressed: updateMap,
+                        onPressed: _updateMap,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(
                             255,
@@ -75,7 +78,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 8), // Spacer
                   // Map
                   Expanded(child: _mapWidget),
                 ],
@@ -87,6 +90,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     );
   }
 
+  /// Displayed at the top (WIP) used to find specific stores
   TextField _searchField() {
     return TextField(
       controller: _controller,
@@ -113,6 +117,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     );
   }
 
+  /// Contains the map settings button and will possibly house a help widget as well
   Container _topBar() {
     return Container(
       // Top bar
@@ -133,7 +138,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                 ),
               ),
               onPressed: () async {
-                openBottomSheet();
+                _openBottomSheet();
               },
             ),
           ),
@@ -142,13 +147,15 @@ class _LocationWidgetState extends State<LocationWidget> {
     );
   } // Build
 
-  void updateMap() {
+  /// Unnecessary?
+  void _updateMap() {
     setState(() {
       _mapWidget = CustomMapWidget();
     });
   }
 
-  void openBottomSheet() {
+  /// Map Settings (WIP) Non functional
+  void _openBottomSheet() {
     {
       showModalBottomSheet<dynamic>(
         isScrollControlled: true,
@@ -174,7 +181,6 @@ class _LocationWidgetState extends State<LocationWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             _sheetTopBar(context),
-                            //Map
                             Row(
                               children: <Widget>[
                                 Icon(Icons.location_on),
@@ -202,6 +208,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     }
   }
 
+/// Sets the radius around the center point for displaying stores on map
   Row _radiusSlider(StateSetter setStateOnSheet) {
     return Row(
       children: [

@@ -30,6 +30,7 @@ void main() async {
   runApp(const MyApp());
 }
 
+/// Main app that shows a title and bottom navigation bar
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -170,7 +171,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      //Se queda el dia marcado del calendario
       body: IndexedStack(
         index: currentPageIndex,
         children: const [

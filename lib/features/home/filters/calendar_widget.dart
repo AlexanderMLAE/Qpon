@@ -5,6 +5,11 @@ const _kRed = Color.fromARGB(255, 227, 18, 47);
 const _kLightRed = Color.fromARGB(255, 227, 18, 47);
 const _kBgRed = Color.fromARGB(255, 255, 164, 177);
 
+/// Goodbye lol
+///
+/// Maybe just keep the file in case we decide to use it eventually
+///
+/// This is 100% AI Slop but whatever
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
 

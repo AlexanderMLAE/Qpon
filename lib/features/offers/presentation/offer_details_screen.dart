@@ -3,7 +3,9 @@ import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
 
+/// Screen that displays all of the details of a given [Offer]
 class OfferDetails extends StatefulWidget {
+  /// Contains the data that will be displayed
   final Offer offer;
 
   const OfferDetails({required this.offer, super.key});
@@ -13,6 +15,8 @@ class OfferDetails extends StatefulWidget {
 
 class _OfferDetailsState extends State<OfferDetails> {
   Offer get thisOffer => widget.offer;
+
+  /// Temporary turn into a map to display values that may currently be null in Firestore
   Map<String, dynamic> get thisOfferMap => thisOffer.toMap();
 
   @override
@@ -74,6 +78,7 @@ class _OfferDetailsState extends State<OfferDetails> {
       iconTheme: IconThemeData(color: Colors.white),
       backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       title: Text(
+        // TODO: Change to actually useful information and center
         'Oferta',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
@@ -148,6 +153,7 @@ class _OfferDetailsState extends State<OfferDetails> {
     );
   }
 
+  /// [Offer] Terms and Conditions
   Container _offerTerms() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -176,6 +182,7 @@ class _OfferDetailsState extends State<OfferDetails> {
     );
   }
 
+  /// Saves the [Offer] on [LocalDatabase] to be displayed on the Favorites screen
   Future<void> saveOffer() async {
     LocalDatabase.insertSavedOfferCard(thisOffer);
     debugPrint('Offer to be saved locally: ${thisOffer.toString()}');
@@ -183,6 +190,7 @@ class _OfferDetailsState extends State<OfferDetails> {
     savedOfferUpdateNotifier.value++;
   }
 
+  /// Deletes the [Offer] from [LocalDatabase]
   Future<void> unsaveOffer() async {
     LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
     debugPrint('Offer to be deleted locally: ${thisOffer.toString()}');

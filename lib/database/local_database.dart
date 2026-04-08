@@ -3,10 +3,25 @@ import 'package:path/path.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// Local [Database] that handles persistent local storage
+///
+/// Handles favorited offers:
+/// - [getSavedOfferCards] for retreving favorited [Offer]s as [Map]s
+/// - [insertSavedOfferCard] to insert a single [Offer] to favorites
+/// - [deleteSavedOfferCard] to delete a single [Offer] from local database
+/// using its [localId]
+///
+/// - [deleteAllSavedOfferCards] self explanatory
+
 class LocalDatabase {
+  /// Opens the local database
+  /// and creates the database on first execution
+  ///
+  /// The database holds a table for favorite [Offer]s
+
   static Future<Database> getLocalDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // open the database
+    // Open the database
     final database = openDatabase(
       join(await getDatabasesPath(), 'local_database.db'),
       // Create the database
@@ -22,7 +37,8 @@ class LocalDatabase {
     return database;
   }
 
-  // Gets favorite offer cards as map from local db and returns list of offer objects
+  /// Gets favorite offers as [List] of type [Map] from local [Database] and returns list of [Offer] objects
+
   static Future<List<Offer>> getSavedOfferCards() async {
     final Database db = await getLocalDatabase();
 
@@ -33,25 +49,27 @@ class LocalDatabase {
     return savedOfferCardMaps.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
-  // Gets a single offer object and inserts it to favorites table as map
+  /// Gets a single [Offer] object and inserts the [savedOffer] to favorites table as [Map]
   static Future<void> insertSavedOfferCard(Offer savedOffer) async {
     final Database db = await getLocalDatabase();
 
     await db.insert(
       'favorite_offers',
+      // Has to be a map so SQLite can accept it
       savedOffer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    debugPrint('Offer inserted to Local DB ${savedOffer.toMap()}');
+    debugPrint('Offer inserted to Local DB ${savedOffer.toString()}');
   }
 
+  /// Gets a [localId] and deletes the saved offer with that ID
   static Future<void> deleteSavedOfferCard(int localId) async {
     final Database db = await getLocalDatabase();
 
     await db.delete('favorite_offers', where: 'id = ?', whereArgs: [localId]);
   }
 
-  // Deletes every offer saved on favorites
+  /// Deletes every [Offer] saved on favorites
   static Future<void> deleteAllSavedOfferCards() async {
     final db = await getLocalDatabase();
 

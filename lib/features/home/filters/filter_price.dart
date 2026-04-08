@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Filters offers from minimum to maximum price
+/// TODO: TOÑO documenta esto pls
 class PriceFilterWidget extends StatefulWidget {
   final Function(double? minPrice, double? maxPrice) onFilterApplied;
   final double? initialMinPrice;
@@ -21,6 +23,7 @@ class PriceFilterWidget extends StatefulWidget {
 class _PriceFilterWidgetState extends State<PriceFilterWidget> {
   late TextEditingController _minController;
   late TextEditingController _maxController;
+  /// Document this pls
   double? _tempMinPrice;
   double? _tempMaxPrice;
 

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
 
+/// Card widget that shows basic [Offer] data
 class OfferCardWidget extends StatelessWidget {
+  /// Contains the data that will be displayed
   final Offer offer;
 
   const OfferCardWidget({super.key, required this.offer});
@@ -23,7 +25,7 @@ class OfferCard extends StatefulWidget {
 }
 
 class _OfferCardState extends State<OfferCard> {
-  Offer get thisOffer => widget.offer;
+  Offer get _thisOffer => widget.offer;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -59,7 +61,7 @@ class _OfferCardState extends State<OfferCard> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image(
-              image: NetworkImage(thisOffer.imageUrl),
+              image: NetworkImage(_thisOffer.imageUrl),
               height: 180,
               fit: BoxFit.cover,
             ),
@@ -69,16 +71,17 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  /// [Card]'s title that displays the name of the offer
   Row _offerTitle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          thisOffer.productName,
+          _thisOffer.productName,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(
-          '\$ ${thisOffer.productPrice}',
+          '\$ ${_thisOffer.productPrice}',
           style: TextStyle(
             fontSize: 22,
             color: Colors.black,
@@ -89,6 +92,7 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  /// Button that pushes the [OfferDetails] screen
   ElevatedButton _detailsButton() {
     return ElevatedButton(
       onPressed: _openDetails,
@@ -101,9 +105,10 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  /// Short details text
   Text _offerDetails() {
     return Text(
-      thisOffer.productDetails,
+      _thisOffer.productDetails,
       style: TextStyle(fontSize: 12, color: Colors.black),
     );
   }
@@ -113,7 +118,7 @@ class _OfferCardState extends State<OfferCard> {
       Navigator.push(
         context,
         MaterialPageRoute<void>(
-          builder: (context) => OfferDetails(offer: thisOffer),
+          builder: (context) => OfferDetails(offer: _thisOffer),
         ),
       );
     });

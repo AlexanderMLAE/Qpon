@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
 
+/// Screen that displays the [Offer]s of a given store
 class StoreWidget extends StatefulWidget {
   const StoreWidget({super.key, required this.storeData});
   final Map<String, Object>? storeData;
@@ -11,6 +12,7 @@ class StoreWidget extends StatefulWidget {
 }
 
 class _StoreWidgetState extends State<StoreWidget> {
+  /// [Offer]s that will be displayed
   List<Offer> _offers = [];
   @override
   void initState() {
@@ -18,6 +20,7 @@ class _StoreWidgetState extends State<StoreWidget> {
     getOffers();
   }
 
+  /// Get [List] of [Offer]s from [FirestoreService]
   Future<void> getOffers() async {
     String storeId = widget.storeData?["storeId"] as String;
     try {

@@ -5,41 +5,47 @@ import 'package:geolocator/geolocator.dart' show Geolocator;
 import 'package:proyecto_qpon/shared/firestore_service.dart';
 import '../stores/store_screen.dart';
 
+/// Personalized [MapboxMap] widget to use in map screen
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
 
   @override
   State<StatefulWidget> createState() => _CustomMapWidgetState();
 }
-// class Location could be useful later but im commenting it out rn since im not using it for anything yet
-// class Location {
-//   final String? name;
-//   final double? long;
-//   final double? lat;
+/// TODO: Implement Store Class
+/* class Location could be useful later but im commenting it out rn since im not using it for anything yet
+class Location {
+  final String? name;
+  final double? long;
+  final double? lat;
 
-//   Location({this.name, this.long, this.lat});
+  Location({this.name, this.long, this.lat});
 
-//   factory Location.fromFirestore(
-//     DocumentSnapshot<Map<String, dynamic>> snapshot,
-//     SnapshotOptions? options,
-//   ) {
-//     final data = snapshot.data();
-//     return Location(
-//       name: data?['name'],
-//       long: data?["long"],
-//       lat: data?["lat"],
-//     );
-//   }
-//   Map<String, dynamic> toFirestore() {
-//     return {
-//       if (name != null) "name": name,
-//       if (long != null) "long": long,
-//       if (lat != null) "lat": lat,
-//     };
-//   }
-// }
+  factory Location.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Location(
+      name: data?['name'],
+      long: data?["long"],
+      lat: data?["lat"],
+    );
+  }
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (name != null) "name": name,
+      if (long != null) "long": long,
+      if (lat != null) "lat": lat,
+    };
+  }
+}
+*/
 
 class _CustomMapWidgetState extends State<CustomMapWidget> {
+  /// Default camera options centered on UT
+  ///
+  /// Would be better if it centered on user location
   CameraOptions camera = CameraOptions(
     center: Point(coordinates: Position(-86.84686, 21.04848)),
     zoom: 14.35,
@@ -68,11 +74,11 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         onTapFunction(annotation);
       },
     );
-    fetchStores();
+    getStores();
   }
 
-  // Reading data from the "stores" collection and creating a point with the values found
-  Future<void> fetchStores() async {
+  /// Reads data from the "stores" collection and creating a point with the values found
+  Future<void> getStores() async {
     final stores = await FirestoreService.fetchStores();
     debugPrint('Stores from firestore: $stores');
     for (var store in stores) {
@@ -85,15 +91,26 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     }
   }
 
-  // Function that creates annotations, will probably not be used to manually create any points
+  /// Creates annotations, in this specific case, annotations for store locations
+  /// obtained with [getStores]
   Future<void> createOneAnnotation(
+    /// Firestore document id of the store
     String id,
+
+    /// Longitude
     double long,
+
+    /// Lattitude
     double lat,
+
+    /// Name field of the store document
     String name,
   ) async {
+    /// Local annotation icon that represents a store.
     final ByteData bytes = await rootBundle.load('assets/icon/store_logo.png');
     final Uint8List list = bytes.buffer.asUint8List();
+
+    /// Custom data that holds store name and ID To show in a Store Screen
     final Map<String, Object> customAnnotationData = {
       "storeId": id,
       "storeName": name,
@@ -116,6 +133,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         .then((value) => pointAnnotation = value);
   }
 
+  /// Runs [openStore] when an annotation is selected
   void onTapFunction(PointAnnotation annotation) {
     debugPrint(
       "Annotation Data: ${annotation.customData}, ${annotation.textField}",
@@ -123,6 +141,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     openStore(annotation.customData);
   }
 
+  /// Pushes the store details screen of a given store through its ID
   void openStore(Map<String, Object>? storeId) {
     setState(() {
       Navigator.push(
