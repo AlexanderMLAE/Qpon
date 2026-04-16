@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/map/custom_map_widget.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 
 // Consider renaming some classes
 class LocationScreen extends StatelessWidget {
@@ -22,8 +23,20 @@ class LocationWidget extends StatefulWidget {
 
 class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
-  CustomMapWidget _mapWidget = CustomMapWidget();
+  final CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    _controller.addListener(updateMap);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,9 +156,9 @@ class _LocationWidgetState extends State<LocationWidget> {
   } // Build
 
   void updateMap() {
-    setState(() {
-      _mapWidget = CustomMapWidget();
-    });
+    final searchQuery = _controller.text.toLowerCase().trim();
+    storeSearch.changeSearchQuery(searchQuery);
+    locationSearchUpdateNotifier.value++;
   }
 
   void openBottomSheet() {
