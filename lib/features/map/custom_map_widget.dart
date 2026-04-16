@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
+import 'package:proyecto_qpon/features/stores/data/location_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 import '../stores/store_screen.dart';
 
 /// Personalized [MapboxMap] widget to use in map screen
@@ -12,6 +14,7 @@ class CustomMapWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CustomMapWidgetState();
 }
+
 /// TODO: Implement Store Class
 /* class Location could be useful later but im commenting it out rn since im not using it for anything yet
 class Location {
@@ -55,7 +58,24 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   MapboxMap? mapboxMap;
   PointAnnotation? pointAnnotation;
   late PointAnnotationManager pointAnnotationManager;
-  List<PointAnnotation> annotations = [];
+  List<Location> _locations = [];
+
+  /// Currently seen locatiosn?
+  List<Location> _filteredLocations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    storeSearch.addListener(filterAnnotationsByName);
+    locationSearchUpdateNotifier.addListener(filterAnnotationsByName);
+  }
+
+  @override
+  void dispose() {
+    storeSearch.removeListener(filterAnnotationsByName);
+    locationSearchUpdateNotifier.removeListener(filterAnnotationsByName);
+    super.dispose();
+  }
 
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
     this.mapboxMap = mapboxMap;
@@ -74,21 +94,22 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         onTapFunction(annotation);
       },
     );
-    getStores();
+    await fetchStores();
   }
 
-  /// Reads data from the "stores" collection and creating a point with the values found
-  Future<void> getStores() async {
-    final stores = await FirestoreService.fetchStores();
-    debugPrint('Stores from firestore: $stores');
-    for (var store in stores) {
-      createOneAnnotation(
-        store["id"],
-        store["long"],
-        store["lat"],
-        store["name"],
-      );
+  /// Reads data from the "stores" collection and creates a point with the values found
+  Future<void> fetchStores() async {
+    _locations = await FirestoreService.getStoresList();
+    debugPrint('Stores from firestore: $_locations');
+    for (Location store in _locations) {
+      createOneAnnotation(store.id, store.long, store.lat, store.name);
     }
+  }
+
+  Future<void> deleteAllAnnotations() async {
+    final List annotations = await pointAnnotationManager.getAnnotations();
+    debugPrint("Annotations deleted: $annotations");
+    await pointAnnotationManager.deleteAll();
   }
 
   /// Creates annotations, in this specific case, annotations for store locations
@@ -133,7 +154,29 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         .then((value) => pointAnnotation = value);
   }
 
-  /// Runs [openStore] when an annotation is selected
+  Future<void> filterAnnotationsByName() async {
+    final String searchQuery = storeSearch.query;
+
+    await deleteAllAnnotations();
+
+    _filteredLocations = _locations.where((location) {
+      final bool nameMatch = location.name.toString().toLowerCase().contains(
+        searchQuery,
+      );
+
+      return nameMatch;
+    }).toList();
+    debugPrint("Filtered stores: $_filteredLocations");
+    for (Location location in _filteredLocations) {
+      createOneAnnotation(
+        location.id,
+        location.long,
+        location.lat,
+        location.name,
+      );
+    }
+  }
+
   void onTapFunction(PointAnnotation annotation) {
     debugPrint(
       "Annotation Data: ${annotation.customData}, ${annotation.textField}",

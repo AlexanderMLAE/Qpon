@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
+import 'package:proyecto_qpon/features/stores/data/location_class.dart';
 
 /// Handles requests to [FirebaseFirestore]
 class FirestoreService {
@@ -60,5 +61,12 @@ class FirestoreService {
       debugPrint('Error on fetchStores: $e');
     }
     return [];
+  }
+
+  static Future<List<Location>> getStoresList() async {
+    List locationsList = await fetchStores();
+
+    debugPrint("Stores List: $locationsList");
+    return locationsList.map((map) => Location.fromMaptoLocation(map)).toList();
   }
 }

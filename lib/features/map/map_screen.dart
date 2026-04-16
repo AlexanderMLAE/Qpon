@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/map/custom_map_widget.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 
 // Consider renaming some classes
 // Probably doesnt need a stateless widget? i should look more into this
@@ -24,8 +25,20 @@ class LocationWidget extends StatefulWidget {
 class _LocationWidgetState extends State<LocationWidget> {
   /// (WIP) Radius around the point selected by user, stores outside this radius won't be shown
   int locationRadius = 1;
-  CustomMapWidget _mapWidget = CustomMapWidget();
+  final CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(updateMap);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +68,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                       ),
                       const SizedBox(width: 6), // Spacer
                       ElevatedButton(
-                        onPressed: _updateMap,
+                        onPressed: updateMap,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(
                             255,
@@ -147,11 +160,10 @@ class _LocationWidgetState extends State<LocationWidget> {
     );
   } // Build
 
-  /// Unnecessary?
-  void _updateMap() {
-    setState(() {
-      _mapWidget = CustomMapWidget();
-    });
+  void updateMap() {
+    final searchQuery = _controller.text.toLowerCase().trim();
+    storeSearch.changeSearchQuery(searchQuery);
+    locationSearchUpdateNotifier.value++;
   }
 
   /// Map Settings (WIP) Non functional
@@ -208,7 +220,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     }
   }
 
-/// Sets the radius around the center point for displaying stores on map
+  /// Sets the radius around the center point for displaying stores on map
   Row _radiusSlider(StateSetter setStateOnSheet) {
     return Row(
       children: [
