@@ -4,6 +4,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
 import 'package:proyecto_qpon/features/stores/data/location_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
+import 'package:proyecto_qpon/shared/globals.dart';
 import '../stores/store_screen.dart';
 
 class CustomMapWidget extends StatefulWidget {
@@ -28,6 +29,20 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   /// Currently seen locatiosn?
   List<Location> _filteredLocations = [];
 
+  @override
+  void initState() {
+    super.initState();
+    storeSearch.addListener(filterAnnotationsByName);
+    locationSearchUpdateNotifier.addListener(filterAnnotationsByName);
+  }
+
+  @override
+  void dispose() {
+    storeSearch.removeListener(filterAnnotationsByName);
+    locationSearchUpdateNotifier.removeListener(filterAnnotationsByName);
+    super.dispose();
+  }
+
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
     this.mapboxMap = mapboxMap;
     mapboxMap.setCamera(camera);
@@ -46,7 +61,6 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       },
     );
     await fetchStores();
-    await filterAnnotationsByName();
   }
 
   // Reading data from the "stores" collection and creating a point with the values found
@@ -59,7 +73,6 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   Future<void> deleteAllAnnotations() async {
-
     final List annotations = await pointAnnotationManager.getAnnotations();
     debugPrint("Annotations deleted: $annotations");
     await pointAnnotationManager.deleteAll();
@@ -97,8 +110,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   Future<void> filterAnnotationsByName() async {
-    // TODO: placeholder
-    final String searchQuery = 'pizzas';
+    final String searchQuery = storeSearch.query;
 
     await deleteAllAnnotations();
 
@@ -118,7 +130,6 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         location.name,
       );
     }
-    
   }
 
   void onTapFunction(PointAnnotation annotation) {
