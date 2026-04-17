@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-final ValueNotifier<int> savedOfferUpdateNotifier = ValueNotifier(0);
+/// Global variables and notifiers.
 
-final ValueNotifier<int> locationSearchUpdateNotifier = ValueNotifier(0);
-
-
-class StoreSearchModel with ChangeNotifier {
+/// [ChangeNotifier] enables live update on search
+class SearchNotifierModel with ChangeNotifier {
   String _query = "";
   String get query => _query;
 
   void changeSearchQuery(String query) {
     _query = query;
+    notifyListeners();
   }
 }
 
-final StoreSearchModel storeSearch = StoreSearchModel();
+final ValueNotifier<int> savedOfferUpdateNotifier = ValueNotifier(0);
+
+final SearchNotifierModel storeSearchUpdateNotifier = SearchNotifierModel();

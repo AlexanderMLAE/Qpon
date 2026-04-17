@@ -24,22 +24,20 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   MapboxMap? mapboxMap;
   PointAnnotation? pointAnnotation;
   late PointAnnotationManager pointAnnotationManager;
-  List<Location> _locations = [];
+  List<Store> _locations = [];
 
   /// Currently seen locatiosn?
-  List<Location> _filteredLocations = [];
+  List<Store> _filteredLocations = [];
 
   @override
   void initState() {
     super.initState();
-    storeSearch.addListener(filterAnnotationsByName);
-    locationSearchUpdateNotifier.addListener(filterAnnotationsByName);
+    storeSearchUpdateNotifier.addListener(filterAnnotationsByName);
   }
 
   @override
   void dispose() {
-    storeSearch.removeListener(filterAnnotationsByName);
-    locationSearchUpdateNotifier.removeListener(filterAnnotationsByName);
+    storeSearchUpdateNotifier.removeListener(filterAnnotationsByName);
     super.dispose();
   }
 
@@ -57,17 +55,17 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         .createPointAnnotationManager();
     pointAnnotationManager.tapEvents(
       onTap: (PointAnnotation annotation) {
-        onTapFunction(annotation);
+        onAnnotationTap(annotation);
       },
     );
     await fetchStores();
   }
 
-  // Reading data from the "stores" collection and creating a point with the values found
+  /// Reading data from the "stores" collection and creating a point with the values found
   Future<void> fetchStores() async {
     _locations = await FirestoreService.getStoresList();
     debugPrint('Stores from firestore: $_locations');
-    for (Location store in _locations) {
+    for (Store store in _locations) {
       createOneAnnotation(store.id, store.long, store.lat, store.name);
     }
   }
@@ -78,7 +76,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     await pointAnnotationManager.deleteAll();
   }
 
-  // Function that creates annotations, will probably not be used to manually create any points
+  /// Function that creates annotations
   Future<void> createOneAnnotation(
     String id,
     double long,
@@ -110,7 +108,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   Future<void> filterAnnotationsByName() async {
-    final String searchQuery = storeSearch.query;
+    final String searchQuery = storeSearchUpdateNotifier.query;
 
     await deleteAllAnnotations();
 
@@ -121,8 +119,8 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
 
       return nameMatch;
     }).toList();
-    debugPrint("Filtered stores: $_filteredLocations");
-    for (Location location in _filteredLocations) {
+    debugPrint("Filtered locations: $_filteredLocations");
+    for (Store location in _filteredLocations) {
       createOneAnnotation(
         location.id,
         location.long,
@@ -132,10 +130,11 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     }
   }
 
-  void onTapFunction(PointAnnotation annotation) {
+/// Separated for readability
+  void onAnnotationTap(PointAnnotation annotation) {
     debugPrint(
       "Annotation Data: ${annotation.customData}, ${annotation.textField}",
-    ); // lol idk
+    );
     openStore(annotation.customData);
   }
 

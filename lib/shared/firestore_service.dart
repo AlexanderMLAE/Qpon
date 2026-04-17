@@ -59,10 +59,10 @@ class FirestoreService {
     return [];
   }
 
-  static Future<List<Location>> getStoresList() async {
+  static Future<List<Store>> getStoresList() async {
     List locationsList = await fetchStores();
 
     debugPrint("Stores List: $locationsList");
-    return locationsList.map((map) => Location.fromMaptoLocation(map)).toList();
+    return locationsList.map((map) => Store.fromMaptoLocation(map)).toList();
   }
 }
