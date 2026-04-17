@@ -19,9 +19,9 @@ class Store {
   factory Store.fromMaptoLocation(Map<String, dynamic> locationMap) {
     return Store(
       name: locationMap['name'] as String? ?? 'Null name',
-      long: locationMap['long'] as double? ?? -86.84552, // Qpon HQ
+      long: locationMap['long'] as double? ?? -86.84552, // Qpon HQ Defaults
       lat: locationMap['lat'] as double? ?? 21.05021,
-      id: locationMap['id'] as String? ?? 'ID-Was-Null', // QPon HQ
+      id: locationMap['id'] as String? ?? 'ID-Was-Null',
     );
   }
 }
