@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' show Geolocator;
-import 'package:proyecto_qpon/features/stores/data/location_class.dart';
+import 'package:proyecto_qpon/features/stores/data/store_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
 import '../stores/store_screen.dart';
