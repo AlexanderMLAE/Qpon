@@ -118,6 +118,7 @@ class _LocationWidgetState extends State<LocationWidget> {
           horizontal: 16,
           vertical: 16,
         ),
+        // TODO: Fix clear button not showing up
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(
                 icon: const Icon(Icons.clear, color: Colors.grey),
@@ -162,8 +163,7 @@ class _LocationWidgetState extends State<LocationWidget> {
 
   void updateMap() {
     final searchQuery = _controller.text.toLowerCase().trim();
-    storeSearch.changeSearchQuery(searchQuery);
-    locationSearchUpdateNotifier.value++;
+    storeSearchUpdateNotifier.changeSearchQuery(searchQuery);
   }
 
   /// Map Settings (WIP) Non functional
