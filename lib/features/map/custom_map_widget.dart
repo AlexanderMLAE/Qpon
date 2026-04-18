@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart' show Geolocator;
+import 'package:geolocator/geolocator.dart'
+    /// Importing as geolocator to specify source of Position class specifically
+    as geolocator
+    show Geolocator, Position;
 import 'package:proyecto_qpon/features/stores/data/store_class.dart';
 import 'package:proyecto_qpon/shared/firestore_service.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
@@ -15,12 +18,7 @@ class CustomMapWidget extends StatefulWidget {
 }
 
 class _CustomMapWidgetState extends State<CustomMapWidget> {
-  CameraOptions camera = CameraOptions(
-    center: Point(coordinates: Position(-86.84686, 21.04848)),
-    zoom: 14.35,
-    bearing: 0,
-    pitch: 0,
-  );
+  CameraOptions camera = CameraOptions(zoom: 14.35);
   MapboxMap? mapboxMap;
   PointAnnotation? pointAnnotation;
   late PointAnnotationManager pointAnnotationManager;
@@ -42,15 +40,20 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
 
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
+    /// Center to user location
+    Point userLocation = await getUserLocation();
+    camera.center = userLocation;
     this.mapboxMap = mapboxMap;
     mapboxMap.setCamera(camera);
-    // Location logic
-    var permissionStatus = await Geolocator.requestPermission();
+
+    /// Location and permissions
+    var permissionStatus = await geolocator.Geolocator.requestPermission();
     debugPrint("Location Status: $permissionStatus");
     mapboxMap.location.updateSettings(
       LocationComponentSettings(enabled: true, puckBearingEnabled: true),
     );
-    // Annotations for stores
+
+    /// Creating annotations for stores
     pointAnnotationManager = await mapboxMap.annotations
         .createPointAnnotationManager();
     pointAnnotationManager.tapEvents(
@@ -59,6 +62,26 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
       },
     );
     await fetchStores();
+  }
+
+  Future<Point> getUserLocation() async {
+    final geolocator.Position currentPosition;
+    try {
+      currentPosition = await geolocator.Geolocator.getCurrentPosition();
+
+      debugPrint("Current Position: $currentPosition");
+    } catch (e) {
+      debugPrint("Error getting location: $e");
+      // QPon HQ default on error
+      return Point(coordinates: Position(-86.84686, 21.04848));
+    }
+    // All went as expected
+    return Point(
+      coordinates: Position(
+        currentPosition.longitude,
+        currentPosition.latitude,
+      ),
+    );
   }
 
   /// Reading data from the "stores" collection and creating a point with the values found
@@ -130,7 +153,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     }
   }
 
-/// Separated for readability
+  /// Separated for readability
   void onAnnotationTap(PointAnnotation annotation) {
     debugPrint(
       "Annotation Data: ${annotation.customData}, ${annotation.textField}",
