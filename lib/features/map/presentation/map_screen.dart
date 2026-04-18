@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_qpon/features/map/custom_map_widget.dart';
+import 'package:proyecto_qpon/features/map/presentation/custom_map_widget.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
 
 // Consider renaming some classes
