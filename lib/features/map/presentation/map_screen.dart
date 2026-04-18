@@ -27,15 +27,16 @@ class _LocationWidgetState extends State<LocationWidget> {
   int locationRadius = 1;
   final CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
-
+  bool showClearButton = false;
   @override
   void initState() {
+    _controller.addListener(onSearchFieldChange);
     super.initState();
-    _controller.addListener(updateMap);
   }
 
   @override
   void dispose() {
+    _controller.removeListener(onSearchFieldChange);
     _controller.dispose();
     super.dispose();
   }
@@ -68,7 +69,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                       ),
                       const SizedBox(width: 6), // Spacer
                       ElevatedButton(
-                        onPressed: updateMap,
+                        onPressed: applySearchFilter,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(
                             255,
@@ -118,12 +119,13 @@ class _LocationWidgetState extends State<LocationWidget> {
           horizontal: 16,
           vertical: 16,
         ),
-        // TODO: Fix clear button not showing up
-        suffixIcon: _controller.text.isNotEmpty
+        // TODO: Fix clear button not showing up -- For now will make it appear always
+        suffixIcon: showClearButton
             ? IconButton(
                 icon: const Icon(Icons.clear, color: Colors.grey),
                 onPressed: () {
                   _controller.clear();
+                  applySearchFilter();
                 },
               )
             : null,
@@ -152,7 +154,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                 ),
               ),
               onPressed: () async {
-                _openBottomSheet();
+                openBottomSheet();
               },
             ),
           ),
@@ -161,13 +163,26 @@ class _LocationWidgetState extends State<LocationWidget> {
     );
   } // Build
 
-  void updateMap() {
+  void applySearchFilter() {
     final searchQuery = _controller.text.toLowerCase().trim();
     storeSearchUpdateNotifier.changeSearchQuery(searchQuery);
   }
 
-  /// Map Settings (WIP) Non functional
-  void _openBottomSheet() {
+  /// Manualy handling visibility of clear button because idfk WHY it wont show up if i do it the normal way but whatever
+  void onSearchFieldChange() {
+    if (_controller.text.isNotEmpty) {
+      setState(() {
+        showClearButton = true;
+      });
+      return;
+    }
+    setState(() {
+      showClearButton = false;
+    });
+    storeSearchUpdateNotifier.changeSearchQuery('');
+  }
+
+  void openBottomSheet() {
     {
       showModalBottomSheet<dynamic>(
         isScrollControlled: true,
