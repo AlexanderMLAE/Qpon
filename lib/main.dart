@@ -9,7 +9,7 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:proyecto_qpon/database/firebase_options.dart';
 import 'features/favorites/favorites_screen.dart';
 import 'features/home/filters/calendar_widget.dart';
-import 'features/map/map_screen.dart';
+import 'features/map/presentation/map_screen.dart';
 import 'features/login/login_screen.dart';
 import 'features/login/register_screen.dart' as reg;
 import 'features/home/home_screen.dart';
