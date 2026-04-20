@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
           HomeWidget(),
           FavoritesWidget(),
           CalendarWidget(),
-          LocationScreen(locationText: 'Puerto Morelos'),
+          LocationScreen(),
         ],
       ),
     );
