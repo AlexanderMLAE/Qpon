@@ -45,7 +45,10 @@ class _LocationScreenState extends State<LocationScreen> {
   Expanded _map() {
     return Expanded(
       child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          // borderRadius: BorderRadius.circular(12), // Doesnt affect actual map's corners
+        ),
         child: Expanded(child: _mapWidget),
       ),
     );

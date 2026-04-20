@@ -68,7 +68,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 0;
+  // TODO: revert to 0 before merge
+  int currentPageIndex = 3;
 
   void _openLogin() {
     Navigator.push(
