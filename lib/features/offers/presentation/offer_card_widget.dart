@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
+
+@Preview(name: 'offer')
+Widget preview() {
+  return MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Offer Card Widget Preview',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 227, 18, 47),
+      ),
+      body: Column(
+        children: [
+          OfferCardWidget(
+            offer: Offer(
+              productName: "wiwiwiwiwi",
+              productPrice: 20.01,
+              productDetails: "that one cat",
+              imageUrl: "https://i.imgur.com/DlMOeSc.png",
+              offerId: 'exaple',
+              localId: null,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 /// Card widget that shows basic [Offer] data
 class OfferCardWidget extends StatelessWidget {
