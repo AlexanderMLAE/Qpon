@@ -29,29 +29,38 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              _searchFilter(),
-              const SizedBox(height: 8), // Separator
-              // Map
-              Expanded(child: _mapWidget),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            _searchFilter(),
+            // Map
+            _map(),
+          ],
         ),
       ),
     );
   }
 
-  Row _searchFilter() {
-    return Row(
-      children: [
-        _searchBox(),
-        const SizedBox(width: 6), // Separator
-        _searchButton(),
-      ],
+  Expanded _map() {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        child: Expanded(child: _mapWidget),
+      ),
+    );
+  }
+
+  Padding _searchFilter() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0, right: 4.0, bottom: 8.0),
+      child: Row(
+        children: [
+          _searchBox(),
+          const SizedBox(width: 6), // Separator
+          _searchButton(),
+        ],
+      ),
     );
   }
 
