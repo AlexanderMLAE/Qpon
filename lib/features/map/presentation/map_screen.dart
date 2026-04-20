@@ -15,13 +15,13 @@ class _LocationScreenState extends State<LocationScreen> {
   bool showClearButton = false;
   @override
   void initState() {
-    _controller.addListener(onSearchFieldChange);
+    _controller.addListener(_onSearchFieldChange);
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(onSearchFieldChange);
+    _controller.removeListener(_onSearchFieldChange);
     _controller.dispose();
     super.dispose();
   }
@@ -29,66 +29,46 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: const Color.fromARGB(255, 227, 18, 47),
-                            ),
-                          ),
-                          child: _searchField(),
-                        ),
-                      ),
-                      const SizedBox(width: 6), // Spacer
-                      ElevatedButton(
-                        onPressed: applySearchFilter,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            227,
-                            18,
-                            47,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Buscar',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8), // Spacer
-                  // Map
-                  Expanded(child: _mapWidget),
-                ],
-              ),
-            ),
+      body: Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              _searchFilter(),
+              const SizedBox(height: 8), // Separator
+              // Map
+              Expanded(child: _mapWidget),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  /// Displayed at the top (WIP) used to find specific stores
-  TextField _searchField() {
+  Row _searchFilter() {
+    return Row(
+      children: [
+        _searchBox(),
+        const SizedBox(width: 6), // Separator
+        _searchButton(),
+      ],
+    );
+  }
+
+  Expanded _searchBox() {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color.fromARGB(255, 227, 18, 47)),
+        ),
+        child: _searchBoxTextField(),
+      ),
+    );
+  }
+
+  TextField _searchBoxTextField() {
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
@@ -107,7 +87,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 icon: const Icon(Icons.clear, color: Colors.grey),
                 onPressed: () {
                   _controller.clear();
-                  applySearchFilter();
+                  _applySearchFilter();
                 },
               )
             : null,
@@ -115,13 +95,25 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  void applySearchFilter() {
+  ElevatedButton _searchButton() {
+    return ElevatedButton(
+      onPressed: _applySearchFilter,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 227, 18, 47),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      child: const Text('Buscar', style: TextStyle(color: Colors.white)),
+    );
+  }
+
+  void _applySearchFilter() {
     final searchQuery = _controller.text.toLowerCase().trim();
     storeSearchUpdateNotifier.changeSearchQuery(searchQuery);
   }
 
   /// Manualy handling visibility of clear button because idfk WHY it wont show up if i do it the normal way but whatever
-  void onSearchFieldChange() {
+  void _onSearchFieldChange() {
     if (_controller.text.isNotEmpty) {
       setState(() {
         showClearButton = true;
