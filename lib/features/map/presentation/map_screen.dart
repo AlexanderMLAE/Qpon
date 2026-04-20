@@ -2,29 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/features/map/presentation/custom_map_widget.dart';
 import 'package:proyecto_qpon/shared/globals.dart';
 
-// Consider renaming some classes
-// Probably doesnt need a stateless widget? i should look more into this
-class LocationScreen extends StatelessWidget {
-  const LocationScreen({super.key, required this.locationText});
-  final String locationText;
+class LocationScreen extends StatefulWidget {
+  const LocationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return LocationWidget(locationText: locationText);
-  }
+  State<LocationScreen> createState() => _LocationScreenState();
 }
 
-class LocationWidget extends StatefulWidget {
-  const LocationWidget({super.key, required this.locationText});
-  final String locationText;
-
-  @override
-  State<LocationWidget> createState() => _LocationWidgetState();
-}
-
-class _LocationWidgetState extends State<LocationWidget> {
-  /// (WIP) Radius around the point selected by user, stores outside this radius won't be shown
-  int locationRadius = 1;
+class _LocationScreenState extends State<LocationScreen> {
   final CustomMapWidget _mapWidget = CustomMapWidget();
   final TextEditingController _controller = TextEditingController();
   bool showClearButton = false;
@@ -46,8 +31,6 @@ class _LocationWidgetState extends State<LocationWidget> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          _topBar(),
-          // Actual body
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -119,7 +102,6 @@ class _LocationWidgetState extends State<LocationWidget> {
           horizontal: 16,
           vertical: 16,
         ),
-        // TODO: Fix clear button not showing up -- For now will make it appear always
         suffixIcon: showClearButton
             ? IconButton(
                 icon: const Icon(Icons.clear, color: Colors.grey),
@@ -132,36 +114,6 @@ class _LocationWidgetState extends State<LocationWidget> {
       ),
     );
   }
-
-  /// Contains the map settings button and will possibly house a help widget as well
-  Container _topBar() {
-    return Container(
-      // Top bar
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          SizedBox(
-            height: 30,
-            child: TextButton(
-              style: ButtonStyle(alignment: Alignment.center),
-              child: Text(
-                '${widget.locationText} - ${locationRadius}Km',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onPressed: () async {
-                openBottomSheet();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  } // Build
 
   void applySearchFilter() {
     final searchQuery = _controller.text.toLowerCase().trim();
@@ -182,101 +134,127 @@ class _LocationWidgetState extends State<LocationWidget> {
     storeSearchUpdateNotifier.changeSearchQuery('');
   }
 
-  void openBottomSheet() {
-    {
-      showModalBottomSheet<dynamic>(
-        isScrollControlled: true,
-        enableDrag: true,
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setStateOnSheet) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 8.0,
-                    right: 8.0,
-                    top: 8.0,
-                    bottom: 50.0,
-                  ),
-                  child: Wrap(
-                    children: <Widget>[
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          verticalDirection: VerticalDirection.down,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            _sheetTopBar(context),
-                            Row(
-                              children: <Widget>[
-                                Icon(Icons.location_on),
-                                Text(widget.locationText),
-                              ],
-                            ),
-                            TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Buscar una ciudad',
-                              ),
-                            ),
-                            _radiusSlider(setStateOnSheet),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      );
-    }
-  }
+  // Settings removed temporarily
 
-  /// Sets the radius around the center point for displaying stores on map
-  Row _radiusSlider(StateSetter setStateOnSheet) {
-    return Row(
-      children: [
-        Text('1km'),
-        Expanded(
-          child: Slider(
-            divisions: 25,
-            showValueIndicator: ShowValueIndicator.alwaysVisible,
-            min: 1.0,
-            max: 25.0,
-            value: locationRadius.toDouble(),
-            onChanged: (double value) {
-              setStateOnSheet(() {
-                locationRadius = value.toInt();
-              });
-              setState(() {
-                locationRadius = value.toInt();
-              });
-            },
-          ),
-        ),
-        Text('25km'),
-      ],
-    );
-  }
+  // Container _topBar() {
+  //   return Container(
+  //     // Top bar
+  //     color: Colors.white,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       children: [
+  //         SizedBox(
+  //           height: 30,
+  //           child: IconButton(
+  //             style: ButtonStyle(alignment: Alignment.center),
+  //             icon: const Icon(Icons.),
+  //             onPressed: () async {
+  //               _openSettingsBottomSheet();
+  //             },
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Row _sheetTopBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Spacer(flex: 2),
-        const Text(
-          'Elige una Ubicacion',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Spacer(),
-        ElevatedButton(
-          child: const Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ],
-    );
-  }
+  // void openSettingsBottomSheet() {
+  //   {
+  //     showModalBottomSheet<dynamic>(
+  //       isScrollControlled: true,
+  //       enableDrag: true,
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return StatefulBuilder(
+  //           builder: (BuildContext context, StateSetter setStateOnSheet) {
+  //             return SingleChildScrollView(
+  //               child: Padding(
+  //                 padding: EdgeInsets.only(
+  //                   left: 8.0,
+  //                   right: 8.0,
+  //                   top: 8.0,
+  //                   bottom: 50.0,
+  //                 ),
+  //                 child: Wrap(
+  //                   children: <Widget>[
+  //                     Center(
+  //                       child: Column(
+  //                         mainAxisAlignment: MainAxisAlignment.start,
+  //                         verticalDirection: VerticalDirection.down,
+  //                         mainAxisSize: MainAxisSize.min,
+  //                         children: <Widget>[
+  //                           _sheetTopBar(context),
+  //                           //Map
+  //                           Row(
+  //                             children: <Widget>[
+  //                               Icon(Icons.location_on),
+  //                               Text(widget.locationText),
+  //                             ],
+  //                           ),
+  //                           TextField(
+  //                             decoration: InputDecoration(
+  //                               border: OutlineInputBorder(),
+  //                               labelText: 'Buscar una ciudad',
+  //                             ),
+  //                           ),
+  //                           _radiusSlider(setStateOnSheet),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
+
+  // Temporarily removed, part of settings
+
+  // Row _radiusSlider(StateSetter setStateOnSheet) {
+  //   return Row(
+  //     children: [
+  //       Text('1km'),
+  //       Expanded(
+  //         child: Slider(
+  //           divisions: 25,
+  //           showValueIndicator: ShowValueIndicator.alwaysVisible,
+  //           min: 1.0,
+  //           max: 25.0,
+  //           value: locationRadius.toDouble(),
+  //           onChanged: (double value) {
+  //             setStateOnSheet(() {
+  //               locationRadius = value.toInt();
+  //             });
+  //             setState(() {
+  //               locationRadius = value.toInt();
+  //             });
+  //           },
+  //         ),
+  //       ),
+  //       Text('25km'),
+  //     ],
+  //   );
+  // }
+
+  // Row _helpSheetTopBar(BuildContext context) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //     children: [
+  //       Spacer(flex: 2),
+  //       const Text(
+  //         'Ayuda e información',
+  //         style: TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       Spacer(),
+  //       ElevatedButton(
+  //         child: const Icon(Icons.close),
+  //         onPressed: () => Navigator.pop(context),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
