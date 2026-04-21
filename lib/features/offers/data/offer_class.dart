@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_card_widget.dart';
+import 'package:proyecto_qpon/shared/globals.dart'
+    show savedOfferUpdateNotifier;
 
 /// Offer class that holds all the data from an offer
 ///
@@ -68,6 +71,24 @@ class Offer {
       offerId: offerMap['offerId'] as String? ?? 'Id-was-null',
       localId: offerMap['id'] as int?,
     );
+  }
+
+  Future<void> saveOffer() async {
+    await LocalDatabase.insertSavedOfferCard(this);
+    debugPrint('Offer saved to favorites: ${toString()}');
+    // Global notifier so favorites knows to update
+    savedOfferUpdateNotifier.value++;
+  }
+
+  Future<void> unsaveOffer() async {
+    // Early return if it is not saved locally in the first place
+    if (localId == null) {
+      return;
+    }
+    await LocalDatabase.deleteSavedOfferCard(localId!);
+    debugPrint('Offer deleted from favorites: ${toString()}');
+    // Same thing
+    savedOfferUpdateNotifier.value++;
   }
 
   /// Gets a list of [Offer] objects and returns a scrollable list of offer cards

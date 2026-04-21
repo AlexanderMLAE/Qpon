@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
-import 'package:proyecto_qpon/shared/globals.dart';
 
 /// Screen that displays all of the details of a given [Offer]
 class OfferDetails extends StatefulWidget {
@@ -14,10 +13,10 @@ class OfferDetails extends StatefulWidget {
 }
 
 class _OfferDetailsState extends State<OfferDetails> {
-  Offer get thisOffer => widget.offer;
+  Offer get _thisOffer => widget.offer;
 
   /// Temporary turn into a map to display values that may currently be null in Firestore
-  Map<String, dynamic> get thisOfferMap => thisOffer.toMap();
+  Map<String, dynamic> get _thisOfferMap => _thisOffer.toMap();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            (thisOffer.localId == null)
+            (_thisOffer.localId == null)
                 ? _saveOfferButton()
                 : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
             const SizedBox(height: 24), // Spacer!!!!!
@@ -55,7 +54,7 @@ class _OfferDetailsState extends State<OfferDetails> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
           child: Image.network(
-            thisOfferMap['imageUrl'],
+            _thisOfferMap['imageUrl'],
             width: double.infinity,
             height: 180,
             fit: BoxFit.cover,
@@ -78,8 +77,7 @@ class _OfferDetailsState extends State<OfferDetails> {
       iconTheme: IconThemeData(color: Colors.white),
       backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       title: Text(
-        // TODO: Change to actually useful information and center
-        'Oferta',
+        _thisOfferMap['productName'],
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -87,7 +85,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerTitle() {
     return Text(
-      thisOfferMap['productName'],
+      _thisOfferMap['productName'],
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Colors.black,
@@ -99,7 +97,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerPrice() {
     return Text(
-      '\$ ${thisOfferMap['productPrice']}',
+      '\$ ${_thisOfferMap['productPrice']}',
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Color.fromARGB(255, 252, 18, 47),
@@ -111,7 +109,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerDetails() {
     return Text(
-      thisOfferMap['productDetails'],
+      _thisOfferMap['productDetails'],
       textAlign: TextAlign.center,
       style: TextStyle(color: Colors.grey[700], fontSize: 14),
     );
@@ -119,7 +117,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   ElevatedButton _saveOfferButton() {
     return ElevatedButton(
-      onPressed: saveOffer,
+      onPressed: _saveOffer,
       style: ElevatedButton.styleFrom(
         backgroundColor: Color.fromARGB(255, 252, 18, 47),
         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -137,7 +135,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   ElevatedButton _unsaveOfferButton() {
     return ElevatedButton(
-      onPressed: unsaveOffer,
+      onPressed: _unsaveOffer,
       style: ElevatedButton.styleFrom(
         backgroundColor: Color.fromARGB(255, 252, 18, 47),
         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -174,7 +172,7 @@ class _OfferDetailsState extends State<OfferDetails> {
           ),
           const SizedBox(height: 8),
           Text(
-            '• Válido hasta ${thisOfferMap['Example']}\n• [Ejemplo]\n• [Ejemplo]',
+            '• Válido hasta ${_thisOfferMap['Example']}\n• [Ejemplo]\n• [Ejemplo]',
             style: TextStyle(fontSize: 12, color: Colors.grey[700]),
           ),
         ],
@@ -183,18 +181,12 @@ class _OfferDetailsState extends State<OfferDetails> {
   }
 
   /// Saves the [Offer] on [LocalDatabase] to be displayed on the Favorites screen
-  Future<void> saveOffer() async {
-    LocalDatabase.insertSavedOfferCard(thisOffer);
-    debugPrint('Offer to be saved locally: ${thisOffer.toString()}');
-    // Global notifier so favorites knows to update
-    savedOfferUpdateNotifier.value++;
+  Future<void> _saveOffer() async {
+    _thisOffer.saveOffer();
   }
 
   /// Deletes the [Offer] from [LocalDatabase]
-  Future<void> unsaveOffer() async {
-    LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
-    debugPrint('Offer to be deleted locally: ${thisOffer.toString()}');
-    // Same thing
-    savedOfferUpdateNotifier.value++;
+  Future<void> _unsaveOffer() async {
+    _thisOffer.unsaveOffer();
   }
 }
