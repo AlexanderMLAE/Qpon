@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
+import 'package:proyecto_qpon/database/local_database.dart' show LocalDatabase;
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
+import 'package:proyecto_qpon/shared/globals.dart'
+    show savedOfferUpdateNotifier;
 
 @Preview(name: 'offer')
 Widget preview() {
@@ -57,6 +60,7 @@ class OfferCard extends StatefulWidget {
 
 class _OfferCardState extends State<OfferCard> {
   Offer get _thisOffer => widget.offer;
+  bool _isFavorited = false;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -76,7 +80,14 @@ class _OfferCardState extends State<OfferCard> {
               color: Color.fromARGB(255, 227, 18, 47),
             ), // Separator
             const SizedBox(height: 8), // Blank separator
-            _detailsButton(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _detailsButton(),
+                // Button
+                _favoriteButton(),
+              ],
+            ),
             const SizedBox(height: 8),
             _offerDetails(),
           ],
@@ -136,6 +147,22 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  IconButton _favoriteButton() {
+    return (_thisOffer.localId == null)
+        ? IconButton(
+            isSelected: _isFavorited,
+            onPressed: () {
+              _saveOffer();
+              setState(() {
+                _isFavorited = true;
+              });
+            },
+            icon: Icon(Icons.favorite_border),
+            selectedIcon: Icon(Icons.favorite),
+          )
+        : IconButton(onPressed: _unsaveOffer, icon: Icon(Icons.favorite));
+  }
+
   /// Short details text
   Text _offerDetails() {
     return Text(
@@ -153,5 +180,19 @@ class _OfferCardState extends State<OfferCard> {
         ),
       );
     });
+  }
+
+  Future<void> _saveOffer() async {
+    LocalDatabase.insertSavedOfferCard(_thisOffer);
+    debugPrint('Offer to be saved locally: ${_thisOffer.toString()}');
+    // Global notifier so favorites knows to update
+    savedOfferUpdateNotifier.value++;
+  }
+
+  Future<void> _unsaveOffer() async {
+    LocalDatabase.deleteSavedOfferCard(_thisOffer.localId!);
+    debugPrint('Offer to be deleted locally: ${_thisOffer.toString()}');
+    // Same thing
+    savedOfferUpdateNotifier.value++;
   }
 }
