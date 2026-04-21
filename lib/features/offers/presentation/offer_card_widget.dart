@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:proyecto_qpon/database/local_database.dart' show LocalDatabase;
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
-import 'package:proyecto_qpon/shared/globals.dart'
-    show savedOfferUpdateNotifier;
 
 @Preview(name: 'offer')
 Widget preview() {
@@ -183,16 +180,10 @@ class _OfferCardState extends State<OfferCard> {
   }
 
   Future<void> _saveOffer() async {
-    LocalDatabase.insertSavedOfferCard(_thisOffer);
-    debugPrint('Offer to be saved locally: ${_thisOffer.toString()}');
-    // Global notifier so favorites knows to update
-    savedOfferUpdateNotifier.value++;
+    await _thisOffer.saveOffer();
   }
 
   Future<void> _unsaveOffer() async {
-    LocalDatabase.deleteSavedOfferCard(_thisOffer.localId!);
-    debugPrint('Offer to be deleted locally: ${_thisOffer.toString()}');
-    // Same thing
-    savedOfferUpdateNotifier.value++;
+    await _thisOffer.unsaveOffer();
   }
 }
