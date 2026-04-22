@@ -15,9 +15,9 @@ Widget preview() {
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 227, 18, 47),
       ),
-      body: Column(
-        children: [
-          const OfferCardWidget(
+      body: ListView(
+        children: <Widget>[
+          OfferCardWidget(
             offer: Offer(
               productName: "wiwiwiwiwi",
               productPrice: 20.01,
@@ -27,13 +27,22 @@ Widget preview() {
               localId: null,
             ),
           ),
+          OfferCardWidget(
+            offer: Offer(
+              productName: "wawiwiwiwi",
+              productPrice: 200.01,
+              productDetails: "another one",
+              imageUrl: "https://i.imgur.com/DlMOeSc.png",
+              offerId: 'exaple',
+              localId: 9999,
+            ),
+          ),
         ],
       ),
     ),
   );
 }
 
-// TODO: Button is kinda working, gotta finish it
 /// Card widget that shows basic [Offer] data
 class OfferCardWidget extends StatelessWidget {
   /// Contains the data that will be displayed
@@ -58,13 +67,6 @@ class OfferCard extends StatefulWidget {
 
 class _OfferCardState extends State<OfferCard> {
   Offer get _thisOffer => widget.offer;
-  int? localId;
-
-  @override
-  void initState() {
-    super.initState();
-    localId = _thisOffer.localId;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,19 +155,12 @@ class _OfferCardState extends State<OfferCard> {
   }
 
   IconButton _favoriteButton() {
-    return (localId == null)
-        ? IconButton(
-            onPressed: () {
-              _saveOffer();
-            },
-            icon: Icon(Icons.favorite_border),
-          )
-        : IconButton(
-            onPressed: () {
-              _unsaveOffer();
-            },
-            icon: Icon(Icons.favorite),
-          );
+    return IconButton(
+      onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
+      icon: (_thisOffer.localId == null)
+          ? Icon(Icons.favorite_border)
+          : Icon(Icons.favorite),
+    );
   }
 
   /// Short details text
@@ -190,7 +185,7 @@ class _OfferCardState extends State<OfferCard> {
   Future<void> _saveOffer() async {
     final int id = await _thisOffer.saveOffer();
     setState(() {
-      localId = id;
+      _thisOffer.localId = id;
     });
     if (mounted) {
       _thisOffer.showSnackbar(context, true);
@@ -198,9 +193,9 @@ class _OfferCardState extends State<OfferCard> {
   }
 
   Future<void> _unsaveOffer() async {
-    await _thisOffer.unsaveOffer(localId!);
+    await _thisOffer.unsaveOffer();
     setState(() {
-      localId = null;
+      _thisOffer.localId = null;
     });
     if (mounted) {
       _thisOffer.showSnackbar(context, false);
