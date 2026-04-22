@@ -50,16 +50,17 @@ class LocalDatabase {
   }
 
   /// Gets a single [Offer] object and inserts the [savedOffer] to favorites table as [Map]
-  static Future<void> insertSavedOfferCard(Offer savedOffer) async {
+  static Future<int> insertSavedOfferCard(Offer savedOffer) async {
     final Database db = await getLocalDatabase();
 
-    await db.insert(
+    int id = await db.insert(
       'favorite_offers',
       // Has to be a map so SQLite can accept it
       savedOffer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     debugPrint('Offer inserted to Local DB ${savedOffer.toString()}');
+    return id;
   }
 
   /// Gets a [localId] and deletes the saved offer with that ID

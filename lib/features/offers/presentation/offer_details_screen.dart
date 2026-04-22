@@ -14,9 +14,15 @@ class OfferDetails extends StatefulWidget {
 
 class _OfferDetailsState extends State<OfferDetails> {
   Offer get _thisOffer => widget.offer;
+  int? localId;
 
   /// Temporary turn into a map to display values that may currently be null in Firestore
   Map<String, dynamic> get _thisOfferMap => _thisOffer.toMap();
+  @override
+  void initState() {
+    super.initState();
+    localId = _thisOffer.localId;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            (_thisOffer.localId == null)
+            (localId == null)
                 ? _saveOfferButton()
                 : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
             const SizedBox(height: 24), // Spacer!!!!!
@@ -182,11 +188,23 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   /// Saves the [Offer] on [LocalDatabase] to be displayed on the Favorites screen
   Future<void> _saveOffer() async {
-    _thisOffer.saveOffer();
+    final int id = await _thisOffer.saveOffer();
+    setState(() {
+      localId = id;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, true);
+    }
   }
 
   /// Deletes the [Offer] from [LocalDatabase]
   Future<void> _unsaveOffer() async {
-    _thisOffer.unsaveOffer();
+    await _thisOffer.unsaveOffer(localId!);
+    setState(() {
+      localId = null;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, false);
+    }
   }
 }
