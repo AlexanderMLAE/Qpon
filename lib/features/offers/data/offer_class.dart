@@ -29,9 +29,9 @@ class Offer {
   /// Local SQLite element ID
   ///
   /// Null if it is not retrieved from local db
-  final int? localId;
+  int? localId;
 
-  const Offer({
+  Offer({
     required this.productName,
     required this.productPrice,
     required this.productDetails,
@@ -83,12 +83,8 @@ class Offer {
 
   /// [localId] field is final so it is passed as an argument
   // cause we cant update it but we still use it in case this is being run outside the favorites screen
-  Future<void> unsaveOffer(int id) async {
-    if (localId == null) {
-      await LocalDatabase.deleteSavedOfferCard(id);
-    } else {
-      await LocalDatabase.deleteSavedOfferCard(localId!);
-    }
+  Future<void> unsaveOffer() async {
+    await LocalDatabase.deleteSavedOfferCard(localId!);
     debugPrint('Offer deleted from favorites: ${toString()}');
     // Same thing
     savedOfferUpdateNotifier.value++;

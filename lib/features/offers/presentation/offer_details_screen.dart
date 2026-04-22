@@ -14,15 +14,9 @@ class OfferDetails extends StatefulWidget {
 
 class _OfferDetailsState extends State<OfferDetails> {
   Offer get _thisOffer => widget.offer;
-  int? localId;
 
   /// Temporary turn into a map to display values that may currently be null in Firestore
   Map<String, dynamic> get _thisOfferMap => _thisOffer.toMap();
-  @override
-  void initState() {
-    super.initState();
-    localId = _thisOffer.localId;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +33,7 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            (localId == null)
-                ? _saveOfferButton()
-                : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
+            _saveOfferButton(),
             const SizedBox(height: 24), // Spacer!!!!!
             _offerTerms(),
           ],
@@ -123,31 +115,15 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   ElevatedButton _saveOfferButton() {
     return ElevatedButton(
-      onPressed: _saveOffer,
+      onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
       style: ElevatedButton.styleFrom(
         backgroundColor: Color.fromARGB(255, 252, 18, 47),
         padding: const EdgeInsets.symmetric(vertical: 14),
       ),
-      child: const Text(
-        'Guardar Oferta',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  ElevatedButton _unsaveOfferButton() {
-    return ElevatedButton(
-      onPressed: _unsaveOffer,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 252, 18, 47),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      child: const Text(
-        'Eliminar Oferta de Favoritos',
+      child: Text(
+        (_thisOffer.localId == null)
+            ? 'Guardar Oferta'
+            : 'Eliminar Oferta de Favoritos',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,
@@ -187,10 +163,12 @@ class _OfferDetailsState extends State<OfferDetails> {
   }
 
   /// Saves the [Offer] on [LocalDatabase] to be displayed on the Favorites screen
+  /// sae and unsave could maybe be a single function "handleSaving"
+  /// is this clearer? will try later
   Future<void> _saveOffer() async {
     final int id = await _thisOffer.saveOffer();
     setState(() {
-      localId = id;
+      _thisOffer.localId = id;
     });
     if (mounted) {
       _thisOffer.showSnackbar(context, true);
@@ -199,9 +177,9 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   /// Deletes the [Offer] from [LocalDatabase]
   Future<void> _unsaveOffer() async {
-    await _thisOffer.unsaveOffer(localId!);
+    await _thisOffer.unsaveOffer();
     setState(() {
-      localId = null;
+      _thisOffer.localId = null;
     });
     if (mounted) {
       _thisOffer.showSnackbar(context, false);
