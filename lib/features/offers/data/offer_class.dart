@@ -73,22 +73,38 @@ class Offer {
     );
   }
 
-  Future<void> saveOffer() async {
-    await LocalDatabase.insertSavedOfferCard(this);
+  Future<int> saveOffer() async {
+    final id = await LocalDatabase.insertSavedOfferCard(this);
     debugPrint('Offer saved to favorites: ${toString()}');
     // Global notifier so favorites knows to update
     savedOfferUpdateNotifier.value++;
+    return id;
   }
 
-  Future<void> unsaveOffer() async {
-    // Early return if it is not saved locally in the first place
+  /// [localId] field is final so it is passed as an argument
+  // cause we cant update it but we still use it in case this is being run outside the favorites screen
+  Future<void> unsaveOffer(int id) async {
     if (localId == null) {
-      return;
+      await LocalDatabase.deleteSavedOfferCard(id);
+    } else {
+      await LocalDatabase.deleteSavedOfferCard(localId!);
     }
-    await LocalDatabase.deleteSavedOfferCard(localId!);
     debugPrint('Offer deleted from favorites: ${toString()}');
     // Same thing
     savedOfferUpdateNotifier.value++;
+  }
+
+  void showSnackbar(BuildContext context, bool saved) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          saved
+              ? 'Oferta guardada en favoritos'
+              : 'Oferta eliminada de favoritos',
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   /// Gets a list of [Offer] objects and returns a scrollable list of offer cards

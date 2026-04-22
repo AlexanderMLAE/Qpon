@@ -17,7 +17,7 @@ Widget preview() {
       ),
       body: Column(
         children: [
-          OfferCardWidget(
+          const OfferCardWidget(
             offer: Offer(
               productName: "wiwiwiwiwi",
               productPrice: 20.01,
@@ -33,6 +33,7 @@ Widget preview() {
   );
 }
 
+// TODO: Button is kinda working, gotta finish it
 /// Card widget that shows basic [Offer] data
 class OfferCardWidget extends StatelessWidget {
   /// Contains the data that will be displayed
@@ -57,7 +58,14 @@ class OfferCard extends StatefulWidget {
 
 class _OfferCardState extends State<OfferCard> {
   Offer get _thisOffer => widget.offer;
-  bool _isFavorited = false;
+  int? localId;
+
+  @override
+  void initState() {
+    super.initState();
+    localId = _thisOffer.localId;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -145,19 +153,19 @@ class _OfferCardState extends State<OfferCard> {
   }
 
   IconButton _favoriteButton() {
-    return (_thisOffer.localId == null)
+    return (localId == null)
         ? IconButton(
-            isSelected: _isFavorited,
             onPressed: () {
               _saveOffer();
-              setState(() {
-                _isFavorited = true;
-              });
             },
             icon: Icon(Icons.favorite_border),
-            selectedIcon: Icon(Icons.favorite),
           )
-        : IconButton(onPressed: _unsaveOffer, icon: Icon(Icons.favorite));
+        : IconButton(
+            onPressed: () {
+              _unsaveOffer();
+            },
+            icon: Icon(Icons.favorite),
+          );
   }
 
   /// Short details text
@@ -180,10 +188,22 @@ class _OfferCardState extends State<OfferCard> {
   }
 
   Future<void> _saveOffer() async {
-    await _thisOffer.saveOffer();
+    final int id = await _thisOffer.saveOffer();
+    setState(() {
+      localId = id;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, true);
+    }
   }
 
   Future<void> _unsaveOffer() async {
-    await _thisOffer.unsaveOffer();
+    await _thisOffer.unsaveOffer(localId!);
+    setState(() {
+      localId = null;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, false);
+    }
   }
 }
