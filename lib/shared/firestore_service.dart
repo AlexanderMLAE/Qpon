@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
-import 'package:proyecto_qpon/shared/globals.dart' show globalFavoriteIds;
+import 'package:proyecto_qpon/shared/globals.dart'
+    show globalFavoriteIds, isLocalDatabaseReady;
 import 'package:proyecto_qpon/features/stores/data/store_class.dart';
 
 /// Handles requests to [FirebaseFirestore]
@@ -32,15 +33,19 @@ class FirestoreService {
   static Map<String, Object?> _handleDocument(
     QueryDocumentSnapshot<Object?> doc,
   ) {
-    final String id = doc.id;
+    final String docId = doc.id;
     final Map<String, Object?> data = doc.data() as Map<String, Object?>;
-    debugPrint('fetched data: $id ${data.toString()}');
+    final Map<String, Object?> offerMap = {'offerId': docId, ...data};
+    debugPrint('fetched data: $docId ${data.toString()}');
     // check with global if offer is favorited and add the appropriate localId to the data map
-    if (globalFavoriteIds[id] != null) {
-      data['id'] = globalFavoriteIds[data['offerId']];
+    while (!isLocalDatabaseReady) {
+      debugPrint(
+        'Waiting to get favorite offers ${globalFavoriteIds.toString()}',
+      );
     }
-    final Map<String, Object?> offerMap = {'offerId': id, ...data};
-
+    if (globalFavoriteIds[docId] != null) {
+      offerMap['id'] = globalFavoriteIds[offerMap['offerId']];
+    }
     return offerMap;
   }
 
