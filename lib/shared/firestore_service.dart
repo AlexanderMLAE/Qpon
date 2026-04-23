@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
+import 'package:proyecto_qpon/shared/globals.dart' show globalFavoriteIds;
 
 /// Handles requests to [FirebaseFirestore]
 class FirestoreService {
@@ -13,25 +14,33 @@ class FirestoreService {
   }) async {
     try {
       Query query = _db.collection('offers');
-
       // Filter by storeId if provided
       if (storeId != null) {
         query = query.where('store', isEqualTo: storeId);
       }
-
-      QuerySnapshot querySnapshot = await query.get();
-
+      final QuerySnapshot querySnapshot = await query.get();
       return querySnapshot.docs.map((doc) {
-        final id = doc.id;
-        final data = doc.data() as Map<String, dynamic>;
-        debugPrint('fetched data: $id $data');
-        // Append id of the offer to the returned Map
-        return {'offerId': id, ...data};
+        return _handleDocument(doc);
       }).toList();
     } catch (e) {
       debugPrint("Error en Firebase: $e");
       return [];
     }
+  }
+
+  static Map<String, Object?> _handleDocument(
+    QueryDocumentSnapshot<Object?> doc,
+  ) {
+    final String id = doc.id;
+    final Map<String, Object?> data = doc.data() as Map<String, Object?>;
+    debugPrint('fetched data: $id ${data.toString()}');
+    // check with global if offer is favorited and add the appropriate localId to the data map
+    if (globalFavoriteIds[id] != null) {
+      data['id'] = globalFavoriteIds[data['offerId']];
+    }
+    final Map<String, Object?> offerMap = {'offerId': id, ...data};
+
+    return offerMap;
   }
 
   /// Gets the list of offer maps and turns them to a list of offer objects
