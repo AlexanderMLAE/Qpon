@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
-import 'package:proyecto_qpon/shared/globals.dart' show globalFavoriteIds;
+import 'package:proyecto_qpon/shared/globals.dart'
+    show isLocalDatabaseReady, globalFavoriteIds;
 import 'package:sqflite/sqflite.dart';
 
 /// Local [Database] that handles persistent local storage
@@ -48,18 +49,19 @@ class LocalDatabase {
     );
     debugPrint("Retrieved offers from Local DB: $savedOfferCardMaps");
     // save the IDs to global to know which are favorited when fetching from Firestore
-    _updateFavoriteIdsOnGlobal(savedOfferCardMaps);
+    await _updateFavoriteIdsOnGlobal(savedOfferCardMaps);
     return savedOfferCardMaps.map((map) => Offer.fromMapToOffer(map)).toList();
   }
 
-  static void _updateFavoriteIdsOnGlobal(
+  static Future<void> _updateFavoriteIdsOnGlobal(
     List<Map<String, Object?>> savedOfferCardMaps,
-  ) {
+  ) async {
     globalFavoriteIds.clear();
     for (Map localOfferMap in savedOfferCardMaps) {
       globalFavoriteIds[localOfferMap['offerId'] as String] =
           localOfferMap['id'] as int;
     }
+    isLocalDatabaseReady = true;
   }
 
   /// Gets a single [Offer] object and inserts the [savedOffer] to favorites table as [Map]
