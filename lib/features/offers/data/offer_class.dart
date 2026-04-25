@@ -77,7 +77,7 @@ class Offer {
     final id = await LocalDatabase.insertSavedOfferCard(this);
     debugPrint('Offer saved to favorites: ${toString()}');
     // Global notifier so favorites knows to update
-    savedOfferUpdateNotifier.value++;
+    savedOfferUpdateNotifier.updateSavedOffer(localId: id, offerId: offerId);
     return id;
   }
 
@@ -87,7 +87,7 @@ class Offer {
     await LocalDatabase.deleteSavedOfferCard(localId!);
     debugPrint('Offer deleted from favorites: ${toString()}');
     // Same thing
-    savedOfferUpdateNotifier.value++;
+    savedOfferUpdateNotifier.updateSavedOffer(localId: null, offerId: offerId);
   }
 
   void showSnackbar(BuildContext context, bool saved) {
