@@ -22,10 +22,12 @@ class _OfferDetailsState extends State<OfferDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _offerDetailsAppBar(),
+      floatingActionButton: _saveOfferButton(),
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          children: <Widget>[
             _offerImage(),
             _offerTitle(),
             const SizedBox(height: 16), // Spacer i think
@@ -33,9 +35,11 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            _saveOfferButton(),
-            const SizedBox(height: 24), // Spacer!!!!!
             _offerTerms(),
+            const SizedBox(height: 24), // Spacer!!!!!
+            // TODO: Add map
+            const Placeholder(fallbackHeight: 300),
+            const SizedBox(height: 120),
           ],
         ),
       ),
@@ -44,24 +48,26 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Container _offerImage() {
     return Container(
-      height: 220,
+      padding: EdgeInsets.only(bottom: 10),
+      height: 280,
       margin: const EdgeInsets.only(bottom: 22),
       child: Material(
         elevation: 6,
         borderRadius: BorderRadius.circular(18),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
-          child: Image.network(
-            _thisOfferMap['imageUrl'],
-            width: double.infinity,
-            height: 180,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.grey.shade200,
-              alignment: Alignment.center,
-              child: const Text(
-                'Imagen no encontrada',
-                style: TextStyle(color: Colors.black54),
+          child: SingleChildScrollView(
+            child: Image.network(
+              _thisOfferMap['imageUrl'],
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.grey.shade200,
+                alignment: Alignment.center,
+                child: const Text(
+                  'Imagen no encontrada',
+                  style: TextStyle(color: Colors.black54),
+                ),
               ),
             ),
           ),
@@ -113,21 +119,35 @@ class _OfferDetailsState extends State<OfferDetails> {
     );
   }
 
-  ElevatedButton _saveOfferButton() {
-    return ElevatedButton(
-      onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 252, 18, 47),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      child: Text(
-        (_thisOffer.localId == null)
-            ? 'Guardar Oferta'
-            : 'Eliminar Oferta de Favoritos',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+  Padding _saveOfferButton() {
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: ElevatedButton(
+        onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            Icon(
+              (_thisOffer.localId == null) ? Icons.favorite : Icons.delete,
+              size: 36,
+              color: Colors.black,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              (_thisOffer.localId == null)
+                  ? 'Guardar Oferta en Favoritos'
+                  : 'Eliminar Oferta de Favoritos',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
