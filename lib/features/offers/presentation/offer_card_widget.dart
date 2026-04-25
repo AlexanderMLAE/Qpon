@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
+import 'package:proyecto_qpon/shared/globals.dart'
+    show savedOfferUpdateNotifier;
 
 @Preview(name: 'offer')
 Widget preview() {
@@ -67,6 +69,18 @@ class OfferCard extends StatefulWidget {
 
 class _OfferCardState extends State<OfferCard> {
   Offer get _thisOffer => widget.offer;
+
+  @override
+  void initState() {
+    super.initState();
+    savedOfferUpdateNotifier.addListener(updateLocalId);
+  }
+
+  @override
+  void dispose() {
+    savedOfferUpdateNotifier.removeListener(updateLocalId);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +194,21 @@ class _OfferCardState extends State<OfferCard> {
         ),
       );
     });
+  }
+
+  // Innefficient since every offer card is notified
+  void updateLocalId() {
+    if (savedOfferUpdateNotifier.offerId == null) {
+      setState(() {
+        _thisOffer.localId = null;
+      });
+      return;
+    }
+    if (savedOfferUpdateNotifier.offerId == _thisOffer.offerId) {
+      setState(() {
+        _thisOffer.localId = savedOfferUpdateNotifier.localId;
+      });
+    }
   }
 
   Future<void> _saveOffer() async {

@@ -47,6 +47,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
       body: _offers.isEmpty ? _buildEmptyState() : _buildListaOfertas(),
     );
   }
+
   /// When there's no saved [Offer]s
   Widget _buildEmptyState() {
     return Container(
@@ -94,6 +95,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
   Future<void> _deleteFavorites() async {
     await LocalDatabase.deleteAllSavedOfferCards();
     // Make the notifier know something happened so we reload the offers, is this better than just calling _loadOffers from here?
-    savedOfferUpdateNotifier.value++;
+    savedOfferUpdateNotifier.updateSavedOffer();
   }
 }

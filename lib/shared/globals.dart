@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 /// Global variables and notifiers.
 
@@ -13,8 +13,26 @@ class SearchNotifierModel with ChangeNotifier {
   }
 }
 
+class SavedOfferUpdateModel with ChangeNotifier {
+  int? _localId;
+  int? get localId => _localId;
+  String? _offerId;
+  String? get offerId => _offerId;
+  void updateSavedOffer({int? localId, String? offerId}) {
+    if (offerId != null) {
+      _localId = localId;
+      _offerId = offerId;
+    } else {
+      _offerId = null;
+      _localId = null;
+    }
+
+    notifyListeners();
+  }
+}
+
 /// [ValueNotifier] that is called whenever an offer is saved to favorites, updating the favorites screen
-final ValueNotifier<int> savedOfferUpdateNotifier = ValueNotifier(0);
+final SavedOfferUpdateModel savedOfferUpdateNotifier = SavedOfferUpdateModel();
 
 final SearchNotifierModel storeSearchUpdateNotifier = SearchNotifierModel();
 
