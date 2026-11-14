@@ -8,7 +8,6 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 // Imports de tus archivos
 import 'package:proyecto_qpon/database/firebase_options.dart';
 import 'features/favorites/favorites_screen.dart';
-import 'features/home/filters/calendar_widget.dart';
 import 'features/map/presentation/map_screen.dart';
 import 'features/login/login_screen.dart';
 import 'features/login/register_screen.dart' as reg;
@@ -69,7 +68,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // TODO: revert to 0 before merge
-  int currentPageIndex = 3;
+  int currentPageIndex = 2;
 
   void _openLogin() {
     Navigator.push(
@@ -160,11 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
               label: 'Favoritos',
             ),
             NavigationDestination(
-              selectedIcon: Icon(Icons.calendar_month),
-              icon: Icon(Icons.calendar_month_outlined),
-              label: 'Calendario',
-            ),
-            NavigationDestination(
               selectedIcon: Icon(Icons.location_on),
               icon: Icon(Icons.location_on_outlined),
               label: 'Ubicación',
@@ -174,12 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: IndexedStack(
         index: currentPageIndex,
-        children: const [
-          HomeWidget(),
-          FavoritesWidget(),
-          CalendarWidget(),
-          LocationScreen(),
-        ],
+        children: const [HomeWidget(), FavoritesWidget(), LocationScreen()],
       ),
     );
   }
