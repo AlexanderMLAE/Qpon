@@ -56,10 +56,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         padding: EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            Text(
-              'En este Apartado puedes agregar tus Ofertas Favoritas',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
             SizedBox(height: 40),
             Icon(Icons.favorite_border, size: 60, color: Colors.grey),
             SizedBox(height: 20),
@@ -78,7 +74,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     return Column(
       children: [
         // Placeholder probably
-        ElevatedButton(onPressed: _deleteFavorites, child: Text('Delete')),
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Text(
