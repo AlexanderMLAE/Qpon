@@ -86,32 +86,35 @@ class _OfferCardState extends State<OfferCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _offerImage(),
-            const SizedBox(height: 12), // Blank separator
-            _offerTitle(),
-            const SizedBox(height: 8), // Blank separator
-            Container(
-              height: 1,
-              color: Color.fromARGB(255, 227, 18, 47),
-            ), // Separator
-            const SizedBox(height: 8), // Blank separator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _detailsButton(),
-                // Button
-                _favoriteButton(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            _offerDetails(),
-          ],
+      child: InkWell(
+        onTap: _openDetails,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _offerImage(),
+              const SizedBox(height: 12), // Blank separator
+              _offerTitle(),
+              const SizedBox(height: 8), // Blank separator
+              Container(
+                height: 1,
+                color: Color.fromARGB(255, 227, 18, 47),
+              ), // Separator
+              const SizedBox(height: 8), // Blank separator
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _detailsButton(),
+                  // Button
+                  _favoriteButton(),
+                ],
+              ),
+              const SizedBox(height: 8),
+              _offerDetails(),
+            ],
+          ),
         ),
       ),
     );
