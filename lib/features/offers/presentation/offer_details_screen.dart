@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_qpon/database/local_database.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
-import 'package:proyecto_qpon/shared/globals.dart';
 
+/// Screen that displays all of the details of a given [Offer]
 class OfferDetails extends StatefulWidget {
+  /// Contains the data that will be displayed
   final Offer offer;
 
   const OfferDetails({required this.offer, super.key});
@@ -12,17 +13,21 @@ class OfferDetails extends StatefulWidget {
 }
 
 class _OfferDetailsState extends State<OfferDetails> {
-  Offer get thisOffer => widget.offer;
-  Map<String, dynamic> get thisOfferMap => thisOffer.toMap();
+  Offer get _thisOffer => widget.offer;
+
+  /// Temporary turn into a map to display values that may currently be null in Firestore
+  Map<String, dynamic> get _thisOfferMap => _thisOffer.toMap();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _offerDetailsAppBar(),
+      floatingActionButton: _saveOfferButton(),
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          children: <Widget>[
             _offerImage(),
             _offerTitle(),
             const SizedBox(height: 16), // Spacer i think
@@ -30,11 +35,11 @@ class _OfferDetailsState extends State<OfferDetails> {
             const SizedBox(height: 16), // Spaces maybe
             _offerDetails(),
             const SizedBox(height: 24), // Yet another spacerhaps
-            (thisOffer.localId == null)
-                ? _saveOfferButton()
-                : _unsaveOfferButton(), // id == null means it comes from firestore not sqlite
-            const SizedBox(height: 24), // Spacer!!!!!
             _offerTerms(),
+            const SizedBox(height: 24), // Spacer!!!!!
+            // TODO: Add map
+            const Placeholder(fallbackHeight: 300),
+            const SizedBox(height: 120),
           ],
         ),
       ),
@@ -43,24 +48,26 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Container _offerImage() {
     return Container(
-      height: 220,
+      padding: EdgeInsets.only(bottom: 10),
+      height: 280,
       margin: const EdgeInsets.only(bottom: 22),
       child: Material(
         elevation: 6,
         borderRadius: BorderRadius.circular(18),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
-          child: Image.network(
-            thisOfferMap['imageUrl'],
-            width: double.infinity,
-            height: 180,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.grey.shade200,
-              alignment: Alignment.center,
-              child: const Text(
-                'Imagen no encontrada',
-                style: TextStyle(color: Colors.black54),
+          child: SingleChildScrollView(
+            child: Image.network(
+              _thisOfferMap['imageUrl'],
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.grey.shade200,
+                alignment: Alignment.center,
+                child: const Text(
+                  'Imagen no encontrada',
+                  style: TextStyle(color: Colors.black54),
+                ),
               ),
             ),
           ),
@@ -74,7 +81,7 @@ class _OfferDetailsState extends State<OfferDetails> {
       iconTheme: IconThemeData(color: Colors.white),
       backgroundColor: const Color.fromARGB(255, 227, 18, 47),
       title: Text(
-        'Oferta',
+        _thisOfferMap['productName'],
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
@@ -82,7 +89,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerTitle() {
     return Text(
-      thisOfferMap['productName'],
+      _thisOfferMap['productName'],
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Colors.black,
@@ -94,7 +101,7 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerPrice() {
     return Text(
-      '\$ ${thisOfferMap['productPrice']}',
+      '\$ ${_thisOfferMap['productPrice']}',
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Color.fromARGB(255, 252, 18, 47),
@@ -106,48 +113,47 @@ class _OfferDetailsState extends State<OfferDetails> {
 
   Text _offerDetails() {
     return Text(
-      thisOfferMap['productDetails'],
+      _thisOfferMap['productDetails'],
       textAlign: TextAlign.center,
       style: TextStyle(color: Colors.grey[700], fontSize: 14),
     );
   }
 
-  ElevatedButton _saveOfferButton() {
-    return ElevatedButton(
-      onPressed: saveOffer,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 252, 18, 47),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      child: const Text(
-        'Guardar Oferta',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+  Padding _saveOfferButton() {
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: ElevatedButton(
+        onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 252, 18, 47),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            Icon(
+              (_thisOffer.localId == null) ? Icons.favorite : Icons.delete,
+              size: 36,
+              color: Colors.black,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              (_thisOffer.localId == null)
+                  ? 'Guardar Oferta en Favoritos'
+                  : 'Eliminar Oferta de Favoritos',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  ElevatedButton _unsaveOfferButton() {
-    return ElevatedButton(
-      onPressed: unsaveOffer,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 252, 18, 47),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      child: const Text(
-        'Eliminar Oferta de Favoritos',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
+  /// [Offer] Terms and Conditions
   Container _offerTerms() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -168,7 +174,7 @@ class _OfferDetailsState extends State<OfferDetails> {
           ),
           const SizedBox(height: 8),
           Text(
-            '• Válido hasta ${thisOfferMap['Example']}\n• [Ejemplo]\n• [Ejemplo]',
+            '• Válido hasta ${_thisOfferMap['Example']}\n• [Ejemplo]\n• [Ejemplo]',
             style: TextStyle(fontSize: 12, color: Colors.grey[700]),
           ),
         ],
@@ -176,17 +182,27 @@ class _OfferDetailsState extends State<OfferDetails> {
     );
   }
 
-  Future<void> saveOffer() async {
-    LocalDatabase.insertSavedOfferCard(thisOffer);
-    debugPrint('Offer to be saved locally: ${thisOffer.toString()}');
-    // Global notifier so favorites knows to update
-    savedOfferUpdateNotifier.value++;
+  /// Saves the [Offer] on [LocalDatabase] to be displayed on the Favorites screen
+  /// sae and unsave could maybe be a single function "handleSaving"
+  /// is this clearer? will try later
+  Future<void> _saveOffer() async {
+    final int id = await _thisOffer.saveOffer();
+    setState(() {
+      _thisOffer.localId = id;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, true);
+    }
   }
 
-  Future<void> unsaveOffer() async {
-    LocalDatabase.deleteSavedOfferCard(thisOffer.localId!);
-    debugPrint('Offer to be deleted locally: ${thisOffer.toString()}');
-    // Same thing
-    savedOfferUpdateNotifier.value++;
+  /// Deletes the [Offer] from [LocalDatabase]
+  Future<void> _unsaveOffer() async {
+    await _thisOffer.unsaveOffer();
+    setState(() {
+      _thisOffer.localId = null;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, false);
+    }
   }
 }

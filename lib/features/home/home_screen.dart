@@ -3,6 +3,8 @@ import 'package:proyecto_qpon/features/home/filters/filter_price.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import '../../shared/firestore_service.dart';
 
+/// Base home screen with [Offer]s obtained from Firestore
+/// TODO: More in depth documentation
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
 

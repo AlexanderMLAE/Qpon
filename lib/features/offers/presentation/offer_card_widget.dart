@@ -1,8 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import 'package:proyecto_qpon/features/offers/data/offer_class.dart';
 import 'package:proyecto_qpon/features/offers/presentation/offer_details_screen.dart';
+import 'package:proyecto_qpon/shared/globals.dart'
+    show savedOfferUpdateNotifier;
 
+@Preview(name: 'offer')
+Widget preview() {
+  return MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Offer Card Widget Preview',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 227, 18, 47),
+      ),
+      body: ListView(
+        children: <Widget>[
+          OfferCardWidget(
+            offer: Offer(
+              productName: "wiwiwiwiwi",
+              productPrice: 20.01,
+              productDetails: "that one cat",
+              imageUrl: "https://i.imgur.com/DlMOeSc.png",
+              offerId: 'exaple',
+              localId: null,
+            ),
+          ),
+          OfferCardWidget(
+            offer: Offer(
+              productName: "wawiwiwiwi",
+              productPrice: 200.01,
+              productDetails: "another one",
+              imageUrl: "https://i.imgur.com/DlMOeSc.png",
+              offerId: 'exaple',
+              localId: 9999,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// Card widget that shows basic [Offer] data
 class OfferCardWidget extends StatelessWidget {
+  /// Contains the data that will be displayed
   final Offer offer;
 
   const OfferCardWidget({super.key, required this.offer});
@@ -23,30 +68,53 @@ class OfferCard extends StatefulWidget {
 }
 
 class _OfferCardState extends State<OfferCard> {
-  Offer get thisOffer => widget.offer;
+  Offer get _thisOffer => widget.offer;
+
+  @override
+  void initState() {
+    super.initState();
+    savedOfferUpdateNotifier.addListener(updateLocalId);
+  }
+
+  @override
+  void dispose() {
+    savedOfferUpdateNotifier.removeListener(updateLocalId);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _offerImage(),
-            const SizedBox(height: 12), // Blank separator
-            _offerTitle(),
-            const SizedBox(height: 8), // Blank separator
-            Container(
-              height: 1,
-              color: Color.fromARGB(255, 227, 18, 47),
-            ), // Separator
-            const SizedBox(height: 8), // Blank separator
-            _detailsButton(),
-            const SizedBox(height: 8),
-            _offerDetails(),
-          ],
+      child: InkWell(
+        onTap: _openDetails,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _offerImage(),
+              const SizedBox(height: 12), // Blank separator
+              _offerTitle(),
+              const SizedBox(height: 8), // Blank separator
+              Container(
+                height: 1,
+                color: Color.fromARGB(255, 227, 18, 47),
+              ), // Separator
+              const SizedBox(height: 8), // Blank separator
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _detailsButton(),
+                  // Button
+                  _favoriteButton(),
+                ],
+              ),
+              const SizedBox(height: 8),
+              _offerDetails(),
+            ],
+          ),
         ),
       ),
     );
@@ -59,7 +127,7 @@ class _OfferCardState extends State<OfferCard> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image(
-              image: NetworkImage(thisOffer.imageUrl),
+              image: NetworkImage(_thisOffer.imageUrl),
               height: 180,
               fit: BoxFit.cover,
             ),
@@ -69,16 +137,17 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  /// [Card]'s title that displays the name of the offer
   Row _offerTitle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          thisOffer.productName,
+          _thisOffer.productName,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(
-          '\$ ${thisOffer.productPrice}',
+          '\$ ${_thisOffer.productPrice}',
           style: TextStyle(
             fontSize: 22,
             color: Colors.black,
@@ -89,6 +158,7 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  /// Button that pushes the [OfferDetails] screen
   ElevatedButton _detailsButton() {
     return ElevatedButton(
       onPressed: _openDetails,
@@ -101,9 +171,19 @@ class _OfferCardState extends State<OfferCard> {
     );
   }
 
+  IconButton _favoriteButton() {
+    return IconButton(
+      onPressed: (_thisOffer.localId == null) ? _saveOffer : _unsaveOffer,
+      icon: (_thisOffer.localId == null)
+          ? Icon(Icons.favorite_border)
+          : Icon(Icons.favorite),
+    );
+  }
+
+  /// Short details text
   Text _offerDetails() {
     return Text(
-      thisOffer.productDetails,
+      _thisOffer.productDetails,
       style: TextStyle(fontSize: 12, color: Colors.black),
     );
   }
@@ -113,9 +193,44 @@ class _OfferCardState extends State<OfferCard> {
       Navigator.push(
         context,
         MaterialPageRoute<void>(
-          builder: (context) => OfferDetails(offer: thisOffer),
+          builder: (context) => OfferDetails(offer: _thisOffer),
         ),
       );
     });
+  }
+
+  // Innefficient since every offer card is notified
+  void updateLocalId() {
+    if (savedOfferUpdateNotifier.offerId == null) {
+      setState(() {
+        _thisOffer.localId = null;
+      });
+      return;
+    }
+    if (savedOfferUpdateNotifier.offerId == _thisOffer.offerId) {
+      setState(() {
+        _thisOffer.localId = savedOfferUpdateNotifier.localId;
+      });
+    }
+  }
+
+  Future<void> _saveOffer() async {
+    final int id = await _thisOffer.saveOffer();
+    setState(() {
+      _thisOffer.localId = id;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, true);
+    }
+  }
+
+  Future<void> _unsaveOffer() async {
+    await _thisOffer.unsaveOffer();
+    setState(() {
+      _thisOffer.localId = null;
+    });
+    if (mounted) {
+      _thisOffer.showSnackbar(context, false);
+    }
   }
 }
